@@ -1,0 +1,171 @@
+medication_id,Drug_name,Dose,Ingredient_ids,RxCUI,Dose_components_mg,Dose_detail
+1,cetirizine hydrochloride 5 MG Oral Tablet,5.0,[20610],1014676,[5],cetirizine hydrochloride 5 MG Oral Tablet
+2,NDA020800 0.3 ML epinephrine 1 MG/ML Auto-Injector,1.0,[3992],1870230,[1],NDA020800 0.3 ML epinephrine 1 MG/ML Auto-Injector
+3,acetaminophen 21.7 MG/ML / dextromethorphan hydrobromide 1 MG/ML / doxylamine succinate 0.417 MG/ML Oral Solution,22.0,"[161, 3289, 3642]",1043400,"[22, 1, 0]",acetaminophen 21.7 MG/ML / dextromethorphan hydrobromide 1 MG/ML / doxylamine succinate 0.417 MG/ML Oral Solution
+4,ibuprofen 100 MG Oral Tablet,100.0,[5640],198405,[100],ibuprofen 100 MG Oral Tablet
+5,acetaminophen 160 MG Chewable Tablet,160.0,[161],313820,[160],acetaminophen 160 MG Chewable Tablet
+6,naproxen sodium 220 MG Oral Tablet,220.0,[7258],849574,[220],naproxen sodium 220 MG Oral Tablet
+7,1 ML medroxyprogesterone acetate 150 MG/ML Injection,150.0,[6691],1000126,[150],1 ML medroxyprogesterone acetate 150 MG/ML Injection
+8,acetaminophen 325 MG Oral Tablet,325.0,[161],313782,[325],acetaminophen 325 MG Oral Tablet
+9,hydrochlorothiazide 25 MG Oral Tablet,25.0,[5487],310798,[25],hydrochlorothiazide 25 MG Oral Tablet
+10,amlodipine 2.5 MG Oral Tablet,2.0,[17767],308136,[2],amlodipine 2.5 MG Oral Tablet
+11,lisinopril 10 MG Oral Tablet,10.0,[29046],314076,[10],lisinopril 10 MG Oral Tablet
+12,amoxicillin 250 MG / clavulanate 125 MG Oral Tablet,250.0,"[723, 48203]",562251,"[250, 125]",amoxicillin 250 MG / clavulanate 125 MG Oral Tablet
+13,ibuprofen 200 MG Oral Tablet,200.0,[5640],310965,[200],ibuprofen 200 MG Oral Tablet
+14,diphenhydramine hydrochloride 25 MG Oral Tablet,25.0,[3498],1049630,[25],diphenhydramine hydrochloride 25 MG Oral Tablet
+15,nitrofurantoin 5 MG/ML Oral Suspension,5.0,[7454],311989,[5],nitrofurantoin 5 MG/ML Oral Suspension
+16,phenazopyridine hydrochloride 100 MG Oral Tablet,100.0,[8120],1094107,[100],phenazopyridine hydrochloride 100 MG Oral Tablet
+17,acetaminophen 325 MG Oral Tablet,325.0,[161],209387,[325],acetaminophen 325 MG Oral Tablet
+18,"nitrofurantoin, macrocrystals 50 MG Oral Capsule",50.0,[7454],311995,[50],"nitrofurantoin, macrocrystals 50 MG Oral Capsule"
+19,penicillin V potassium 250 MG Oral Tablet,250.0,[7984],834061,[250],penicillin V potassium 250 MG Oral Tablet
+20,RXCUI 757594,,[],757594,[],RXCUI 757594
+21,norethindrone 0.35 MG Oral Tablet,0.0,[7514],748962,[0],norethindrone 0.35 MG Oral Tablet
+22,ethinyl estradiol 0.03 MG / levonorgestrel 0.15 MG Oral Tablet,0.0,"[4124, 6373]",748879,[0],ethinyl estradiol 0.03 MG / levonorgestrel 0.15 MG Oral Tablet
+23,norethindrone 0.35 MG Oral Tablet,0.0,[7514],831533,[0],norethindrone 0.35 MG Oral Tablet
+24,levonorgestrel 0.000729 MG/HR Intrauterine System,0.0,[6373],1856546,[0],levonorgestrel 0.000729 MG/HR Intrauterine System
+25,ethinyl estradiol 0.03 MG / levonorgestrel 0.15 MG Oral Tablet,0.0,"[4124, 6373]",749762,[0],ethinyl estradiol 0.03 MG / levonorgestrel 0.15 MG Oral Tablet
+26,levonorgestrel 0.000833 MG/HR Intrauterine System,0.0,[6373],807283,[0],levonorgestrel 0.000833 MG/HR Intrauterine System
+27,levonorgestrel 0.000813 MG/HR Intrauterine System,0.0,[6373],1605257,[0],levonorgestrel 0.000813 MG/HR Intrauterine System
+28,drospirenone 3 MG / ethinyl estradiol 0.02 MG Oral Tablet,3.0,"[4124, 11636]",748856,"[3, 0]",drospirenone 3 MG / ethinyl estradiol 0.02 MG Oral Tablet
+29,168 HR ethinyl estradiol 0.00146 MG/HR / norelgestromin 0.00625 MG/HR Transdermal System,0.0,"[4124, 326374]",1534809,[0],168 HR ethinyl estradiol 0.00146 MG/HR / norelgestromin 0.00625 MG/HR Transdermal System
+30,etonogestrel 68 MG Drug Implant,68.0,[14584],389221,[68],etonogestrel 68 MG Drug Implant
+31,21 DAY ethinyl estradiol 0.000625 MG/HR / etonogestrel 0.005 MG/HR Vaginal System,0.0,"[4124, 14584]",1367439,[0],21 DAY ethinyl estradiol 0.000625 MG/HR / etonogestrel 0.005 MG/HR Vaginal System
+32,ethinyl estradiol 0.02 MG / norethindrone acetate 1 MG Oral Tablet,0.0,"[4124, 7514]",1359133,"[0, 1]",ethinyl estradiol 0.02 MG / norethindrone acetate 1 MG Oral Tablet
+33,leucovorin 100 MG Injection,100.0,[6313],1803932,[100],leucovorin 100 MG Injection
+34,10 ML oxaliplatin 5 MG/ML Injection,5.0,[32592],1736776,[5],10 ML oxaliplatin 5 MG/ML Injection
+35,inert ingredients 1 MG Oral Tablet,1.0,[748794],978950,[1],inert ingredients 1 MG Oral Tablet
+36,ethinyl estradiol 0.035 MG / norgestimate 0.25 MG Oral Tablet,0.0,"[4124, 31994]",751905,[0],ethinyl estradiol 0.035 MG / norgestimate 0.25 MG Oral Tablet
+37,simvastatin 10 MG Oral Tablet,10.0,[36567],314231,[10],simvastatin 10 MG Oral Tablet
+38,atomoxetine 100 MG Oral Capsule,100.0,[38400],608139,[100],atomoxetine 100 MG Oral Capsule
+39,acetaminophen 325 MG / oxycodone hydrochloride 10 MG Oral Tablet,325.0,"[161, 7804]",1049625,"[325, 10]",acetaminophen 325 MG / oxycodone hydrochloride 10 MG Oral Tablet
+40,Abuse-Deterrent 12 HR oxycodone hydrochloride 10 MG Extended Release Oral Tablet,10.0,[7804],1049504,[10],Abuse-Deterrent 12 HR oxycodone hydrochloride 10 MG Extended Release Oral Tablet
+41,120 ACTUAT fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler,0.0,[41126],895994,[0],120 ACTUAT fluticasone propionate 0.044 MG/ACTUAT Metered Dose Inhaler
+42,NDA020503 200 ACTUAT albuterol 0.09 MG/ACTUAT Metered Dose Inhaler,0.0,[435],2123111,[0],NDA020503 200 ACTUAT albuterol 0.09 MG/ACTUAT Metered Dose Inhaler
+43,0.4 ML enoxaparin sodium 100 MG/ML Prefilled Syringe,100.0,[67108],854235,[100],0.4 ML enoxaparin sodium 100 MG/ML Prefilled Syringe
+44,acetaminophen 500 MG Oral Tablet,500.0,[161],198440,[500],acetaminophen 500 MG Oral Tablet
+45,1 ML enoxaparin sodium 150 MG/ML Prefilled Syringe,150.0,[67108],854252,[150],1 ML enoxaparin sodium 150 MG/ML Prefilled Syringe
+46,penicillin V potassium 500 MG Oral Tablet,500.0,[7984],834102,[500],penicillin V potassium 500 MG Oral Tablet
+47,chlorpheniramine maleate 2 MG/ML Oral Solution,2.0,[2400],477045,[2],chlorpheniramine maleate 2 MG/ML Oral Solution
+48,warfarin sodium 5 MG Oral Tablet,5.0,[11289],855332,[5],warfarin sodium 5 MG Oral Tablet
+49,verapamil hydrochloride 40 MG Oral Tablet,40.0,[11170],897718,[40],verapamil hydrochloride 40 MG Oral Tablet
+50,digoxin 0.125 MG Oral Tablet,0.0,[3407],197604,[0],digoxin 0.125 MG Oral Tablet
+51,fexofenadine hydrochloride 30 MG Oral Tablet,30.0,[87636],997488,[30],fexofenadine hydrochloride 30 MG Oral Tablet
+52,"1 ML heparin sodium, porcine 5000 UNT/ML Injection",,[5224],1659263,[],"1 ML heparin sodium, porcine 5000 UNT/ML Injection"
+53,sodium chloride 9 MG/ML Injectable Solution,9.0,[9863],313002,[9],sodium chloride 9 MG/ML Injectable Solution
+54,2 ML ondansetron 2 MG/ML Injection,2.0,[26225],1740467,[2],2 ML ondansetron 2 MG/ML Injection
+55,1 ML morphine sulfate 5 MG/ML Injection,5.0,[7052],1732136,[5],1 ML morphine sulfate 5 MG/ML Injection
+56,piperacillin 4000 MG / tazobactam 500 MG Injection,4000.0,"[8339, 37617]",1659149,"[4000, 500]",piperacillin 4000 MG / tazobactam 500 MG Injection
+57,midazolam 1 MG/ML Injectable Solution,1.0,[6960],311700,[1],midazolam 1 MG/ML Injectable Solution
+58,100 ML propofol 10 MG/ML Injection,10.0,[8782],1808217,[10],100 ML propofol 10 MG/ML Injection
+59,rocuronium bromide 10 MG/ML Injectable Solution,10.0,[68139],1234995,[10],rocuronium bromide 10 MG/ML Injectable Solution
+60,isoflurane 999 MG/ML Inhalation Solution,999.0,[6026],542347,[999],isoflurane 999 MG/ML Inhalation Solution
+61,remifentanil 2 MG Injection,2.0,[73032],1729584,[2],remifentanil 2 MG Injection
+62,meperidine hydrochloride 50 MG Oral Tablet,50.0,[6754],861467,[50],meperidine hydrochloride 50 MG Oral Tablet
+63,vitamin B12 5 MG/ML Injectable Solution,5.0,[11248],2001499,[5],vitamin B12 5 MG/ML Injectable Solution
+64,hydrocortisone 10 MG/ML Topical Cream,10.0,[5492],106258,[10],hydrocortisone 10 MG/ML Topical Cream
+65,cetirizine hydrochloride 10 MG Oral Tablet,10.0,[20610],1014678,[10],cetirizine hydrochloride 10 MG Oral Tablet
+66,ibuprofen 400 MG Oral Tablet,400.0,[5640],206905,[400],ibuprofen 400 MG Oral Tablet
+67,RXCUI 749882,,[],749882,[],RXCUI 749882
+68,ethinyl estradiol 0.035 MG / norgestimate 0.25 MG Oral Tablet,0.0,"[4124, 31994]",749785,[0],ethinyl estradiol 0.035 MG / norgestimate 0.25 MG Oral Tablet
+69,RXCUI 1366343,,[],1366343,[],RXCUI 1366343
+70,diazepam 5 MG Oral Tablet,5.0,[3322],197591,[5],diazepam 5 MG Oral Tablet
+71,piperacillin 2000 MG / tazobactam 250 MG Injection,2000.0,"[8339, 37617]",1659131,"[2000, 250]",piperacillin 2000 MG / tazobactam 250 MG Injection
+72,150 ML vancomycin 5 MG/ML Injection,5.0,[11124],1807510,[5],150 ML vancomycin 5 MG/ML Injection
+73,24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet,500.0,[6809],860975,[500],24 HR metformin hydrochloride 500 MG Extended Release Oral Tablet
+74,alendronic acid 10 MG Oral Tablet,10.0,[46041],904419,[10],alendronic acid 10 MG Oral Tablet
+75,loratadine 5 MG Chewable Tablet,5.0,[28889],665078,[5],loratadine 5 MG Chewable Tablet
+76,acetaminophen 325 MG / oxycodone hydrochloride 5 MG Oral Tablet,325.0,"[161, 7804]",1049221,"[325, 5]",acetaminophen 325 MG / oxycodone hydrochloride 5 MG Oral Tablet
+77,cefuroxime 250 MG Oral Tablet,250.0,[2194],309097,[250],cefuroxime 250 MG Oral Tablet
+78,prednisone 5 MG Oral Tablet,5.0,[8640],312617,[5],prednisone 5 MG Oral Tablet
+79,paclitaxel 100 MG Injection,100.0,[56946],583214,[100],paclitaxel 100 MG Injection
+80,carboplatin 10 MG/ML Injectable Solution,10.0,[40048],597195,[10],carboplatin 10 MG/ML Injectable Solution
+81,clopidogrel 75 MG Oral Tablet,75.0,[32968],309362,[75],clopidogrel 75 MG Oral Tablet
+82,alteplase 100 MG Injection,100.0,[8410],1804799,[100],alteplase 100 MG Injection
+83,amoxicillin 500 MG Oral Tablet,500.0,[723],308192,[500],amoxicillin 500 MG Oral Tablet
+84,"insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension",,"[253182, 1605101]",106892,[],"insulin isophane, human 70 UNT/ML / insulin, regular, human 30 UNT/ML Injectable Suspension"
+85,naproxen 500 MG Oral Tablet,500.0,[7258],198014,[500],naproxen 500 MG Oral Tablet
+86,milnacipran hydrochloride 100 MG Oral Tablet,100.0,[588250],833135,[100],milnacipran hydrochloride 100 MG Oral Tablet
+87,5 ML sufentanil 0.05 MG/ML Injection,0.0,[56795],1809104,[0],5 ML sufentanil 0.05 MG/ML Injection
+88,acetaminophen 325 MG / hydrocodone bitartrate 7.5 MG Oral Tablet,325.0,"[161, 5489]",857005,"[325, 8]",acetaminophen 325 MG / hydrocodone bitartrate 7.5 MG Oral Tablet
+89,duloxetine 20 MG Delayed Release Oral Capsule,20.0,[72625],596926,[20],duloxetine 20 MG Delayed Release Oral Capsule
+90,1 ML epinephrine 1 MG/ML Injection,1.0,[3992],1660014,[1],1 ML epinephrine 1 MG/ML Injection
+91,3 ML amiodarone hydrochloride 50 MG/ML Prefilled Syringe,50.0,[703],834357,[50],3 ML amiodarone hydrochloride 50 MG/ML Prefilled Syringe
+92,1 ML atropine sulfate 1 MG/ML Injection,1.0,[1223],1190795,[1],1 ML atropine sulfate 1 MG/ML Injection
+93,Abuse-Deterrent 12 HR oxycodone hydrochloride 15 MG Extended Release Oral Tablet,15.0,[7804],1860154,[15],Abuse-Deterrent 12 HR oxycodone hydrochloride 15 MG Extended Release Oral Tablet
+94,acetaminophen 300 MG / hydrocodone bitartrate 5 MG Oral Tablet,300.0,"[161, 5489]",856987,"[300, 5]",acetaminophen 300 MG / hydrocodone bitartrate 5 MG Oral Tablet
+95,4 ML norepinephrine 1 MG/ML Injection,1.0,[7512],242969,[1],4 ML norepinephrine 1 MG/ML Injection
+96,simvastatin 20 MG Oral Tablet,20.0,[36567],312961,[20],simvastatin 20 MG Oral Tablet
+97,amlodipine 5 MG Oral Tablet,5.0,[17767],197361,[5],amlodipine 5 MG Oral Tablet
+98,nitroglycerin 0.4 MG/ACTUAT Mucosal Spray,0.0,[4917],705129,[0],nitroglycerin 0.4 MG/ACTUAT Mucosal Spray
+99,anastrozole 1 MG Oral Tablet,1.0,[84857],199224,[1],anastrozole 1 MG Oral Tablet
+100,abemaciclib 100 MG Oral Tablet,100.0,[1946825],1946840,[100],abemaciclib 100 MG Oral Tablet
+101,methylphenidate hydrochloride 20 MG Oral Tablet,20.0,[6901],1091392,[20],methylphenidate hydrochloride 20 MG Oral Tablet
+102,RXCUI 204892,,[],204892,[],RXCUI 204892
+103,cisplatin 50 MG Injection,50.0,[2555],1736854,[50],cisplatin 50 MG Injection
+104,acetaminophen 300 MG / codeine phosphate 15 MG Oral Tablet,300.0,"[161, 2670]",993770,"[300, 15]",acetaminophen 300 MG / codeine phosphate 15 MG Oral Tablet
+105,amoxicillin 250 MG Oral Capsule,250.0,[723],308182,[250],amoxicillin 250 MG Oral Capsule
+106,tramadol hydrochloride 50 MG Oral Tablet,50.0,[10689],835603,[50],tramadol hydrochloride 50 MG Oral Tablet
+107,ferrous sulfate 325 MG Oral Tablet,325.0,[24947],310325,[325],ferrous sulfate 325 MG Oral Tablet
+108,furosemide 40 MG Oral Tablet,40.0,[4603],313988,[40],furosemide 40 MG Oral Tablet
+109,carvedilol 25 MG Oral Tablet,25.0,[20352],200033,[25],carvedilol 25 MG Oral Tablet
+110,lisinopril 20 MG Oral Tablet,20.0,[29046],314077,[20],lisinopril 20 MG Oral Tablet
+111,10 ML furosemide 10 MG/ML Injection,10.0,[4603],1719286,[10],10 ML furosemide 10 MG/ML Injection
+112,methotrexate 2.5 MG Oral Tablet,2.0,[6851],105585,[2],methotrexate 2.5 MG Oral Tablet
+113,72 HR fentanyl 0.025 MG/HR Transdermal System,0.0,[4337],245134,[0],72 HR fentanyl 0.025 MG/HR Transdermal System
+114,12 HR hydrocodone bitartrate 10 MG Extended Release Oral Capsule,10.0,[5489],1860491,[10],12 HR hydrocodone bitartrate 10 MG Extended Release Oral Capsule
+115,doxycycline hyclate 100 MG Oral Capsule,100.0,[3640],1649987,[100],doxycycline hyclate 100 MG Oral Capsule
+116,astemizole 10 MG Oral Tablet,10.0,[42328],197378,[10],astemizole 10 MG Oral Tablet
+117,60 ACTUAT fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler,0.0,"[36117, 41126]",896209,[0],60 ACTUAT fluticasone propionate 0.25 MG/ACTUAT / salmeterol 0.05 MG/ACTUAT Dry Powder Inhaler
+118,1 ML docetaxel 20 MG/ML Injection,20.0,[72962],1860480,[20],1 ML docetaxel 20 MG/ML Injection
+119,0.25 ML leuprolide acetate 30 MG/ML Prefilled Syringe,30.0,[42375],752899,[30],0.25 ML leuprolide acetate 30 MG/ML Prefilled Syringe
+120,azithromycin 250 MG Oral Tablet,250.0,[18631],212446,[250],azithromycin 250 MG Oral Tablet
+121,atorvastatin 80 MG Oral Tablet,80.0,[83367],259255,[80],atorvastatin 80 MG Oral Tablet
+122,acetaminophen 750 MG / hydrocodone bitartrate 7.5 MG Oral Tablet,750.0,"[161, 5489]",833036,"[750, 8]",acetaminophen 750 MG / hydrocodone bitartrate 7.5 MG Oral Tablet
+123,fexofenadine hydrochloride 60 MG Oral Tablet,60.0,[87636],997501,[60],fexofenadine hydrochloride 60 MG Oral Tablet
+124,galantamine 4 MG Oral Tablet,4.0,[4637],310436,[4],galantamine 4 MG Oral Tablet
+125,buprenorphine 2 MG / naloxone 0.5 MG Sublingual Tablet,2.0,"[1819, 7242]",351266,"[2, 0]",buprenorphine 2 MG / naloxone 0.5 MG Sublingual Tablet
+126,aspirin 81 MG Oral Tablet,81.0,[1191],243670,[81],aspirin 81 MG Oral Tablet
+127,allopurinol 100 MG Oral Tablet,100.0,[519],197319,[100],allopurinol 100 MG Oral Tablet
+128,losartan potassium 50 MG Oral Tablet,50.0,[52175],979492,[50],losartan potassium 50 MG Oral Tablet
+129,pregabalin 100 MG Oral Capsule,100.0,[187832],483438,[100],pregabalin 100 MG Oral Capsule
+130,cyclophosphamide 1000 MG Injection,1000.0,[3002],1734919,[1000],cyclophosphamide 1000 MG Injection
+131,5 ML fulvestrant 50 MG/ML Prefilled Syringe,50.0,[282357],727762,[50],5 ML fulvestrant 50 MG/ML Prefilled Syringe
+132,palbociclib 100 MG Oral Capsule,100.0,[1601374],1601380,[100],palbociclib 100 MG Oral Capsule
+133,colchicine 0.6 MG Oral Tablet,1.0,[2683],197541,[1],colchicine 0.6 MG Oral Tablet
+134,1 ML epoetin alfa 4000 UNT/ML Injection,,[105694],205923,[],1 ML epoetin alfa 4000 UNT/ML Injection
+135,sertraline 100 MG Oral Tablet,100.0,[36437],312938,[100],sertraline 100 MG Oral Tablet
+136,24 HR nicotine 0.292 MG/HR Transdermal System,0.0,[7407],198031,[0],24 HR nicotine 0.292 MG/HR Transdermal System
+137,carbamazepine 20 MG/ML Oral Suspension,20.0,[2002],308971,[20],carbamazepine 20 MG/ML Oral Suspension
+138,memantine hydrochloride 2 MG/ML Oral Solution,2.0,[6719],996740,[2],memantine hydrochloride 2 MG/ML Oral Solution
+139,levothyroxine sodium 0.075 MG Oral Tablet,0.0,[10582],966222,[0],levothyroxine sodium 0.075 MG Oral Tablet
+140,donepezil hydrochloride 10 MG Oral Tablet,10.0,[135447],997223,[10],donepezil hydrochloride 10 MG Oral Tablet
+141,donepezil hydrochloride 23 MG Oral Tablet,23.0,[135447],1100184,[23],donepezil hydrochloride 23 MG Oral Tablet
+142,loratadine 10 MG Oral Tablet,10.0,[28889],311372,[10],loratadine 10 MG Oral Tablet
+143,100 ML epirubicin hydrochloride 2 MG/ML Injection,2.0,[3995],1732186,[2],100 ML epirubicin hydrochloride 2 MG/ML Injection
+144,cefaclor 250 MG Oral Capsule,250.0,[2176],309045,[250],cefaclor 250 MG Oral Capsule
+145,mestranol / norethynodrel,,"[6782, 7515]",235389,[],mestranol / norethynodrel
+146,clindamycin 300 MG Oral Capsule,300.0,[2582],284215,[300],clindamycin 300 MG Oral Capsule
+147,acetaminophen 300 MG / hydrocodone bitartrate 10 MG Oral Tablet,300.0,"[161, 5489]",856980,"[300, 10]",acetaminophen 300 MG / hydrocodone bitartrate 10 MG Oral Tablet
+148,prednisone 20 MG Oral Tablet,20.0,[8640],312615,[20],prednisone 20 MG Oral Tablet
+149,dornase alfa 1 MG/ML Inhalation Solution,1.0,[337623],205532,[1],dornase alfa 1 MG/ML Inhalation Solution
+150,pancreatin 600 MG Oral Tablet,600.0,[7880],198767,[600],pancreatin 600 MG Oral Tablet
+151,RXCUI 1665227,,[],1665227,[],RXCUI 1665227
+152,sacubitril 97 MG / valsartan 103 MG Oral Tablet,97.0,"[69749, 1656328]",1656354,"[97, 103]",sacubitril 97 MG / valsartan 103 MG Oral Tablet
+153,tamoxifen 10 MG Oral Tablet,10.0,[10324],198240,[10],tamoxifen 10 MG Oral Tablet
+154,5 ML hyaluronidase-oysk 2000 UNT/ML / trastuzumab-oysk 120 MG/ML Injection,120.0,"[5464, 224905]",2119714,[120],5 ML hyaluronidase-oysk 2000 UNT/ML / trastuzumab-oysk 120 MG/ML Injection
+155,tacrine 10 MG Oral Capsule,10.0,[10318],313185,[10],tacrine 10 MG Oral Capsule
+156,10 ML doxorubicin hydrochloride 2 MG/ML Injection,2.0,[3639],1790099,[2],10 ML doxorubicin hydrochloride 2 MG/ML Injection
+157,losartan potassium 25 MG Oral Tablet,25.0,[52175],979485,[25],losartan potassium 25 MG Oral Tablet
+158,azithromycin 250 MG Oral Capsule,250.0,[18631],141962,[250],azithromycin 250 MG Oral Capsule
+159,penicillin G 375 MG/ML Injectable Solution,375.0,[7980],105078,[375],penicillin G 375 MG/ML Injectable Solution
+160,"cyclosporine, modified 100 MG Oral Capsule",100.0,[3008],241834,[100],"cyclosporine, modified 100 MG Oral Capsule"
+161,24 HR donepezil hydrochloride 10 MG / memantine hydrochloride 28 MG Extended Release Oral Capsule,10.0,"[6719, 135447]",1599803,"[10, 28]",24 HR donepezil hydrochloride 10 MG / memantine hydrochloride 28 MG Extended Release Oral Capsule
+162,ampicillin 100 MG/ML Injectable Solution,100.0,[733],789980,[100],ampicillin 100 MG/ML Injectable Solution
+163,albuterol 5 MG/ML Inhalation Solution,5.0,[435],245314,[5],albuterol 5 MG/ML Inhalation Solution
+164,vancomycin 1000 MG Injection,1000.0,[11124],1807513,[1000],vancomycin 1000 MG Injection
+165,1 ML vasopressin (USP) 20 UNT/ML Injection,,[11149],2103182,[],1 ML vasopressin (USP) 20 UNT/ML Injection
+166,terfenadine 60 MG Oral Tablet,60.0,[42330],141918,[60],terfenadine 60 MG Oral Tablet
+167,acetaminophen 325 MG / oxycodone hydrochloride 2.5 MG Oral Tablet,325.0,"[161, 7804]",1049635,"[325, 2]",acetaminophen 325 MG / oxycodone hydrochloride 2.5 MG Oral Tablet
+168,aztreonam 2000 MG Injection,2000.0,[1272],1664986,[2000],aztreonam 2000 MG Injection
+169,10 ML fentanyl 0.05 MG/ML Injection,0.0,[4337],1735006,[0],10 ML fentanyl 0.05 MG/ML Injection
+170,baricitinib 2 MG Oral Tablet,2.0,[2047232],2047241,[2],baricitinib 2 MG Oral Tablet
