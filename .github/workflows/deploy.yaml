@@ -18,7 +18,7 @@ jobs:
         name: "Terraform Plan"
         runs-on: ubuntu-latest
         env:
-            AWS_REGGION: "us-east-2"
+            AWS_REGION: "us-east-2"
             TF_VERSION: "1.13.4"
             TFSEC_VERSION: "1.28.14"
 
@@ -30,6 +30,13 @@ jobs:
               uses: hashicorp/setup-terraform@v2
               with:
                   terraform_version: ${{ env.TF_VERSION }}
+
+            - name: "Configure AWS credentials"
+              uses: aws-actions/configure-aws-credentials@v2
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ env.AWS_REGION }}
 
             # Install Linters and Security Checkers
 
