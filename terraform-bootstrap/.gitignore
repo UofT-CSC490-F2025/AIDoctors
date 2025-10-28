@@ -26,3 +26,8 @@ terraform.rc
 # Variable files with sensitive data
 terraform.tfvars
 *.auto.tfvars
+
+# Output files
+outputs/
+*.json
+outputs.txt
