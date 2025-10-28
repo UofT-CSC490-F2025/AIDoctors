@@ -1,9 +1,12 @@
 name: Terraform Cleanup
 
+on:
+    workflow_dispatch:
+
 jobs:
     terraform-cleanup:
         name: Terraform Cleanup
-        runs-on: Ubuntu-latest
+        runs-on: ubuntu-latest
 
         env:
             AWS_REGION: "us-east-2"
