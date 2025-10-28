@@ -20,7 +20,6 @@ jobs:
         env:
             AWS_REGGION: "us-east-2"
             TF_VERSION: "1.13.4"
-            TF_LINT_VERSION: "0.59.1"
             TFSEC_VERSION: "1.28.14"
 
         steps:
@@ -34,11 +33,25 @@ jobs:
 
             # Install Linters and Security Checkers
 
-            - name: "Install TFLint"
-              run: |
-                  curl -sLo tflint.zip https://github.com/terraform-linters/tflint/releases/download/v${{ env.TFLINT_VERSION }}/tflint_linux_amd64.zip
-                  unzip tflint.zip -d /usr/local/bin/
-                  tflint --version
+            - uses: actions/cache@v4
+              name: Cache plugin dir
+              with:
+                  path: ~/.tflint.d/plugins
+                  key: ${{ matrix.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+
+            - uses: terraform-linters/setup-tflint@v4
+              name: Setup TFLint
+              with:
+                  tflint_version: v0.52.0
+
+            - name: Init TFLint
+              run: tflint --init
+              env:
+                  # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
+                  GITHUB_TOKEN: ${{ github.token }}
+
+            - name: Run TFLint
+              run: tflint -f compact
 
             - name: "Install tfsec"
               run: |
@@ -58,10 +71,6 @@ jobs:
             - name: "Terraform Validate"
               working-directory: terraform
               run: terraform validate
-
-            - name: "TFLint"
-              working-directory: terraform
-              run: tflint --init && tflint
 
             - name: "tfsec"
               working-directory: terraform
