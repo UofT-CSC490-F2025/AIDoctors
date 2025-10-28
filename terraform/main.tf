@@ -19,6 +19,6 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "test" {
-    bucket = "test-bucket"
+    bucket = "test-bucket-terrytian"
 }
     
