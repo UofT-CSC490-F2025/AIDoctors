@@ -1,0 +1,28 @@
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files are managed locally for bootstrap
+# Uncomment the line below if you want to exclude state from git
+# terraform.tfstate
+# terraform.tfstate.backup
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# Lock file
+.terraform.lock.hcl
+
+# Variable files with sensitive data
+terraform.tfvars
+*.auto.tfvars
