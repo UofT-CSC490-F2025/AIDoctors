@@ -1,0 +1,123 @@
+name: Terraform CI/CD
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    terraform-plan:
+        name: "Terraform Plan"
+        runs-on: ubuntu-latest
+        env:
+            AWS_REGGION: "us-east-2"
+            TF_VERSION: "1.13.4"
+            TF_LINT_VERSION: "0.59.1"
+            TFSEC_VERSION: "1.28.14"
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: "Install Terraform"
+              uses: hashicorp/setup-terraform@v2
+              with:
+                  terraform_version: ${{ env.TF_VERSION }}
+
+            # Install Linters and Security Checkers
+
+            - name: "Install TFLint"
+              run: |
+                  curl -sLo tflint.zip https://github.com/terraform-linters/tflint/releases/download/v${{ env.TFLINT_VERSION }}/tflint_linux_amd64.zip
+                  unzip tflint.zip -d /usr/local/bin/
+                  tflint --version
+
+            - name: "Install tfsec"
+              run: |
+                  curl -sLo tfsec https://github.com/aquasecurity/tfsec/releases/download/v${{ env.TFSEC_VERSION }}/tfsec-linux-amd64
+                  chmod +x tfsec
+                  mv tfsec /usr/local/bin/
+                  tfsec --version
+
+            - name: "Terraform Init"
+              run: terraform init
+
+            - name: "Terraform Format"
+              run: terraform fmt
+
+            - name: "Terraform Validate"
+              run: terraform validate
+
+            - name: "TFLint"
+              run: tflint --init && tflint
+
+            - name: "tfsec"
+              run: tfsec .
+
+            # No color ensures that the output removes ANSI color codes
+            - name: "Terraform Plan"
+              run: terraform plan -out=tfplan
+
+            - name: "Upload Plan"
+              uses: actions/upload-artifact@v4
+              with:
+                  name: tfplan
+                  path: tfplan
+
+            - name: "Upload Plan (readable)"
+              uses: actions/upload-artifact@v4
+              with:
+                  name: plan-output
+                  path: plan.txt
+
+    terraform-apply:
+        if: github.ref == 'refs/heads/main'
+        needs: terraform-plan
+        runs-on: ubuntu-latest
+        environment:
+            name: "prod"
+        env:
+            AWS_REGION: "us-east-2"
+            TF_VERSION: "1.13.4"
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: "Install Terraform"
+              uses: hashicorp/setup-terraform@v2
+              with:
+                  terraform_version: ${{ env.TF_VERSION }}
+
+            - name: "Configure AWS credentials"
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ env.AWS_REGION }}
+
+            - name: "Terraform Init"
+              run: terraform init
+
+            - name: "Download Plan"
+              uses: actions/download-artifact@v4
+              with:
+                  name: tfplan
+                  path: .
+
+            - name: "Terraform Apply"
+              run: terraform apply -auto-approve tfplan
+
+    terraform-cleanup:
+        if: always()
+        needs: terraform-apply
+        runs-on: ubuntu-latest
+        steps:
+            - name: Delete artifacts
+              uses: geekyeggo/delete-artifact@v5
+              with:
+                  name: |
+                      tfplan
+                      plan-output
