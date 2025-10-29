@@ -1,0 +1,101 @@
+name: Terraform PR Check
+
+on:
+    pull_request:
+        branches:
+            - main
+        paths:
+            - "terraform/**"
+
+permissions:
+    id-token: write
+    contents: read
+    pull-requests: write
+
+jobs:
+    terraform-validate:
+        name: "Terraform Validate & Plan"
+        runs-on: ubuntu-latest
+        env:
+            AWS_REGION: "us-east-2"
+            TF_VERSION: "1.13.4"
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: "Install Terraform"
+              uses: hashicorp/setup-terraform@v2
+              with:
+                  terraform_version: ${{ env.TF_VERSION }}
+
+            - name: "Configure AWS credentials"
+              uses: aws-actions/configure-aws-credentials@v3
+              with:
+                  role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+                  role-session-name: ${{ github.run_id }}
+                  aws-region: ${{ env.AWS_REGION }}
+
+            # Install Linters and Security Checkers
+
+            - uses: actions/cache@v4
+              name: Cache plugin dir
+              with:
+                  path: ~/.tflint.d/plugins
+                  key: ${{ matrix.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
+
+            - uses: terraform-linters/setup-tflint@v4
+              name: Setup TFLint
+              with:
+                  tflint_version: v0.52.0
+
+            - name: Init TFLint
+              run: tflint --init
+              env:
+                  GITHUB_TOKEN: ${{ github.token }}
+
+            - name: Run TFLint
+              run: tflint -f compact
+
+            - name: "Terraform Init"
+              working-directory: terraform
+              run: terraform init
+
+            - name: "Terraform Format Check"
+              working-directory: terraform
+              run: terraform fmt -check
+
+            - name: "Terraform Validate"
+              working-directory: terraform
+              run: terraform validate
+
+            - name: "Terraform Plan"
+              working-directory: terraform
+              run: |
+                  terraform plan -out=tfplan -no-color | tee plan.txt
+
+            - name: "Comment PR with Plan"
+              uses: actions/github-script@v7
+              if: github.event_name == 'pull_request'
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  script: |
+                      const fs = require('fs');
+                      const plan = fs.readFileSync('terraform/plan.txt', 'utf8');
+                      const output = `#### Terraform Plan 📖
+                      <details><summary>Show Plan</summary>
+
+                      \`\`\`terraform
+                      ${plan}
+                      \`\`\`
+
+                      </details>
+
+                      *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+                      github.rest.issues.createComment({
+                          issue_number: context.issue.number,
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          body: output
+                      });
