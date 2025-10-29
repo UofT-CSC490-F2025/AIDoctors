@@ -17,7 +17,7 @@ module "db" {
   max_allocated_storage = 50
 
   # Database Configuration
-  db_name  = "${local.name}-db"
+  db_name  = "aidoctorsdb" # Must be alphanumeric only
   username = "aidoctors_admin"
   port     = 5432
 
