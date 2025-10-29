@@ -7,12 +7,7 @@ on:
             - main
         paths:
             - "terraform/**"
-    pull_request:
-        branches:
-            - main
-            - terraform
-        paths:
-            - "terraform/**"
+
 permissions:
     id-token: write
     contents: read
