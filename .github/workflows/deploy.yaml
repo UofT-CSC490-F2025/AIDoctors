@@ -89,7 +89,7 @@ jobs:
             - name: "Terraform Plan"
               working-directory: terraform
               run: |
-                  terraform plan -out=tfplan -no-color | tee terraform/plan.txt
+                  terraform plan -out=tfplan -no-color | tee plan.txt
 
             - name: "Upload Plan"
               uses: actions/upload-artifact@v4
