@@ -6,10 +6,10 @@ module "db" {
 
   # PostgreSQL Configuration
   engine                   = "postgres"
-  engine_version           = "15.4"
+  engine_version           = "17.6"
   engine_lifecycle_support = "open-source-rds-extended-support-disabled"
-  family                   = "postgres15" # DB parameter group
-  major_engine_version     = "15"         # DB option group
+  family                   = "postgres17" # DB parameter group
+  major_engine_version     = "17"         # DB option group
   instance_class           = "db.t4g.micro"
 
   # Storage Configuration
