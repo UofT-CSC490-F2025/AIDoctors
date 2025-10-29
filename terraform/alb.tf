@@ -44,7 +44,7 @@ module "alb" {
         target_group_key = "aidoctors-application"
       }
     }
-    
+
     # Redirect HTTP to HTTPS - Uncomment after domain registration and ACM setup
     # ex-http-https-redirect = {
     #   port     = 80
