@@ -12,6 +12,9 @@ on:
             - main
         paths:
             - "terraform/**"
+permissions:
+    id-token: write
+    contents: read
 
 jobs:
     terraform-plan:
