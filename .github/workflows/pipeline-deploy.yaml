@@ -6,7 +6,7 @@ on:
         branches:
             - main
         paths:
-            - "src/data-pipeline/**"
+            - "src/data-pipelines/**"
 permissions:
     id-token: write
     contents: read
