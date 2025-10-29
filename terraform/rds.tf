@@ -10,10 +10,10 @@ module "db" {
   engine_lifecycle_support = "open-source-rds-extended-support-disabled"
   family                   = "postgres15" # DB parameter group
   major_engine_version     = "15"         # DB option group
-  instance_class           = "db.t4g.small"
+  instance_class           = "db.t4g.micro"
 
   # Storage Configuration
-  allocated_storage     = 30
+  allocated_storage     = 20
   max_allocated_storage = 50
 
   # Database Configuration
