@@ -1,6 +1,6 @@
 module "db" {
   source  = "terraform-aws-modules/rds/aws"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   identifier = "${local.name}-db"
 
@@ -14,7 +14,7 @@ module "db" {
 
   # Storage Configuration
   allocated_storage     = 30
-  max_allocated_storage = 50 
+  max_allocated_storage = 50
 
   # Database Configuration
   db_name  = "${local.name}-db"
@@ -29,7 +29,7 @@ module "db" {
   # High Availability & Networking
   multi_az               = true
   db_subnet_group_name   = module.vpc.database_subnet_group
-  vpc_security_group_ids = [module.security_group.security_group_id]
+  vpc_security_group_ids = [module.rds_security_group.security_group_id]
 
   # IAM Authentication
   iam_database_authentication_enabled = true
