@@ -87,8 +87,4 @@ jobs:
               run: |
                   terraform apply -auto-approve \
                     -var="app_image_tag=latest" \
-                    -var="pipeline_image_tag=${{ needs.docker-build.outputs.image_tag }}" \
-                    -var="github_actions_role_arn=${{ secrets.AWS_ROLE_ARN }}" \
-                    -var="github_oidc_provider_arn=${{ secrets.GITHUB_OIDC_PROVIDER_ARN }}" \
-                    -var="state_bucket_arn=${{ secrets.STATE_BUCKET_ARN }}" \
-                    -var="state_bucket_name=${{ secrets.STATE_BUCKET_NAME }}"
+                    -var="pipeline_image_tag=${{ needs.docker-build.outputs.image_tag }}"
