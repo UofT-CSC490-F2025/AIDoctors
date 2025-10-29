@@ -66,7 +66,15 @@ resource "aws_iam_role_policy" "github_actions_terraform" {
           "lambda:*",
           "iam:*",
           "cloudwatch:*",
-          "logs:*"
+          "logs:*",
+          "route53:*",
+          "acm:*",
+          "elasticloadbalancing:*",
+          "ecr:*",
+          "ecs:*",
+          "secretsmanager:*",
+          "kms:*",
+          "application-autoscaling:*"
         ]
         Resource = "*"
       }

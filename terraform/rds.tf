@@ -66,6 +66,8 @@ module "db" {
     }
   ]
 
+  depends_on = [module.vpc, module.rds_security_group]
+
   tags = {
     Name = "${local.name}-postgres"
   }
