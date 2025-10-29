@@ -47,8 +47,8 @@ module "db" {
   monitoring_role_name   = "${local.name}-rds-monitoring-role"
 
   # Deletion Protection
-  deletion_protection = true
-  skip_final_snapshot = false
+  deletion_protection = false
+  skip_final_snapshot = true
 
   # PostgreSQL Parameters
   parameters = [
