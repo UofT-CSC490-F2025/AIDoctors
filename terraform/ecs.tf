@@ -1,10 +1,20 @@
-# CloudWatch Log Group for ECS
-resource "aws_cloudwatch_log_group" "ecs" {
-  name              = "/ecs/${local.name}"
+# CloudWatch Log Group for Application
+resource "aws_cloudwatch_log_group" "ecs_app" {
+  name              = "/ecs/${local.name}-app"
   retention_in_days = 7
 
   tags = {
-    Name = "${local.name}-ecs-logs"
+    Name = "${local.name}-app-logs"
+  }
+}
+
+# CloudWatch Log Group for Data Pipeline
+resource "aws_cloudwatch_log_group" "ecs_datapipeline" {
+  name              = "/ecs/${local.name}-datapipeline"
+  retention_in_days = 7
+
+  tags = {
+    Name = "${local.name}-datapipeline-logs"
   }
 }
 
@@ -35,7 +45,7 @@ module "ecs_cluster" {
   }
 }
 
-# ECS Task Definition
+# ECS Task Definition for Application
 resource "aws_ecs_task_definition" "app" {
   family                   = "${local.name}-app"
   network_mode             = "awsvpc"
@@ -47,8 +57,8 @@ resource "aws_ecs_task_definition" "app" {
 
   container_definitions = jsonencode([
     {
-      name      = "${local.name}-container"
-      image     = "${module.ecr.repository_url}:latest"
+      name      = "${local.name}-app-container"
+      image     = "${module.ecr_app.repository_url}:${var.app_image_tag}"
       essential = true
 
       portMappings = [
@@ -62,10 +72,11 @@ resource "aws_ecs_task_definition" "app" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs_app.name
           "awslogs-region"        = "us-east-2"
-          "awslogs-stream-prefix" = "ecs"
+          "awslogs-stream-prefix" = "app"
         }
+        depends_on = [aws_cloudwatch_log_group.ecs_app]
       }
 
       # Update After Deployment
@@ -80,13 +91,53 @@ resource "aws_ecs_task_definition" "app" {
   ])
 
   tags = {
-    Name = "${local.name}-task-definition"
+    Name = "${local.name}-app-task-definition"
   }
 }
 
-# ECS Service
+# ECS Task Definition for Data Pipeline
+resource "aws_ecs_task_definition" "pipeline" {
+  family                   = "${local.name}-pipeline"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "512" # 0.5 vCPU
+  memory                   = "1024" # 1 GB
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "${local.name}-pipeline-container"
+      image     = "${module.ecr_pipeline.repository_url}:${var.pipeline_image_tag}"
+      essential = true
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs_datapipeline.name
+          "awslogs-region"        = "us-east-2"
+          "awslogs-stream-prefix" = "pipeline"
+        }
+        depends_on = [aws_cloudwatch_log_group.ecs_datapipeline]
+      }
+
+      environment = [
+        {
+          name  = "ENVIRONMENT"
+          value = "production"
+        }
+      ]
+    }
+  ])
+
+  tags = {
+    Name = "${local.name}-pipeline-task-definition"
+  }
+}
+
+# ECS Service for Application
 resource "aws_ecs_service" "app" {
-  name            = "${local.name}-service"
+  name            = "${local.name}-app-service"
   cluster         = module.ecs_cluster.id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = 0
@@ -101,7 +152,7 @@ resource "aws_ecs_service" "app" {
 
   load_balancer {
     target_group_arn = module.alb.target_groups["aidoctors-application"].arn
-    container_name   = "${local.name}-container"
+    container_name   = "${local.name}-app-container"
     container_port   = 80
   }
 
@@ -115,6 +166,31 @@ resource "aws_ecs_service" "app" {
   ]
 
   tags = {
-    Name = "${local.name}-ecs-service"
+    Name = "${local.name}-app-service"
+  }
+}
+
+# ECS Service for Data Pipeline
+resource "aws_ecs_service" "pipeline" {
+  name            = "${local.name}-pipeline-service"
+  cluster         = module.ecs_cluster.id
+  task_definition = aws_ecs_task_definition.pipeline.arn
+  desired_count   = 0
+
+  launch_type = "FARGATE"
+
+  network_configuration {
+    subnets          = module.vpc.private_subnets
+    security_groups  = [aws_security_group.ecs_tasks.id]
+    assign_public_ip = false
+  }
+
+  # Allow external changes without Terraform plan difference
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+
+  tags = {
+    Name = "${local.name}-pipeline-service"
   }
 }
