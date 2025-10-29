@@ -4,8 +4,8 @@ on:
     workflow_dispatch:
     push:
         branches: main
-      paths:
-          - "src/application/**"
+        paths:
+            - "src/application/**"
 
 permissions:
     id-token: write
