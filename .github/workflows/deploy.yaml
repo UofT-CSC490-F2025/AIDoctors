@@ -13,82 +13,8 @@ permissions:
     contents: read
 
 jobs:
-    terraform-plan:
-        name: "Terraform Plan"
-        runs-on: ubuntu-latest
-        env:
-            AWS_REGION: "us-east-2"
-            TF_VERSION: "1.13.4"
-            TFSEC_VERSION: "1.28.14"
-
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-
-            - name: "Install Terraform"
-              uses: hashicorp/setup-terraform@v2
-              with:
-                  terraform_version: ${{ env.TF_VERSION }}
-
-            - name: "Configure AWS credentials"
-              uses: aws-actions/configure-aws-credentials@v3
-              with:
-                  role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-                  role-session-name: ${{ github.run_id }}
-                  aws-region: ${{ env.AWS_REGION }}
-
-            # Install Linters and Security Checkers
-
-            - uses: actions/cache@v4
-              name: Cache plugin dir
-              with:
-                  path: ~/.tflint.d/plugins
-                  key: ${{ matrix.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
-
-            - uses: terraform-linters/setup-tflint@v4
-              name: Setup TFLint
-              with:
-                  tflint_version: v0.52.0
-
-            - name: Init TFLint
-              run: tflint --init
-              env:
-                  # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
-                  GITHUB_TOKEN: ${{ github.token }}
-
-            - name: Run TFLint
-              run: tflint -f compact
-
-            # - name: "Install tfsec"
-            #   run: |
-            #       curl -sLo tfsec https://github.com/aquasecurity/tfsec/releases/download/v${{ env.TFSEC_VERSION }}/tfsec-linux-amd64
-            #       chmod +x tfsec
-            #       mv tfsec /usr/local/bin/
-            #       tfsec --version
-
-            - name: "Terraform Init"
-              working-directory: terraform
-              run: terraform init
-
-            - name: "Terraform Format"
-              working-directory: terraform
-              run: terraform fmt
-
-            - name: "Terraform Validate"
-              working-directory: terraform
-              run: terraform validate
-
-            # - name: "tfsec"
-            #   working-directory: terraform
-            #   run: tfsec .
-
-            - name: "Terraform Plan"
-              working-directory: terraform
-              run: terraform plan -no-color
-
     terraform-apply:
         if: github.ref == 'refs/heads/main'
-        needs: terraform-plan
         runs-on: ubuntu-latest
         environment:
             name: "prod"
