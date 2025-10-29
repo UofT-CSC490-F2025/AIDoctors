@@ -8,7 +8,7 @@ on:
             - "src/data-pipeline/**"
 permissions:
     id-token: write
-    oidc: write
+    contents: read
 
 jobs:
     docker-build:
