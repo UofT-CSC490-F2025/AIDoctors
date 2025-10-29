@@ -1,0 +1,90 @@
+name: Deploy to ECR
+
+on:
+    workflow_dispatch:
+    push:
+        branches: main
+        paths:
+            - "src/application/**"
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+    docker-build:
+        name: Build Image
+        runs-on: ubuntu-latest
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        outputs:
+            image_tag: ${{ steps.tag.outputs.image_tag }}
+        env:
+            AWS_REGION: "us-east-2"
+
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v2
+
+            - name: Generate image tag
+              id: tag
+              run: |
+                  DATE_TAG=$(date +%Y.%m.%d)
+                  echo "image_tag=${DATE_TAG}-${{ github.run_number }}" >> $GITHUB_OUTPUT
+
+            - name: "Configure AWS credentials"
+              uses: aws-actions/configure-aws-credentials@v3
+              with:
+                  role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+                  role-session-name: ${{ github.run_id }}
+                  aws-region: ${{ env.AWS_REGION }}
+
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
+
+            - name: Build, tag, and push image to Amazon ECR
+              working-directory: src/application
+              env:
+                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+                  IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
+              run: |
+                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+                  # Also tag as latest for convenience
+                  docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+    update-ecs:
+        needs: docker-build
+        runs-on: ubuntu-latest
+        env:
+            AWS_REGION: "us-east-2"
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v3
+              with:
+                  role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+                  role-session-name: ${{ github.run_id }}
+                  aws-region: ${{ env.AWS_REGION }}
+
+            - name: Install Terraform
+              uses: hashicorp/setup-terraform@v2
+              with:
+                  terraform_version: "1.13.4"
+
+            - name: Terraform Init
+              working-directory: terraform
+              run: terraform init
+
+            - name: Update ECS Service with New Image
+              working-directory: terraform
+              run: |
+                  terraform apply -auto-approve \
+                    -var="app_image_tag=${{ needs.docker-build.outputs.image_tag }}" \
+                    -var="pipeline_image_tag=latest"
