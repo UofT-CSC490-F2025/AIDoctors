@@ -84,20 +84,7 @@ jobs:
 
             - name: "Terraform Plan"
               working-directory: terraform
-              run: |
-                  terraform plan -out=tfplan -no-color | tee plan.txt
-
-            - name: "Upload Plan"
-              uses: actions/upload-artifact@v4
-              with:
-                  name: tfplan
-                  path: terraform/tfplan
-
-            - name: "Upload Plan (readable)"
-              uses: actions/upload-artifact@v4
-              with:
-                  name: plan-output
-                  path: terraform/plan.txt
+              run: terraform plan -no-color
 
     terraform-apply:
         if: github.ref == 'refs/heads/main'
@@ -128,24 +115,6 @@ jobs:
               working-directory: terraform
               run: terraform init
 
-            - name: "Download Plan"
-              uses: actions/download-artifact@v4
-              with:
-                  name: tfplan
-                  path: terraform
-
             - name: "Terraform Apply"
               working-directory: terraform
-              run: terraform apply -auto-approve tfplan
-
-    terraform-cleanup:
-        if: always()
-        needs: terraform-apply
-        runs-on: ubuntu-latest
-        steps:
-            - name: Delete artifacts
-              uses: geekyeggo/delete-artifact@v5
-              with:
-                  name: |
-                      tfplan
-                      plan-output
+              run: terraform apply -auto-approve
