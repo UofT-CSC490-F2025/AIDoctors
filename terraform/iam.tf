@@ -103,10 +103,10 @@ resource "aws_iam_role_policy" "ecs_task_role_policy" {
       {
         Effect = "Allow"
         Action = [
-          "s3.*",
-          "ecr.*",
-          "ecs.*",
-          "rds.*",
+          "s3:*",
+          "ecr:*",
+          "ecs:*",
+          "rds:*"
         ]
         Resource = "*"
       }
