@@ -1,10 +1,11 @@
 name: Deploy ETL Pipeline
 
 on:
-    workflow_run:
-        branches: [main]
+    workflow_dispatch:
     push:
-        branches: [main/src/data-pipeline/*]
+        branches: main
+        paths:
+            - "src/data-pipeline/**"
 permissions:
     id-token: write
     oidc: write
