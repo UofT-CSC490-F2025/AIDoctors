@@ -35,27 +35,36 @@ module "alb" {
   }
 
   listeners = {
-
-    # Redirect HTTP to HTTPS
-    ex-http-https-redirect = {
+    # HTTP listener - forward directly to application (no HTTPS until domain is registered)
+    ex-http = {
       port     = 80
       protocol = "HTTP"
-      redirect = {
-        port        = "443"
-        protocol    = "HTTPS"
-        status_code = "HTTP_301"
-      }
-    }
-    # Forward HTTPS to Application Target Group
-    ex-https = {
-      port            = 443
-      protocol        = "HTTPS"
-      certificate_arn = module.acm.acm_certificate_arn
 
       forward = {
         target_group_key = "aidoctors-application"
       }
     }
+    
+    # Redirect HTTP to HTTPS - Uncomment after domain registration and ACM setup
+    # ex-http-https-redirect = {
+    #   port     = 80
+    #   protocol = "HTTP"
+    #   redirect = {
+    #     port        = "443"
+    #     protocol    = "HTTPS"
+    #     status_code = "HTTP_301"
+    #   }
+    # }
+    # Forward HTTPS to Application Target Group - Uncomment after domain registration and ACM setup
+    # ex-https = {
+    #   port            = 443
+    #   protocol        = "HTTPS"
+    #   certificate_arn = module.acm.acm_certificate_arn
+    #
+    #   forward = {
+    #     target_group_key = "aidoctors-application"
+    #   }
+    # }
   }
 
   target_groups = {
@@ -85,7 +94,7 @@ module "alb" {
     }
   }
 
-  depends_on = [module.vpc, module.acm]
+  depends_on = [module.vpc]
 
   tags = {
     Name = "${local.name}-alb"
