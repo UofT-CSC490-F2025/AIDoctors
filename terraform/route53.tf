@@ -47,22 +47,22 @@ resource "aws_route53_record" "root" {
 #   depends_on = [module.route53_zone, module.alb]
 # }
 
-# ACM Certificate Module
-module "acm" {
-  source  = "terraform-aws-modules/acm/aws"
-  version = "~> 5.0"
+# ACM Certificate Module - Need to own the domain to use this
+# module "acm" {
+#   source  = "terraform-aws-modules/acm/aws"
+#   version = "~> 5.0"
 
-  domain_name = "aidoctors.com"
-  zone_id     = module.route53_zone.route53_zone_zone_id["aidoctors.com"]
+#   domain_name = "aidoctors.com"
+#   zone_id     = module.route53_zone.route53_zone_zone_id["aidoctors.com"]
 
-  subject_alternative_names = [
-    "*.aidoctors.com"
-  ]
+#   subject_alternative_names = [
+#     "*.aidoctors.com"
+#   ]
 
-  validation_method   = "DNS"
-  wait_for_validation = true
+#   validation_method   = "DNS"
+#   wait_for_validation = true
 
-  tags = {
-    Name = "${local.name}-certificate"
-  }
-}
+#   tags = {
+#     Name = "${local.name}-certificate"
+#   }
+# }
