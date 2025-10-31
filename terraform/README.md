@@ -109,7 +109,7 @@ The infrastructure deploys a highly available, scalable web application using AW
 -   **Backend**: S3 backend for remote state storage
     -   Bucket: `aidoctors-terraform-state`
     -   Key: `prod/terraform.tfstate`
-    -   Region: `us-east-2`
+    -   Region: `us-east-1`
     -   Encryption enabled
     -   State locking enabled
 
