@@ -184,10 +184,6 @@ terraform apply
 
 Only destroy bootstrap infrastructure if you're tearing down the entire project:
 
-### Option 1: Force Delete (Recommended for development)
-
-If you want Terraform to automatically delete S3 buckets even if they contain objects, ensure your S3 bucket resources have `force_destroy = true` in the Terraform configuration. Then run:
-
 ```bash
 cd terraform-bootstrap
 terraform destroy
