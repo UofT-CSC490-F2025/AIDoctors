@@ -19,7 +19,7 @@ jobs:
         outputs:
             image_tag: ${{ steps.tag.outputs.image_tag }}
         env:
-            AWS_REGION: "us-east-2"
+            AWS_REGION: "us-east-1"
 
         steps:
             - name: Check out code
@@ -60,7 +60,7 @@ jobs:
         needs: docker-build
         runs-on: ubuntu-latest
         env:
-            AWS_REGION: "us-east-2"
+            AWS_REGION: "us-east-1"
 
         steps:
             - name: Checkout

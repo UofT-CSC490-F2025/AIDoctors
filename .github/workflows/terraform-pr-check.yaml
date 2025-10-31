@@ -17,7 +17,7 @@ jobs:
         name: "Terraform Validate & Plan"
         runs-on: ubuntu-latest
         env:
-            AWS_REGION: "us-east-2"
+            AWS_REGION: "us-east-1"
             TF_VERSION: "1.13.4"
 
         steps:

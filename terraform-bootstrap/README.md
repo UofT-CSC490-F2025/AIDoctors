@@ -39,7 +39,15 @@ Or download from: https://www.terraform.io/downloads
 
 You need AWS credentials with permissions to create S3 buckets, IAM roles, and OIDC providers.
 
-**Option A: AWS CLI Configure (Recommended for local development)**
+**Option A: AWS SSO (Recommended for organizations)**
+
+```bash
+aws configure sso
+```
+
+This will prompt for your SSO start URL and region. After authentication, your credentials will be managed automatically.
+
+**Option B: AWS CLI Configure (For IAM users)**
 
 ```bash
 aws configure
@@ -49,20 +57,20 @@ This will prompt for:
 
 -   AWS Access Key ID
 -   AWS Secret Access Key
--   Default region (use: `us-east-2`)
--   Default output format (use: `json`)
+-   Default region (use: `us-east-1`)
+-   Default output format (optional, e.g., `json`)
 
 Credentials are stored in `~/.aws/credentials`
 
-**Option B: Environment Variables**
+**Option C: Environment Variables**
 
 ```bash
 export AWS_ACCESS_KEY_ID="your-access-key"
 export AWS_SECRET_ACCESS_KEY="your-secret-key"
-export AWS_DEFAULT_REGION="us-east-2"
+export AWS_DEFAULT_REGION="us-east-1"
 ```
 
-Verify AWS Access
+**Verify AWS Access**
 
 ```bash
 # Check your AWS identity
@@ -80,21 +88,24 @@ Before running Terraform, you need to manually create an S3 bucket for the boots
 **Via AWS CLI:**
 
 ```bash
+# Create the bucket
 aws s3api create-bucket \
-  --bucket aidoctors-terraform-bootstrap-state \
-  --region us-east-2 \
-  --create-bucket-configuration LocationConstraint=us-east-2
+  --bucket aidoctors-tf-bootstrap-state \
+  --region us-east-1
 
+# Enable versioning
 aws s3api put-bucket-versioning \
-  --bucket aidoctors-terraform-bootstrap-state \
+  --bucket aidoctors-tf-bootstrap-state \
   --versioning-configuration Status=Enabled
 
+# Enable encryption
 aws s3api put-bucket-encryption \
-  --bucket aidoctors-terraform-bootstrap-state \
+  --bucket aidoctors-tf-bootstrap-state \
   --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
 
+# Block public access
 aws s3api put-public-access-block \
-  --bucket aidoctors-terraform-bootstrap-state \
+  --bucket aidoctors-tf-bootstrap-state \
   --public-access-block-configuration "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
 ```
 
@@ -173,12 +184,14 @@ terraform apply
 
 Only destroy bootstrap infrastructure if you're tearing down the entire project:
 
+### Option 1: Force Delete (Recommended for development)
+
+If you want Terraform to automatically delete S3 buckets even if they contain objects, ensure your S3 bucket resources have `force_destroy = true` in the Terraform configuration. Then run:
+
 ```bash
 cd terraform-bootstrap
 terraform destroy
 ```
-
-This will delete the S3 bucket containing all Terraform state. Make sure you've destroyed all application resources first.
 
 ## Outputs
 

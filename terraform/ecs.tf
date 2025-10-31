@@ -73,7 +73,7 @@ resource "aws_ecs_task_definition" "app" {
         logDriver = "awslogs"
         options = {
           "awslogs-group"         = aws_cloudwatch_log_group.ecs_app.name
-          "awslogs-region"        = "us-east-2"
+          "awslogs-region"        = "us-east-1"
           "awslogs-stream-prefix" = "app"
         }
         depends_on = [aws_cloudwatch_log_group.ecs_app]
@@ -115,7 +115,7 @@ resource "aws_ecs_task_definition" "pipeline" {
         logDriver = "awslogs"
         options = {
           "awslogs-group"         = aws_cloudwatch_log_group.ecs_datapipeline.name
-          "awslogs-region"        = "us-east-2"
+          "awslogs-region"        = "us-east-1"
           "awslogs-stream-prefix" = "pipeline"
         }
         depends_on = [aws_cloudwatch_log_group.ecs_datapipeline]
