@@ -2,7 +2,8 @@ module "s3_alb_logs" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 5.0"
 
-  bucket = "${local.name}-alb-logs"
+  bucket = "${local.name}-alb-logfiles"
+  force_destroy = true
 
   # Block public access
   block_public_acls       = true
