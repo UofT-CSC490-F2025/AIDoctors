@@ -390,23 +390,40 @@ def build_ddi_reference() -> pd.DataFrame:
 # Stage 6: Patient co-exposures + join DDI ref (Collapsed)
 # ----------------------------
 def build_patient_ddi_collapsed(topk: pd.DataFrame, ddi_ref_unified: pd.DataFrame) -> pd.DataFrame:
-    # normalize
+    # Work on a copy
     topk = topk.copy()
-    topk["drug_norm"] = topk["drug_name"].map(normalize_name)
-    demo_cols = [c for c in ["Age","Sex","Comorbidities"] if c in topk.columns]
-    base_cols = ["patient_uuid","drug_name","drug_norm","START","STOP"]
 
-    exposures = (topk[base_cols + demo_cols]
-                 .dropna(subset=["patient_uuid","drug_name"])
-                 .drop_duplicates())
+    # Pick the human-readable drug column (Top-K uses 'synthea_drug')
+    drug_col = "synthea_drug" if "synthea_drug" in topk.columns else (
+        "drug_name" if "drug_name" in topk.columns else None
+    )
+    if drug_col is None:
+        raise KeyError("Neither 'synthea_drug' nor 'drug_name' is present in Top-K table.")
 
-    # find overlaps per patient
+    # Normalize name into 'drug_norm'
+    topk["drug_norm"] = topk[drug_col].map(normalize_name)
+
+    # Keep demographics if present
+    base_cols = ["patient_uuid", drug_col, "drug_norm", "START", "STOP"]
+    demo_cols = [c for c in ["Age", "Sex", "Comorbidities"] if c in topk.columns]
+
+    exposures = (
+        topk[base_cols + demo_cols]
+        .rename(columns={drug_col: "drug_display"})
+        .dropna(subset=["patient_uuid", "drug_display"])
+        .drop_duplicates(subset=["patient_uuid", "drug_display", "drug_norm", "START", "STOP"])
+    )
+    
+
+    # Overlap helper
     def overlaps(a0, a1, b0, b1):
-        if pd.isna(a0) or pd.isna(b0): return False
+        if pd.isna(a0) or pd.isna(b0): 
+            return False
         a1 = a1 if pd.notna(a1) else pd.Timestamp.max.tz_localize("UTC")
         b1 = b1 if pd.notna(b1) else pd.Timestamp.max.tz_localize("UTC")
         return (a0 <= b1) and (b0 <= a1)
 
+    # Build patient-level co-exposures
     from itertools import combinations
     rows = []
     for pid, grp in exposures.groupby("patient_uuid"):
@@ -417,8 +434,10 @@ def build_patient_ddi_collapsed(topk: pd.DataFrame, ddi_ref_unified: pd.DataFram
             if overlaps(r1["START"], r1["STOP"], r2["START"], r2["STOP"]):
                 rows.append({
                     "patient_uuid": pid,
-                    "drug1": r1["drug_name"], "drug2": r2["drug_name"],
-                    "drug1_norm": r1["drug_norm"], "drug2_norm": r2["drug_norm"],
+                    "drug1": r1["drug_display"],
+                    "drug2": r2["drug_display"],
+                    "drug1_norm": r1["drug_norm"],
+                    "drug2_norm": r2["drug_norm"],
                     "overlap_start": max(r1["START"], r2["START"]),
                     "overlap_stop":  min(
                         r1["STOP"] if pd.notna(r1["STOP"]) else pd.Timestamp.max.tz_localize("UTC"),
@@ -426,16 +445,21 @@ def build_patient_ddi_collapsed(topk: pd.DataFrame, ddi_ref_unified: pd.DataFram
                     ),
                     **{k: r1.get(k, np.nan) for k in demo_cols},
                 })
+
     pairs_df = pd.DataFrame(rows)
     if pairs_df.empty:
         log("No overlapping exposures found. Skipping DDI join.")
         return pairs_df
 
+    # Join to unified DDI reference
     pairs_df["pair_key"] = pairs_df.apply(lambda r: tuple(sorted([r["drug1_norm"], r["drug2_norm"]])), axis=1)
-    ddi_ref_unified["pair_key"] = ddi_ref_unified.apply(lambda r: tuple(sorted([r["drug1_norm"], r["drug2_norm"]])), axis=1)
+    ddi_ref_unified = ddi_ref_unified.copy()
+    ddi_ref_unified["pair_key"] = ddi_ref_unified.apply(
+        lambda r: tuple(sorted([r["drug1_norm"], r["drug2_norm"]])), axis=1
+    )
 
     collapsed = pairs_df.merge(
-        ddi_ref_unified[["pair_key","unified_severity","unified_mechanism_text","ddi_confidence"]],
+        ddi_ref_unified[["pair_key", "unified_severity", "unified_mechanism_text", "ddi_confidence"]],
         on="pair_key", how="left"
     )
     collapsed["ddi_known"] = collapsed["unified_severity"].notna()

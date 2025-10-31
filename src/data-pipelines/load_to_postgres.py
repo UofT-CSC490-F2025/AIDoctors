@@ -5,6 +5,23 @@ import pandas as pd
 import psycopg2
 import io
 
+import numpy as np
+
+def coerce_intlike(df, cols):
+    for c in cols:
+        if c in df.columns:
+            df[c] = pd.to_numeric(df[c], errors="coerce")
+            # round just in case and cast to pandas Int64 (nullable)
+            df[c] = df[c].round(0).astype("Int64")
+    return df
+
+def df_to_csv_buffer(df) -> io.StringIO:
+    # ensure int-like columns won’t print as x.0
+    return io.StringIO(
+        df.to_csv(index=False, header=False, na_rep="", float_format="%.0f")
+    )
+
+
 OUT = Path("data/datasets_output")
 
 TABLES = [
@@ -127,15 +144,21 @@ CREATE TABLE IF NOT EXISTS patient_ddi_collapsed_from_topk (
 }
 
 def connect():
-    conn = psycopg2.connect(
-        host=os.getenv("PGHOST", "localhost"),
-        port=os.getenv("PGPORT", "5432"),
-        user=os.getenv("PGUSER", "postgres"),
-        password=os.getenv("PGPASSWORD", ""),
-        dbname=os.getenv("PGDATABASE", "postgres"),
-    )
-    conn.autocommit = True
-    return conn
+    try:
+        print(f"[loader] Attempting connection to Postgres at {os.getenv('PGHOST', 'db')}:{os.getenv('PGPORT', '5432')}...")
+        conn = psycopg2.connect(
+            host=os.getenv("PGHOST", "db"),
+            port=os.getenv("PGPORT", "5432"),
+            user=os.getenv("PGUSER", "postgres"),
+            password=os.getenv("PGPASSWORD", "postgres"),
+            dbname=os.getenv("PGDATABASE", "ddi"),
+        )
+        conn.autocommit = True
+        print("[loader] ✅ Connection successful.")
+        return conn
+    except Exception as e:
+        print(f"[loader] ❌ Failed to connect to Postgres: {type(e).__name__}: {e}")
+        sys.exit(1)
 
 def copy_df(cur, df: pd.DataFrame, table: str):
     buf = io.StringIO()
@@ -144,11 +167,17 @@ def copy_df(cur, df: pd.DataFrame, table: str):
     cur.copy_expert(f"COPY {table} FROM STDIN WITH (FORMAT csv, NULL '')", buf)
 
 def main():
+    print("[loader] Connecting to Postgres...")
     conn = connect()
+    print("[loader] Connection established ✅")
+
     schema = os.getenv("PGSCHEMA", "public")
     with conn.cursor() as cur:
+        print(f"[loader] Using schema: {schema}")
         cur.execute(f"CREATE SCHEMA IF NOT EXISTS {schema}; SET search_path TO {schema};")
+
         for tbl, _ in TABLES:
+            print(f"[loader] Creating table: {tbl}")
             cur.execute(DDL[tbl])
 
         for tbl, _ in TABLES:
@@ -159,14 +188,20 @@ def main():
             if not csv_path.exists():
                 print(f"[loader] Skipping {tbl} (missing {csv_path})")
                 continue
+
             df = pd.read_csv(csv_path, low_memory=False)
-            for col in df.columns:
-                if "start" in col.lower() or "stop" in col.lower() or "date" in col.lower() or "onset" in col.lower():
-                    pass
             print(f"[loader] Loading {tbl} ({len(df):,} rows)")
+
+            if tbl == "rxcui_to_ingredient_map":
+                df = coerce_intlike(df, ["rxcui", "ingredient_rxcui"])
+                buf = df_to_csv_buffer(df)
+                cur.copy_expert(f"COPY {schema}.{tbl} FROM STDIN WITH (FORMAT csv, NULL '')", buf)
+                continue
+
             copy_df(cur, df, f"{schema}.{tbl}")
 
     print("[loader] ✅ Load complete.")
+
 
 if __name__ == "__main__":
     main()

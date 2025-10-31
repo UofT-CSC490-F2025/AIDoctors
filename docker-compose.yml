@@ -1,45 +1,33 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:16
     container_name: ddi_db
+    restart: always
     environment:
-      POSTGRES_USER: ${PGUSER}
-      POSTGRES_PASSWORD: ${PGPASSWORD}
-      POSTGRES_DB: ${PGDATABASE}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ddi
     ports:
-      - "${PGPORT:-5433}:5432"
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PGUSER} -d ${PGDATABASE}"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
 
   etl:
     build:
       context: .
-      dockerfile: src/data-pipelines/Dockerfile    
-    container_name: ddi_etl
+      dockerfile: src/data-pipelines/Dockerfile
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     environment:
       PGHOST: db
-      PGPORT: "5432"
-      PGUSER: ${PGUSER}
-      PGPASSWORD: ${PGPASSWORD}
-      PGDATABASE: ${PGDATABASE}
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: ddi
       PGSCHEMA: public
     volumes:
-      # mount raw inputs (read-only) and outputs (read-write)
-      - ./data/raw_datasets:/app/data/raw_datasets:ro
-      - ./data/datasets_output:/app/data/datasets_output
-      # mount the ETL code
-      - ./src/data-pipelines:/app/src/data-pipelines:ro
-    tty: true
+      - ./data:/app/data       
+    working_dir: /app
 
 volumes:
   pgdata:
