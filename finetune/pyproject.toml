@@ -1,0 +1,12 @@
+[project]
+name = "a4"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "datasets>=4.4.1",
+    "huggingface-hub>=0.36.0",
+    "modal>=1.2.1",
+    "trl>=0.25.0",
+]
