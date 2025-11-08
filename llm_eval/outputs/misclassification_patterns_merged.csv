@@ -1,0 +1,5 @@
+pattern,count,true_label,rate_within_true
+Major→Moderate,73,Major,0.41954022988505746
+Minor→Moderate,14,Minor,0.8235294117647058
+Moderate→Minor,21,Moderate,0.08171206225680934
+Moderate→Major,5,Moderate,0.019455252918287938
