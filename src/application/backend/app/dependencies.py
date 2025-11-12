@@ -7,10 +7,19 @@ from app.core.security import (
     ACCESS_TOKEN_ALGORITHM,
     oauth2_scheme,
 )
-from app.db.session import get_db
+from app.db.session import SessionLocal
 from app.repositories.user_repository import get_user_by_username
 from app.schemas.user import User
 from app.services.user_service import convert_db_user_to_user
+
+
+def get_db():
+    """Dependency to get database session."""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 async def get_current_user_from_access_token(
