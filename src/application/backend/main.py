@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from ml_predict import predict as ml_predict_endpoint, get_model_and_tokenizer
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,3 +40,11 @@ async def root():
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy"}
+
+app.post("/predict")(ml_predict_endpoint)
+
+if __name__ == "__main__":
+    import uvicorn
+    # Run with: python main.py
+    # Or: uvicorn main:app --reload --host 0.0.0.0 --port 8000
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
