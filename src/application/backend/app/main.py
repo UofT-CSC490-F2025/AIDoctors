@@ -2,10 +2,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from ml_predict import predict as ml_predict_endpoint, get_model_and_tokenizer
 
 from app.db import setup
-from app.routers import users, auth
+from app.routers import predictions, users, auth
 
 
 @asynccontextmanager
@@ -13,7 +12,9 @@ async def lifespan(app: FastAPI):
     # Startup
     print("Starting up FastAPI application...")
     setup.init_db()
+
     yield
+
     # Shutdown
     print("Shutting down FastAPI application...")
 
@@ -54,6 +55,4 @@ async def health_check():
 
 app.include_router(auth.router)
 app.include_router(users.router)
-
-
-app.post("/predict")(ml_predict_endpoint)
+app.include_router(predictions.router)

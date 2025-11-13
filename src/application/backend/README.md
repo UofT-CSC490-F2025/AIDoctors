@@ -24,7 +24,18 @@ Copy `.env.example` to `.env` and update the values:
 cp .env.example .env
 ```
 
-### 3. Run the Server
+### 3. Download the Model
+
+Run the following commands to download the model:
+
+```bash
+modal token set --token-id <TOKEN_ID> --token-secret <TOKEN_SECRET>
+modal volume get rl-model-checkpoints grpo_ddi_model ./local_checkpoints/
+```
+
+where `<TOKEN_ID>` and `<TOKEN_SECRET>` are the appropriate Modal credentials for account token and account token secret.
+
+### 4. Run the Server
 
 ```bash
 uv run uvicorn app.main:app --reload
