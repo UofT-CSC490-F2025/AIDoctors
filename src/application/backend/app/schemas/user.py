@@ -1,19 +1,19 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
 
 class User(BaseModel):
-    username: str
-    email: Optional[str] = None
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    disabled: Optional[bool] = None
-    roles: Optional[list[str]] = None
+    username: str = Field(examples=["johndoe"])
+    email: Optional[str] = Field(default=None, examples=["john.doe@mail.utoronto.ca"])
+    first_name: Optional[str] = Field(default=None, examples=["John"])
+    last_name: Optional[str] = Field(default=None, examples=["Doe"])
+    disabled: Optional[bool] = Field(default=None, examples=[False])
+    roles: Optional[list[str]] = Field(default=None, examples=[["user"]])
 
 
 class UserCreate(BaseModel):
-    username: str
-    email: str
-    first_name: str
-    last_name: str
-    password: str
+    username: str = Field(examples=["johndoe"])
+    email: str = Field(examples=["john.doe@mail.utoronto.ca"])
+    first_name: str = Field(examples=["John"])
+    last_name: str = Field(examples=["Doe"])
+    password: str = Field(examples=["SecurePassword123!"])
