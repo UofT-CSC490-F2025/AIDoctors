@@ -15,32 +15,14 @@ router = APIRouter(prefix="/predict", tags=["Prediction"])
 
 
 @router.post("/")
-async def predict(request: Request) -> DDIPredictResponse:
+async def predict(request: DDIPredictRequest) -> DDIPredictResponse:
     """
     Accepts application/json requests only.
     For form-data support, install python-multipart: pip install python-multipart
     """
-    payload_dict: Dict[str, Any]
-
-    # Try to parse as JSON
-    try:
-        payload_dict = await request.json()
-    except json.JSONDecodeError as e:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid JSON format: {str(e)}. Please ensure your request body is valid JSON.",
-        )
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error parsing request: {str(e)}")
-
-    # Validate and parse the payload
-    try:
-        payload = DDIPredictRequest(**payload_dict)
-    except Exception as e:
-        raise HTTPException(status_code=422, detail=f"Invalid input data: {str(e)}")
 
     # Build prompt
-    prompt = build_prompt(payload)
+    prompt = build_prompt(request)
 
     # Load model
     try:
@@ -67,12 +49,12 @@ async def predict(request: Request) -> DDIPredictResponse:
         severity = extract_severity(completion)
 
         return DDIPredictResponse(
-            patient_uuid=payload.patient_uuid,
+            patient_uuid=request.patient_uuid,
             severity=severity,
             completion=completion,
             model_path=model_path,
             used_prompt=prompt,
-            known_severity=payload.unified_severity,
+            known_severity=request.unified_severity,
         )
     except Exception as e:
         raise HTTPException(

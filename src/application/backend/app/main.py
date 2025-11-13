@@ -1,10 +1,11 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
+from fastapi.exceptions import RequestValidationError
 
 from app.db import setup
 from app.routers import predictions, users, auth
+from app.utils.exception_handlers import validation_exception_handler
 
 
 @asynccontextmanager
@@ -34,6 +35,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Register custom exception handlers
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
 
 @app.get("/favicon.ico", include_in_schema=False)
