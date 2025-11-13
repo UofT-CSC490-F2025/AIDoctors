@@ -27,14 +27,14 @@ cp .env.example .env
 ### 3. Run the Server
 
 ```bash
-uv run uvicorn main:app --reload
+uv run uvicorn app.main:app --reload
 ```
 
 Or activate the virtual environment and run directly:
 
 ```bash
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
 
 The API will be available at `http://localhost:8000`
@@ -51,12 +51,51 @@ Once the server is running, you can access:
 
 ```
 backend/
-├── main.py              # Main FastAPI application
-├── config.py            # Configuration settings
-├── pyproject.toml       # Python dependencies (uv)
-├── .env.example         # Example environment variables
-├── .gitignore          # Git ignore file
-└── README.md           # This file
+├── app/                            # Main FastAPI application package
+│   ├── main.py                     # Creates FastAPI app, mounts routers, middleware, handlers
+│   ├── dependencies.py             # Shared dependencies injected with Depends()
+│
+│   ├── core/                       # Global configuration and security
+│   │   ├── config.py               # Environment variables and settings via Pydantic
+│   │   ├── security.py             # Password hashing, JWT, OAuth2 logic
+│   │   ├── exceptions.py           # Custom exceptions and FastAPI handlers
+│   │   └── logging_config.py       # Logging setup and formatters
+│
+│   ├── db/                         # Database engine, session, ORM models
+│   │   ├── session.py              # Engine, SessionLocal, Base declarations
+│   │   ├── models/                 # SQLAlchemy models for tables
+│   │   └── setup.py                # Creates and seeds the database
+│
+│   ├── schemas/                    # Pydantic models for request/response validation
+│
+│   ├── repositories/               # CRUD and persistence logic
+│
+│   ├── services/                   # Business/domain logic combining repositories and APIs
+│
+│   ├── routers/                    # HTTP route definitions grouped by domain
+│
+│   ├── external_services/          # Integrations with third-party APIs (e.g. AWS)
+│
+│   └── utils/                      # Generic helper functions (validation, formatting, etc.)
+│
+├── migrations/                     # Alembic migration scripts for schema versioning
+│   └── env.py
+│
+├── tests/                          # Automated tests (unit and integration)
+│   ├── unit/                       # Tests for isolated functions (services, utils)
+│   │   ├── test_services.py
+│   │   └── test_utils.py
+│   ├── integration/                # End-to-end and API-level tests
+│   │   ├── test_repositories.py
+│   │   └── test_api.py
+│   └── conftest.py                 # Pytest fixtures (e.g., test DB, test client)
+│
+├── .env.example                    # Example environment variables
+├── alembic.ini                     # Alembic configuration
+├── .gitignore                      # Files and folders ignored by Git
+├── pyproject.toml                  # Python dependencies (uv)
+└── README.md                       # Project documentation and usage guide
+
 ```
 
 ## Development
@@ -103,20 +142,10 @@ async def get_examples():
 Then import and include in `main.py`:
 
 ```python
-from routers import example
+from app.routers import example
 
 app.include_router(example.router)
 ```
-
-### Adding Database Support
-
-1. Add database dependencies to `pyproject.toml` (e.g., SQLAlchemy, asyncpg):
-    ```bash
-    uv add sqlalchemy asyncpg
-    ```
-2. Create database models in `models/`
-3. Create database connection in `database.py`
-4. Add database URL to `.env`
 
 ## Testing
 
