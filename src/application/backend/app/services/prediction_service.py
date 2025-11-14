@@ -6,28 +6,6 @@ import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
 load_dotenv()
 
-
-SEVERITIES = {"major": "Major", "moderate": "Moderate", "minor": "Minor"}
-def extract_severity(text: str) -> str:
-    """
-    Extract {"severity": "<...>"} and the following from the model output.
-    Robust to extra text and varied casing.
-    """
-    # Try to find a JSON-like severity block
-    match = re.search(
-        r'\{[^}]*"severity"\s*:\s*"([^"]+)"[^}]*\}', text, flags=re.IGNORECASE
-    )
-    severity = "Unknown"
-    if match:
-        sev_raw = match.group(1).strip().lower()
-        for key in SEVERITIES:
-            if key in sev_raw:
-                severity = SEVERITIES[key]
-                break
-
-    return severity
-
-
 def parse_bedrock_response(response_text: str) -> dict:
     """
     Parse the Bedrock model response to extract reasoning and content separately.

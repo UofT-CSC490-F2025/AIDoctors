@@ -5,7 +5,6 @@ from app.dependencies import get_current_active_user
 from app.schemas.db.prediction import DDIPredictRequest, DDIPredictResponse
 from app.schemas.bedrock.bedrock import build_system_prompt, build_user_prompt
 from app.services.prediction_service import (
-    extract_severity,
     invoke_bedrock_model,
     parse_bedrock_response,
 )
