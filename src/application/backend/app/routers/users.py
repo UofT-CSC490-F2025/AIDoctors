@@ -7,7 +7,7 @@ from app.repositories.user_repository import (
     get_user_by_email,
     get_user_by_username,
 )
-from app.schemas.user import User, UserCreate
+from app.schemas.db.user import User, UserCreate
 
 
 router = APIRouter(prefix="/users", tags=["Users"])

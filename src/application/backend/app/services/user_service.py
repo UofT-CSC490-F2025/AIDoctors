@@ -1,5 +1,5 @@
 from app.db.models.user import DBUser
-from app.schemas.user import User
+from app.schemas.db.user import User
 
 
 def convert_db_user_to_user(db_user: DBUser) -> User:
