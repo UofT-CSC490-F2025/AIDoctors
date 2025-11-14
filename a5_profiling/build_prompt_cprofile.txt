@@ -1,0 +1,50 @@
+==== cProfile stats for build_prompt() ====
+
+         16108722 function calls (16108344 primitive calls) in 3.221 seconds
+
+   Ordered by: cumulative time
+   List reduced from 211 to 40 due to restriction <40>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.015    0.015    3.221    3.221 /Users/granthamblin/AIDoctors-5/src/application/backend/scripts/profile_build_prompt.py:39(run_build_prompt)
+   100001    0.112    0.000    3.206    0.000 /Users/granthamblin/AIDoctors-5/src/application/backend/app/services/prediction_service.py:44(build_prompt)
+   100001    0.040    0.000    3.094    0.000 /Users/granthamblin/AIDoctors-5/src/application/backend/app/utils/helpers.py:27(compute_overlap_days)
+   200002    0.289    0.000    3.046    0.000 /Users/granthamblin/AIDoctors-5/src/application/backend/app/utils/helpers.py:5(parse_date)
+   800008    0.132    0.000    2.679    0.000 {built-in method strptime}
+   800008    0.192    0.000    2.547    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/_strptime.py:564(_strptime_datetime)
+   800008    1.241    0.000    2.355    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/_strptime.py:309(_strptime)
+   800010    0.117    0.000    0.777    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/_strptime.py:26(_getlang)
+   800010    0.169    0.000    0.660    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/locale.py:594(getlocale)
+   800010    0.135    0.000    0.425    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/locale.py:479(_parse_localename)
+   800010    0.218    0.000    0.290    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/locale.py:396(normalize)
+   800008    0.085    0.000    0.085    0.000 {method 'match' of 're.Pattern' objects}
+  1800104    0.081    0.000    0.081    0.000 {method 'get' of 'dict' objects}
+  1000011    0.070    0.000    0.070    0.000 {method 'endswith' of 'str' objects}
+   800010    0.066    0.000    0.066    0.000 {built-in method _locale.setlocale}
+  1800704    0.058    0.000    0.058    0.000 {built-in method builtins.isinstance}
+   800010    0.042    0.000    0.042    0.000 {method '__exit__' of '_thread.lock' objects}
+1001256/1001159    0.041    0.000    0.041    0.000 {built-in method builtins.len}
+   800057    0.035    0.000    0.035    0.000 {method 'lower' of 'str' objects}
+   200002    0.028    0.000    0.028    0.000 {method 'groupdict' of 're.Match' objects}
+   400004    0.017    0.000    0.017    0.000 {method 'toordinal' of 'datetime.date' objects}
+   200002    0.010    0.000    0.010    0.000 {method 'keys' of 'dict' objects}
+   200002    0.009    0.000    0.009    0.000 {method 'end' of 're.Match' objects}
+   200002    0.009    0.000    0.009    0.000 {method 'weekday' of 'datetime.date' objects}
+   100061    0.008    0.000    0.008    0.000 {built-in method builtins.max}
+       18    0.000    0.000    0.002    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/re/__init__.py:225(compile)
+       18    0.000    0.000    0.002    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/re/__init__.py:272(_compile)
+        5    0.000    0.000    0.002    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/re/_compiler.py:740(compile)
+        4    0.000    0.000    0.002    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/_strptime.py:261(compile)
+        5    0.000    0.000    0.001    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/re/_parser.py:979(parse)
+        1    0.000    0.000    0.001    0.001 <frozen importlib._bootstrap>:1165(_find_and_load)
+     31/5    0.000    0.000    0.001    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/re/_parser.py:456(_parse_sub)
+        1    0.000    0.000    0.001    0.001 <frozen importlib._bootstrap>:1120(_find_and_load_unlocked)
+     71/5    0.000    0.000    0.001    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/re/_parser.py:516(_parse)
+        1    0.000    0.000    0.001    0.001 <frozen importlib._bootstrap>:666(_load_unlocked)
+        1    0.000    0.000    0.001    0.001 <frozen importlib._bootstrap_external>:934(exec_module)
+        5    0.000    0.000    0.001    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/re/_compiler.py:573(_code)
+     97/5    0.000    0.000    0.001    0.000 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/re/_compiler.py:37(_compile)
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:233(_call_with_frames_removed)
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.exec}
+
+
