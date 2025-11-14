@@ -53,3 +53,5 @@ logs/
 .pytest_cache/
 .coverage
 htmlcov/
+
+local_checkpoints/
