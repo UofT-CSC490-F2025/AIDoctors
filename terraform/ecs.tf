@@ -63,8 +63,8 @@ resource "aws_ecs_task_definition" "app" {
 
       portMappings = [
         {
-          containerPort = 80
-          hostPort      = 80
+          containerPort = 8000
+          hostPort      = 8000
           protocol      = "tcp"
         }
       ]
@@ -140,7 +140,7 @@ resource "aws_ecs_service" "app" {
   name            = "${local.name}-app-service"
   cluster         = module.ecs_cluster.id
   task_definition = aws_ecs_task_definition.app.arn
-  desired_count   = 0
+  desired_count   = 1
 
   launch_type = "FARGATE"
 
@@ -153,12 +153,7 @@ resource "aws_ecs_service" "app" {
   load_balancer {
     target_group_arn = module.alb.target_groups["aidoctors-application"].arn
     container_name   = "${local.name}-app-container"
-    container_port   = 80
-  }
-
-  # Allow external changes without Terraform plan difference
-  lifecycle {
-    ignore_changes = [desired_count]
+    container_port   = 8000
   }
 
   depends_on = [
