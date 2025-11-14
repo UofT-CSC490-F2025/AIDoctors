@@ -29,8 +29,8 @@ cp .env.example .env
 Run the following commands to download the model:
 
 ```bash
-modal token set --token-id <TOKEN_ID> --token-secret <TOKEN_SECRET>
-modal volume get rl-model-checkpoints grpo_ddi_model ./local_checkpoints/
+uv run modal token set --token-id <TOKEN_ID> --token-secret <TOKEN_SECRET>
+uv run modal volume get rl-model-checkpoints grpo_ddi_model ./local_checkpoints/
 ```
 
 where `<TOKEN_ID>` and `<TOKEN_SECRET>` are the appropriate Modal credentials for account token and account token secret.
