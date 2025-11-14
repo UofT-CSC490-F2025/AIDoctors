@@ -1,8 +1,7 @@
-from fastapi import APIRouter, Request, HTTPException
-import json
-from typing import Any, Dict
+from fastapi import APIRouter, Depends, HTTPException
 import torch
 
+from app.dependencies import get_current_active_user
 from app.schemas.prediction import DDIPredictRequest, DDIPredictResponse
 from app.services.prediction_service import (
     build_prompt,
@@ -11,7 +10,11 @@ from app.services.prediction_service import (
 )
 
 
-router = APIRouter(prefix="/predict", tags=["Prediction"])
+router = APIRouter(
+    prefix="/predict",
+    tags=["Prediction"],
+    dependencies=[Depends(get_current_active_user)],
+)
 
 
 @router.post("/")
