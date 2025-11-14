@@ -1,57 +1,48 @@
-Running predict() under cProfile...
-
-Loading model from: Qwen/Qwen2.5-0.5B
-Using device: cpu
-Predicted severity: Unknown
-
 ==== cProfile stats for predict() ====
 
-         1415553 function calls (1209437 primitive calls) in 9.609 seconds
+1548748 function calls (1342132 primitive calls) in 39.411 seconds
 
-   Ordered by: cumulative time
-   List reduced from 2428 to 40 due to restriction <40>
+Ordered by: cumulative time
+List reduced from 2697 to 40 due to restriction <40>
 
-   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.000    0.000    9.610    9.610 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py:160(run)
-        3    0.000    0.000    9.610    3.203 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py:618(run_until_complete)
-        3    0.000    0.000    9.610    3.203 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py:594(run_forever)
-        1    0.000    0.000    9.610    9.610 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py:86(run)
-        6    0.000    0.000    9.610    1.602 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py:1859(_run_once)
-        6    0.000    0.000    9.610    1.602 /opt/homebrew/Cellar/python@3.11/3.11.13/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/events.py:82(_run)
-        6    0.000    0.000    9.610    1.602 {method 'run' of '_contextvars.Context' objects}
-        1    0.000    0.000    9.610    9.610 /Users/granthamblin/AIDoctors-5/src/application/backend/scripts/profile_predict.py:36(run_predict_once)
-        1    0.000    0.000    9.610    9.610 /Users/granthamblin/AIDoctors-5/src/application/backend/app/routers/predictions.py:20(predict)
-    259/3    0.001    0.000    9.007    3.002 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/torch/utils/_contextlib.py:117(decorate_context)
-        1    0.000    0.000    8.650    8.650 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/generation/utils.py:2233(generate)
-        1    0.015    0.015    8.649    8.649 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/generation/utils.py:2686(_sample)
-81408/256    0.050    0.000    8.515    0.033 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/torch/nn/modules/module.py:1771(_wrapped_call_impl)
-81408/256    0.101    0.000    8.514    0.033 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/torch/nn/modules/module.py:1779(_call_impl)
-      256    0.001    0.000    8.513    0.033 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/utils/generic.py:912(wrapper)
-      256    0.003    0.000    8.512    0.033 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/models/qwen2/modeling_qwen2.py:417(forward)
-      256    0.003    0.000    6.803    0.027 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/utils/generic.py:953(wrapper)
-    43264    0.041    0.000    6.802    0.000 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/torch/nn/modules/linear.py:130(forward)
-      256    0.020    0.000    6.798    0.027 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/models/qwen2/modeling_qwen2.py:328(forward)
-    43264    6.739    0.000    6.739    0.000 {built-in method torch._C._nn.linear}
-     6144    0.009    0.000    6.709    0.001 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/modeling_layers.py:60(__call__)
-12288/6144    0.030    0.000    6.682    0.001 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/utils/deprecation.py:120(wrapped_func)
-     6144    0.055    0.000    6.663    0.001 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/models/qwen2/modeling_qwen2.py:219(forward)
-     6144    0.052    0.000    4.544    0.001 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/models/qwen2/modeling_qwen2.py:45(forward)
-     6144    0.093    0.000    1.757    0.000 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/models/qwen2/modeling_qwen2.py:140(forward)
-        1    0.000    0.000    0.955    0.955 /Users/granthamblin/AIDoctors-5/src/application/backend/app/services/prediction_service.py:122(get_model_and_tokenizer)
-        1    0.000    0.000    0.683    0.683 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/models/auto/auto_factory.py:468(from_pretrained)
-        1    0.000    0.000    0.534    0.534 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/modeling_utils.py:273(_wrapper)
-        1    0.015    0.015    0.534    0.534 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/modeling_utils.py:4382(from_pretrained)
-        1    0.000    0.000    0.406    0.406 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/modeling_utils.py:5284(_load_pretrained_model)
-        1    0.000    0.000    0.374    0.374 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/modeling_utils.py:803(load_shard_file)
-     6144    0.007    0.000    0.364    0.000 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/cache_utils.py:742(update)
-     6144    0.053    0.000    0.357    0.000 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/cache_utils.py:98(update)
-        1    0.012    0.012    0.356    0.356 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/modeling_utils.py:670(_load_state_dict_into_meta_model)
-    25344    0.354    0.000    0.354    0.000 {built-in method torch.cat}
-    27496    0.350    0.000    0.350    0.000 {method 'to' of 'torch._C.TensorBase' objects}
-        1    0.000    0.000    0.271    0.271 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/models/auto/tokenization_auto.py:946(from_pretrained)
-     6144    0.025    0.000    0.269    0.000 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/transformers/integrations/sdpa_attention.py:48(sdpa_attention_forward)
-        8    0.000    0.000    0.264    0.033 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/requests/sessions.py:500(request)
-        8    0.000    0.000    0.254    0.032 /Users/granthamblin/AIDoctors-5/.venv/lib/python3.11/site-packages/requests/sessions.py:673(send)
-
-
-
+ncalls   tottime   percall   cumtime   percall   filename:lineno(function)
+1        0.000     0.000     39.413    39.413    asyncio/runners.py:160(run)
+3        0.000     0.000     39.412    13.137    asyncio/base_events.py:618(run_until_complete)
+3        0.000     0.000     39.412    13.137    asyncio/base_events.py:594(run_forever)
+1        0.000     0.000     39.412    39.412    asyncio/runners.py:86(run)
+6        0.000     0.000     39.412    6.569     asyncio/base_events.py:1859(_run_once)
+6        0.000     0.000     39.412    6.569     asyncio/events.py:82(_run)
+6        0.000     0.000     39.412    6.569     {method 'run' of '_contextvars.Context' objects}
+1        0.000     0.000     39.412    39.412    profile_predict.py:36(run_predict_once)
+1        0.000     0.000     39.412    39.412    predictions.py:20(predict)
+1        0.000     0.000     31.224    31.224    prediction_service.py:122(get_model_and_tokenizer)
+1        0.000     0.000     30.282    30.282    transformers/auto_factory.py:468(from_pretrained)
+1        0.000     0.000     30.100    30.100    modeling_utils.py:273(_wrapper)
+1        0.007     0.007     30.100    30.100    modeling_utils.py:4382(from_pretrained)
+14       0.000     0.000     29.836    2.131     transformers/utils/hub.py:264(cached_file)
+14       0.000     0.000     29.836    2.131     transformers/utils/hub.py:327(cached_files)
+105/40   0.001     0.000     29.836    0.746     huggingface_hub/utils/_validators.py:_inner_fn
+11       0.000     0.000     29.831    2.712     huggingface_hub/file_download.py:808(hf_hub_download)
+11       0.000     0.000     29.829    2.712     huggingface_hub/file_download.py:1027(_hf_hub_download_to_cache_dir)
+7        0.000     0.000     29.104    4.158     huggingface_hub/file_download.py:1665(_download_to_tmp_and_move)
+1        0.000     0.000     28.918    28.918    modeling_utils.py:889(_get_resolved_checkpoint_files)
+1        0.000     0.000     28.770    28.770    huggingface_hub/file_download.py:529(xet_get)
+1        28.518    28.518    28.518    28.518    {built-in method hf_xet.hf_xet.download_files}
+259/3    0.002     0.000     9.165     3.055     torch/utils/_contextlib.py:117(decorate_context)
+1        0.000     0.000     8.179     8.179     generation/utils.py:2233(generate)
+1        0.014     0.014     8.178     8.178     generation/utils.py:2686(_sample)
+81408/256 0.045    0.000     8.052     0.031     torch/nn/modules/module.py:1771(_wrapped_call_impl)
+81408/256 0.094    0.000     8.051     0.031     torch/nn/modules/module.py:1779(_call_impl)
+256      0.001     0.000     8.050     0.031     transformers/utils/generic.py:912(wrapper)
+256      0.003     0.000     8.049     0.031     modeling_qwen2.py:417(forward)
+43264    0.041     0.000     6.455     0.000     torch/nn/modules/linear.py:130(forward)
+43264    6.395     0.000     6.395     0.000     {built-in method torch._C._nn.linear}
+256      0.002     0.000     6.347     0.025     transformers/utils/generic.py:953(wrapper)
+256      0.018     0.000     6.342     0.025     modeling_qwen2.py:328(forward)
+6144     0.008     0.000     6.260     0.001     modeling_layers.py:60(__call__)
+12288/6144 0.027   0.000     6.234     0.001     transformers/utils/deprecation.py:120(wrapped_func)
+6144     0.052     0.000     6.218     0.001     modeling_qwen2.py:219(forward)
+6144     0.049     0.000     4.228     0.001     modeling_qwen2.py:45(forward)
+6144     0.086     0.000     1.649     0.000     modeling_qwen2.py:140(forward)
+1        0.000     0.000     1.019     1.019     modeling_utils.py:5284(_load_pretrained_model)
+1        0.000     0.000     0.994     0.994     modeling_utils.py:803(load_shard_file)

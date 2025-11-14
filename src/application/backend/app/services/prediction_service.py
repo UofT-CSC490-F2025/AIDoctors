@@ -15,6 +15,11 @@ load_dotenv()
 
 SEVERITIES = {"major": "Major", "moderate": "Moderate", "minor": "Minor"}
 
+_CACHED_MODEL = None
+_CACHED_TOKENIZER = None
+_CACHED_GEN_CFG = None
+_CACHED_MODEL_PATH = None
+_CACHED_DEVICE = None
 
 def extract_severity(text: str) -> str:
     """
@@ -119,9 +124,23 @@ def resolve_model_path() -> str:
     return "Qwen/Qwen2.5-0.5B"
 
 
-@lru_cache(maxsize=1)
 def get_model_and_tokenizer():
-    model_path = resolve_model_path()
+    """
+    Load and cache the model/tokenizer so we don't reload on every request.
+
+    Returns:
+        model, tokenizer, gen_cfg, model_path
+    """
+    global _CACHED_MODEL, _CACHED_TOKENIZER, _CACHED_GEN_CFG, _CACHED_MODEL_PATH, _CACHED_DEVICE
+
+    if _CACHED_MODEL is not None and _CACHED_TOKENIZER is not None:
+        return _CACHED_MODEL, _CACHED_TOKENIZER, _CACHED_GEN_CFG, _CACHED_MODEL_PATH
+
+    try:
+        model_path = resolve_model_path()
+    except NameError:
+        model_path = os.getenv("DDI_MODEL_PATH", "Qwen/Qwen2.5-0.5B")
+
     device = "cuda" if torch.cuda.is_available() else "cpu"
     dtype = torch.bfloat16 if torch.cuda.is_available() else torch.float32
 
@@ -135,6 +154,7 @@ def get_model_and_tokenizer():
         device_map="auto" if device == "cuda" else None,
         torch_dtype=dtype if device == "cuda" else None,
     )
+
     if tokenizer.pad_token_id is None and tokenizer.eos_token_id is not None:
         tokenizer.pad_token = tokenizer.eos_token
         model.config.pad_token_id = tokenizer.eos_token_id
@@ -147,4 +167,12 @@ def get_model_and_tokenizer():
         eos_token_id=tokenizer.eos_token_id,
         pad_token_id=tokenizer.pad_token_id,
     )
+
+    _CACHED_MODEL = model
+    _CACHED_TOKENIZER = tokenizer
+    _CACHED_GEN_CFG = gen_cfg
+    _CACHED_MODEL_PATH = model_path
+    _CACHED_DEVICE = device
+
     return model, tokenizer, gen_cfg, model_path
+
