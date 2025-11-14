@@ -72,7 +72,7 @@ module "alb" {
     aidoctors-application = {
       name_prefix                       = "aid"
       protocol                          = "HTTP"
-      port                              = 80
+      port                              = 8000
       target_type                       = "ip" # Use 'ip' for Fargate tasks
       vpc_id                            = module.vpc.vpc_id
       deregistration_delay              = 30

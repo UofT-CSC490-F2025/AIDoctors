@@ -5,7 +5,7 @@ from datetime import timedelta
 
 from app.dependencies import get_db
 from app.services.auth_service import authenticate_user, create_access_token
-from app.core.security import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.config.security import ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])

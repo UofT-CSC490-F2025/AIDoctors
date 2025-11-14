@@ -2,14 +2,14 @@ from fastapi import HTTPException, status, Depends
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from app.core.security import (
+from app.config.security import (
     ACCESS_TOKEN_SECRET_KEY,
     ACCESS_TOKEN_ALGORITHM,
     oauth2_scheme,
 )
 from app.db.session import SessionLocal
 from app.repositories.user_repository import get_user_by_username
-from app.schemas.user import User
+from app.schemas.db.user import User
 from app.services.user_service import convert_db_user_to_user
 
 

@@ -24,16 +24,23 @@ Copy `.env.example` to `.env` and update the values:
 cp .env.example .env
 ```
 
-### 3. Download the Model
+### 3. Configure AWS Bedrock
 
-Run the following commands to download the model:
+The application uses AWS Bedrock for drug-drug interaction predictions.
 
-```bash
-uv run modal token set --token-id <TOKEN_ID> --token-secret <TOKEN_SECRET>
-uv run modal volume get rl-model-checkpoints grpo_ddi_model ./local_checkpoints/
-```
+**For local testing:**
+- Set your AWS credentials in the `.env` file:
+  ```
+  AWS_ACCESS_KEY_ID=your-access-key
+  AWS_SECRET_ACCESS_KEY=your-secret-key
+  AWS_REGION=us-east-1
+  BEDROCK_MODEL_ID=anthropic.claude-3-haiku-20240307-v1:0
+  ```
 
-where `<TOKEN_ID>` and `<TOKEN_SECRET>` are the appropriate Modal credentials for account token and account token secret.
+**For ECS deployment:**
+- No credentials needed in `.env`
+- The ECS task will automatically inherit IAM role permissions
+- Ensure the task role has `bedrock:InvokeModel` permission
 
 ### 4. Run the Server
 

@@ -14,7 +14,7 @@ module "rds_security_group" {
       to_port     = 5432
       protocol    = "tcp"
       description = "PostgreSQL Ingress"
-      cidr_blocks = module.vpc.vpc_cidr_block
+      cidr_blocks = "0.0.0.0/0"
     }
   ]
 
@@ -42,8 +42,8 @@ resource "aws_security_group" "ecs_tasks" {
 
   ingress {
     description     = "Allow traffic from ALB"
-    from_port       = 80
-    to_port         = 80
+    from_port       = 8000
+    to_port         = 8000
     protocol        = "tcp"
     security_groups = [module.alb.security_group_id]
   }
