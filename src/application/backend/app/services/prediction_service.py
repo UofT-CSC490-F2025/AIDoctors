@@ -21,24 +21,36 @@ _CACHED_GEN_CFG = None
 _CACHED_MODEL_PATH = None
 _CACHED_DEVICE = None
 
-def extract_severity(text: str) -> str:
-    """
-    Extract {"severity": "<...>"} and the following from the model output.
-    Robust to extra text and varied casing.
-    """
-    # Try to find a JSON-like severity block
-    match = re.search(
-        r'\{[^}]*"severity"\s*:\s*"([^"]+)"[^}]*\}', text, flags=re.IGNORECASE
-    )
-    severity = "Unknown"
-    if match:
-        sev_raw = match.group(1).strip().lower()
-        for key in SEVERITIES:
-            if key in sev_raw:
-                severity = SEVERITIES[key]
-                break
+import re
 
-    return severity
+_SEVERITY_JSON_RE = re.compile(
+    r'"severity"\s*:\s*"(?P<sev>Minor|Moderate|Major)"',
+    re.IGNORECASE,
+)
+
+_SEVERITY_WORD_RE = re.compile(
+    r'\b(minor|moderate|major)\b',
+    re.IGNORECASE,
+)
+
+def extract_severity(completion: str) -> str:
+    if not completion:
+        return "Unknown"
+
+    m = _SEVERITY_JSON_RE.search(completion)
+    if m:
+        sev = m.group("sev").capitalize()
+        if sev in ("Minor", "Moderate", "Major"):
+            return sev
+
+    m = _SEVERITY_WORD_RE.search(completion)
+    if m:
+        sev = m.group(1).capitalize()
+        if sev in ("Minor", "Moderate", "Major"):
+            return sev
+
+    return "Unknown"
+
 
 
 def build_prompt(payload: DDIPredictRequest) -> str:
