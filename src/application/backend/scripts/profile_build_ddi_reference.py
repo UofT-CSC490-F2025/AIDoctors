@@ -1,4 +1,3 @@
-# src/application/backend/scripts/profile_build_ddi_reference.py
 import cProfile, io, pstats
 from time import perf_counter
 from pathlib import Path
