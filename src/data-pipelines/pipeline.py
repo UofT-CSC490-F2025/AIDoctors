@@ -34,6 +34,40 @@ from typing import Tuple, List, Dict, Any
 import numpy as np
 import pandas as pd
 
+def _uniq_nonempty(values: pd.Series) -> list:
+    arr = values.to_numpy()
+    seen = set()
+    out: list[Any] = []
+    for v in arr:
+        # Skip NaN / None
+        if v is None:
+            continue
+        if isinstance(v, float) and pd.isna(v):
+            continue
+
+        s = str(v).strip()
+        if not s:
+            continue
+        if s in seen:
+            continue
+        seen.add(s)
+        out.append(s)
+    return out
+
+
+def _first_non_null(values: pd.Series):
+    arr = values.to_numpy()
+    for v in arr:
+        if v is None:
+            continue
+        if isinstance(v, float) and pd.isna(v):
+            continue
+        s = str(v).strip()
+        if s:
+            return s
+    return np.nan
+
+
 # ----------------------------
 # Config
 # ----------------------------
@@ -308,10 +342,17 @@ def build_ddi_reference() -> pd.DataFrame:
                       .merge(mendeley, on=["drug1_name","drug2_name"], how="outer"))
     merged.columns = [c.lower() for c in merged.columns]
 
-    # normalize + pair key
     merged["drug1_norm"] = merged["drug1_name"].map(normalize_name)
     merged["drug2_norm"] = merged["drug2_name"].map(normalize_name)
-    merged["pair_key"]   = merged.apply(lambda r: tuple(sorted([r["drug1_norm"], r["drug2_norm"]])), axis=1)
+
+    d1 = merged["drug1_norm"].fillna("")
+    d2 = merged["drug2_norm"].fillna("")
+
+    # Ensure canonical (sorted) ordering without row-wise apply
+    left  = np.where(d1 <= d2, d1, d2)
+    right = np.where(d1 <= d2, d2, d1)
+    merged["pair_key"] = list(zip(left, right))
+
 
     # helpers
     def uniq_list(s: pd.Series) -> list:
@@ -331,16 +372,20 @@ def build_ddi_reference() -> pd.DataFrame:
             if pd.notna(v) and str(v).strip()!="": return v
         return np.nan
 
-    ddi_ref = (merged.groupby("pair_key", as_index=False)
-        .agg({
-            "ddinter_level": uniq_list,
-            "micromedex_sev_level": uniq_list,
-            "micromedex_evid_level": uniq_list,
-            "interaction_type_crescenddi": first_non_null,
-            "interaction_type_mendeley": uniq_list,
-            "drug1_norm": first_non_null,
-            "drug2_norm": first_non_null
-        }))
+    ddi_ref = (
+        merged.groupby("pair_key", as_index=False)
+        .agg(
+            {
+                "ddinter_level": _uniq_nonempty,
+                "micromedex_sev_level": _uniq_nonempty,
+                "micromedex_evid_level": _uniq_nonempty,
+                "interaction_type_mendeley": _uniq_nonempty,
+                "interaction_type_crescenddi": _first_non_null,
+                "drug1_norm": _first_non_null,
+                "drug2_norm": _first_non_null,
+            }
+        )
+    )
 
     # source coverage / confidence
     ddi_ref["has_ddinter"]    = ddi_ref["ddinter_level"].apply(lambda x: isinstance(x, list) and len(x)>0)
