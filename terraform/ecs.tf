@@ -50,8 +50,8 @@ resource "aws_ecs_task_definition" "app" {
   family                   = "${local.name}-app"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "256" # 0.25 vCPU
-  memory                   = "512" # 512 MB
+  cpu                      = "4096" # 2 vCPU (increased for production workload with concurrent requests)
+  memory                   = "8192" # 8 GB (increased for better performance)
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
 
@@ -140,7 +140,7 @@ resource "aws_ecs_service" "app" {
   name            = "${local.name}-app-service"
   cluster         = module.ecs_cluster.id
   task_definition = aws_ecs_task_definition.app.arn
-  desired_count   = 1
+  desired_count   = 3
 
   launch_type = "FARGATE"
 

@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 import os
+import asyncio
+from functools import partial
 
 from app.dependencies import get_current_active_user
 from app.schemas.db.prediction import DDIPredictRequest, DDIPredictResponse
@@ -33,9 +35,14 @@ async def predict(request: DDIPredictRequest):
     # Get model ID for response
     model_id = os.getenv("BEDROCK_MODEL_ID", "openai.gpt-oss-120b-1:0")
 
-    # Invoke Bedrock model
+    # Invoke Bedrock model in thread pool to avoid blocking the event loop
     try:
-        completion = invoke_bedrock_model(system_prompt, user_prompt)
+        # Run the blocking boto3 call in a thread pool executor
+        loop = asyncio.get_event_loop()
+        completion = await loop.run_in_executor(
+            None,  # Use default ThreadPoolExecutor
+            partial(invoke_bedrock_model, system_prompt, user_prompt)
+        )
         
         # Parse the response to extract reasoning and content
         parsed_response = parse_bedrock_response(completion)
