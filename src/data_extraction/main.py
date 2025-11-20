@@ -1,14 +1,18 @@
 """
 Script to download and extract CSVs from:
   - DDInter
-  - CRESCENDDI 
+  - CRESCENDDI
   - Synthea
   - Mendeley
   - AEOLUS
 """
 
 if __name__ == "__main__":
-    from utilities import extract_and_save, extract_zip_and_save_members, extract_kaggle_dataset_and_save_members
+    from utilities import (
+        extract_and_save,
+        extract_zip_and_save_members,
+        extract_kaggle_dataset_and_save_members,
+    )
 
     EXTRACTION_DESTINATION = "data/raw_datasets"
 
@@ -18,19 +22,19 @@ if __name__ == "__main__":
         url="https://github.com/elpidakon/CRESCENDDI/raw/refs/heads/main/data_records/Data%20Record%201%20-%20Positive%20Controls.xlsx",
         out_dir=EXTRACTION_DESTINATION,
         filename="CRESCENDDI - Positive Controls.xlsx",
-        overwrite=True
+        overwrite=True,
     )
     extract_and_save(
         url="https://github.com/elpidakon/CRESCENDDI/raw/refs/heads/main/data_records/Data%20Record%202%20-%20Negative%20Controls.xlsx",
         out_dir=EXTRACTION_DESTINATION,
         filename="CRESCENDDI - Negative Controls.xlsx",
-        overwrite=True
+        overwrite=True,
     )
     extract_and_save(
         url="https://github.com/elpidakon/CRESCENDDI/raw/refs/heads/main/data_records/Data%20Record%204%20-%20Drug%20mappings.xlsx",
         out_dir=EXTRACTION_DESTINATION,
         filename="CRESCENDDI - Drug mappings.xlsx",
-        overwrite=True
+        overwrite=True,
     )
     print("Finished extracting CRESCENDDI files.\n")
 
@@ -40,7 +44,7 @@ if __name__ == "__main__":
         url="https://synthetichealth.github.io/synthea-sample-data/downloads/latest/synthea_sample_data_csv_latest.zip",
         out_dir=EXTRACTION_DESTINATION,
         members=["conditions.csv", "medications.csv", "patients.csv"],
-        overwrite=True
+        overwrite=True,
     )
     print("Finished extracting Synthea files.\n")
 
@@ -51,7 +55,7 @@ if __name__ == "__main__":
         out_dir=EXTRACTION_DESTINATION,
         filename="Mendeley.csv",
         overwrite=True,
-        timeout=60
+        timeout=60,
     )
     print("Finished extracting Mendeley files.\n")
 
@@ -60,7 +64,7 @@ if __name__ == "__main__":
     extract_kaggle_dataset_and_save_members(
         dataset="montassarba/drug-drug-interactions-database-ddinter",
         out_dir=EXTRACTION_DESTINATION,
-        overwrite=True
+        overwrite=True,
     )
     print("Finished extracting DDInter files.\n")
 
