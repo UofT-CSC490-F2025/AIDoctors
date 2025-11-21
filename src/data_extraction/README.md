@@ -1,6 +1,6 @@
 # Data Extraction
 
-The scripts here are responsible for fetching and saving the raw datasets from the internet that we need for our application.
+These files fetch and store the raw datasets required by the application.
 
 ## Setup
 
