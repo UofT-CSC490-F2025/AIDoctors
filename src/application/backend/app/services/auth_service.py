@@ -4,7 +4,7 @@ from jose import jwt
 from sqlalchemy.orm import Session
 
 from app.repositories.user_repository import get_user_by_username
-from app.core.security import (
+from app.config.security import (
     ACCESS_TOKEN_ALGORITHM,
     ACCESS_TOKEN_EXPIRE_MINUTES,
     ACCESS_TOKEN_SECRET_KEY,

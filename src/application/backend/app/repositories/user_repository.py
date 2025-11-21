@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 
 from app.db.models.user import DBUser
 from app.db.models.role import DBRole
-from app.schemas.user import UserCreate
-from app.core.security import password_hash_context
+from app.schemas.db.user import UserCreate
+from app.config.security import password_hash_context
 
 
 def get_all_users(db: Session, skip: int = 0, limit: int = 100) -> list[DBUser]:

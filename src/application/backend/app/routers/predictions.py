@@ -1,12 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
-import torch
+import os
+import asyncio
+from functools import partial
 
 from app.dependencies import get_current_active_user
-from app.schemas.prediction import DDIPredictRequest, DDIPredictResponse
+from app.schemas.db.prediction import DDIPredictRequest, DDIPredictResponse
+from app.schemas.bedrock.bedrock import build_system_prompt, build_user_prompt
 from app.services.prediction_service import (
-    build_prompt,
-    extract_severity,
-    get_model_and_tokenizer,
+    invoke_bedrock_model,
+    parse_bedrock_response,
 )
 
 
@@ -18,48 +20,40 @@ router = APIRouter(
 
 
 @router.post("/")
-async def predict(request: DDIPredictRequest) -> DDIPredictResponse:
+async def predict(request: DDIPredictRequest):
     """
+    Predict drug-drug interaction severity using AWS Bedrock.
+    
     Accepts application/json requests only.
     For form-data support, install python-multipart: pip install python-multipart
     """
 
-    # Build prompt
-    prompt = build_prompt(request)
+    # Build separate system and user prompts
+    system_prompt = build_system_prompt()
+    user_prompt = build_user_prompt(request)
 
-    # Load model
+    # Get model ID for response
+    model_id = os.getenv("BEDROCK_MODEL_ID", "openai.gpt-oss-120b-1:0")
+
+    # Invoke Bedrock model in thread pool to avoid blocking the event loop
     try:
-        model, tokenizer, gen_cfg, model_path = get_model_and_tokenizer()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading model: {str(e)}")
-
-    # Tokenize and generate
-    try:
-        inputs = tokenizer(prompt, return_tensors="pt")
-        if torch.cuda.is_available():
-            inputs = {k: v.cuda() for k, v in inputs.items()}
-
-        with torch.no_grad():
-            outputs = model.generate(**inputs, generation_config=gen_cfg)
-        full_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-        # If model echoes prompt, try to strip it
-        if full_text.startswith(prompt):
-            completion = full_text[len(prompt) :].lstrip()
-        else:
-            completion = full_text
-
-        severity = extract_severity(completion)
-
-        return DDIPredictResponse(
-            patient_uuid=request.patient_uuid,
-            severity=severity,
-            completion=completion,
-            model_path=model_path,
-            used_prompt=prompt,
-            known_severity=request.unified_severity,
+        # Run the blocking boto3 call in a thread pool executor
+        loop = asyncio.get_event_loop()
+        completion = await loop.run_in_executor(
+            None,  # Use default ThreadPoolExecutor
+            partial(invoke_bedrock_model, system_prompt, user_prompt)
         )
+        
+        # Parse the response to extract reasoning and content
+        parsed_response = parse_bedrock_response(completion)
+        
+        return {
+            "reasoning": parsed_response["reasoning"],
+            "content": parsed_response["content"],
+            "model_path": model_id,
+            "known_severity": request.unified_severity,
+        }
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Error during model inference: {str(e)}"
+            status_code=500, detail=f"Error during Bedrock inference: {str(e)}"
         )

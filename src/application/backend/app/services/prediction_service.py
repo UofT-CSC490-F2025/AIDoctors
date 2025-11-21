@@ -1,190 +1,136 @@
 import os
 import re
+import json
 from dotenv import load_dotenv
-from functools import lru_cache
-from pathlib import Path
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, GenerationConfig
-
-from app.schemas.prediction import DDIPredictRequest
-from app.utils.helpers import compute_overlap_days
-
-
+import boto3
+from botocore.exceptions import ClientError, NoCredentialsError
 load_dotenv()
 
-
-SEVERITIES = {"major": "Major", "moderate": "Moderate", "minor": "Minor"}
-
-_CACHED_MODEL = None
-_CACHED_TOKENIZER = None
-_CACHED_GEN_CFG = None
-_CACHED_MODEL_PATH = None
-_CACHED_DEVICE = None
-
-import re
-
-_SEVERITY_JSON_RE = re.compile(
-    r'"severity"\s*:\s*"(?P<sev>Minor|Moderate|Major)"',
-    re.IGNORECASE,
-)
-
-_SEVERITY_WORD_RE = re.compile(
-    r'\b(minor|moderate|major)\b',
-    re.IGNORECASE,
-)
-
-def extract_severity(completion: str) -> str:
-    if not completion:
-        return "Unknown"
-
-    m = _SEVERITY_JSON_RE.search(completion)
-    if m:
-        sev = m.group("sev").capitalize()
-        if sev in ("Minor", "Moderate", "Major"):
-            return sev
-
-    m = _SEVERITY_WORD_RE.search(completion)
-    if m:
-        sev = m.group(1).capitalize()
-        if sev in ("Minor", "Moderate", "Major"):
-            return sev
-
-    return "Unknown"
-
-
-
-def build_prompt(payload: DDIPredictRequest) -> str:
+def parse_bedrock_response(response_text: str) -> dict:
     """
-    Build the exact instruction format used during training.
+    Parse the Bedrock model response to extract reasoning and content separately.
+    No JSON parsing - just separate the components.
     """
-    age = payload.Age if payload.Age is not None else ""
-    sex = payload.Sex or ""
-    comorbidities = payload.Comorbidities or []
-    start = payload.overlap_start or ""
-    end = payload.overlap_stop or ""
-    overlap_days = compute_overlap_days(payload.overlap_start, payload.overlap_stop)
-    ol_days_str = str(overlap_days) if overlap_days is not None else ""
-
-    drug1 = payload.drug1_norm or payload.drug1 or ""
-    drug2 = payload.drug2_norm or payload.drug2 or ""
-    known = payload.ddi_known
-    known_str = "Unknown" if known is None else ("True" if known else "False")
-    support = "" if payload.ddi_confidence is None else str(payload.ddi_confidence)
-    mech = payload.unified_mechanism_text or ""
-
-    prompt = (
-        "A patient is concurrently prescribed two medications.\n\n"
-        "          Patient information:\n"
-        f"          - Age: {age}\n"
-        f"          - Sex: {sex}\n"
-        f"          - Comorbidities: {comorbidities}\n\n"
-        "          Medication exposure:\n"
-        f"          - Start: {start}\n"
-        f"          - End: {end}\n"
-        f"          - Overlap days: {ol_days_str}\n\n"
-        "          Drugs:\n"
-        f"          - Drug 1: {drug1}\n"
-        f"          - Drug 2: {drug2}\n"
-        f"          - Known interaction in clinical sources: {known_str}\n"
-        f"          - Number of data sources supporting this: {support}\n\n"
-        "          Mechanistic context:\n"
-        f"          {mech}\n\n"
-        "          Return:\n"
-        '          1) A JSON object: {"severity":"<Minor|Moderate|Major>"} (exactly).\n'
-        "          2) 1–3 sentence explanation citing your decision\n"
-    )
-    return prompt
+    
+    # Extract reasoning content between <reasoning> tags
+    reasoning_match = re.search(r'<reasoning>(.*?)</reasoning>', response_text, re.DOTALL | re.IGNORECASE)
+    reasoning = reasoning_match.group(1).strip() if reasoning_match else ""
+    
+    # Extract content after the reasoning tags
+    content = response_text
+    if reasoning_match:
+        # Get everything after the closing reasoning tag
+        content_start = response_text.find('</reasoning>') + len('</reasoning>')
+        content = response_text[content_start:].strip()
+    
+    # Change Content to JSON
+    content = json.loads(content)
+    
+    return {
+        "reasoning": reasoning,
+        "content": content,
+    }
 
 
-def resolve_model_path() -> str:
+def get_bedrock_client():
     """
-    Resolve a local fine-tuned model path. Tries env var DDI_MODEL_PATH first, then a few fallbacks.
+    Create and return a Bedrock Runtime client.
+    
+    For local testing with API keys:
+    - Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in .env
+    
+    For ECS deployment:
+    - The task will inherit IAM role permissions automatically
+    - No credentials needed in environment variables
     """
-    env_path = os.getenv("DDI_MODEL_PATH")
-    if env_path and Path(env_path).exists():
-        return env_path
-
-    here = Path(__file__).resolve()
-    project_root = (
-        here.parents[3] if len(here.parents) >= 4 else here.parent.parent.parent
-    )
-    candidates = [
-        project_root / "local_checkpoints" / "grpo_ddi_model",
-        project_root / "local_checkpoints",
-        project_root / "checkpoints" / "grpo_ddi_model",
-        Path.cwd() / "local_checkpoints" / "grpo_ddi_model",
-        Path.cwd() / "local_checkpoints",
-    ]
-    for c in candidates:
-        if c.is_dir():
-            # If directory contains a HF model (config.json/tokenizer files), prefer it.
-            if (
-                (c / "config.json").exists()
-                or (c / "tokenizer.json").exists()
-                or (c / "tokenizer_config.json").exists()
-            ):
-                return str(c)
-            # Or if it has a single subdir that looks like a model
-            subdirs = [p for p in c.iterdir() if p.is_dir()]
-            for sd in subdirs:
-                if (sd / "config.json").exists() or (
-                    sd / "tokenizer_config.json"
-                ).exists():
-                    return str(sd)
-            return str(c)
-    # Fallback to base model if no local checkpoints found
-    return "Qwen/Qwen2.5-0.5B"
-
-
-def get_model_and_tokenizer():
-    """
-    Load and cache the model/tokenizer so we don't reload on every request.
-
-    Returns:
-        model, tokenizer, gen_cfg, model_path
-    """
-    global _CACHED_MODEL, _CACHED_TOKENIZER, _CACHED_GEN_CFG, _CACHED_MODEL_PATH, _CACHED_DEVICE
-
-    if _CACHED_MODEL is not None and _CACHED_TOKENIZER is not None:
-        return _CACHED_MODEL, _CACHED_TOKENIZER, _CACHED_GEN_CFG, _CACHED_MODEL_PATH
-
+    aws_region = os.getenv("AWS_REGION", "us-east-1")
+    
+    # Try to create client - boto3 will automatically use:
+    # 1. Environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
+    # 2. IAM role (when running in ECS)
+    # 3. AWS credentials file (~/.aws/credentials)
     try:
-        model_path = resolve_model_path()
-    except NameError:
-        model_path = os.getenv("DDI_MODEL_PATH", "Qwen/Qwen2.5-0.5B")
+        client = boto3.client(
+            service_name="bedrock-runtime",
+            region_name=aws_region
+        )
+        print(f"Bedrock client initialized for region: {aws_region}")
+        return client
+    except Exception as e:
+        print(f"Error initializing Bedrock client: {str(e)}")
+        raise
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    dtype = torch.bfloat16 if torch.cuda.is_available() else torch.float32
 
-    print(f"Loading model from: {model_path}")
-    print(f"Using device: {device}")
+def invoke_bedrock_model(system_prompt: str, user_prompt: str) -> str:
+    """
+    Invoke AWS Bedrock model with separate system and user prompts.
 
-    tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-    model = AutoModelForCausalLM.from_pretrained(
-        model_path,
-        trust_remote_code=True,
-        device_map="auto" if device == "cuda" else None,
-        torch_dtype=dtype if device == "cuda" else None,
-    )
+    IMPORTANT: Different models support different fields in the request body and have different response formats.
+    https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html
 
-    if tokenizer.pad_token_id is None and tokenizer.eos_token_id is not None:
-        tokenizer.pad_token = tokenizer.eos_token
-        model.config.pad_token_id = tokenizer.eos_token_id
+    Uses the model specified in BEDROCK_MODEL_ID environment variable.
+    Default: openai.gpt-oss-120b-1:0
+    """
+    client = get_bedrock_client()
+    model_id = os.getenv("BEDROCK_MODEL_ID", "openai.gpt-oss-120b-1:0")
 
-    gen_cfg = GenerationConfig(
-        max_new_tokens=256,
-        temperature=0.7,
-        do_sample=False,
-        top_p=1.0,
-        eos_token_id=tokenizer.eos_token_id,
-        pad_token_id=tokenizer.pad_token_id,
-    )
-
-    _CACHED_MODEL = model
-    _CACHED_TOKENIZER = tokenizer
-    _CACHED_GEN_CFG = gen_cfg
-    _CACHED_MODEL_PATH = model_path
-    _CACHED_DEVICE = device
-
-    return model, tokenizer, gen_cfg, model_path
-
+    # Prepare the request body based on the model provider
+    
+    # OpenAI models use the Converse API format with system and user messages.
+    # TODO: We can experiment with more request parameters to tune response
+    # https://platform.openai.com/docs/api-reference/chat/create
+    if "openai.gpt-oss" in model_id:
+        request_body = {
+            "max_completion_tokens": 4096,
+            "temperature": 0.7,
+            # "reasoning_effort": "high",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": system_prompt
+                },
+                {
+                    "role": "user",
+                    "content": user_prompt
+                }
+            ]
+        }
+    else:
+        print("Using non-OpenAI model")
+        # For non-OpenAI models, combine system and user prompts
+        combined_prompt = f"System: {system_prompt}\n\nUser: {user_prompt}"
+        request_body = {
+            "prompt": combined_prompt,
+            "max_tokens": 4096,
+            "temperature": 0.7        
+        }
+    
+    try:
+        response = client.invoke_model(
+            modelId=model_id,
+            body=json.dumps(request_body)
+        )
+        
+        response_body = json.loads(response['body'].read())
+        
+        # Extract completion based on model provider
+        if "openai.gpt-oss" in model_id:
+            completion = response_body['choices'][0]['message']['content']
+        elif "anthropic.claude" in model_id:
+            completion = response_body['content'][0]['text']
+        else:
+            # Try common response fields
+            completion = response_body.get('completion', response_body.get('text', str(response_body)))
+        
+        print()
+        return completion
+        
+    except ClientError as e:
+        error_code = e.response['Error']['Code']
+        error_message = e.response['Error']['Message']
+        raise Exception(f"Bedrock API error ({error_code}): {error_message}")
+    except NoCredentialsError:
+        raise Exception("AWS credentials not found. Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY for local testing.")
+    except Exception as e:
+        raise Exception(f"Error invoking Bedrock model: {str(e)}")
+    
