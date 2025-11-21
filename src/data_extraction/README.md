@@ -30,10 +30,12 @@ Install the required dependencies:
 pip install -r requirements.txt
 ```
 
-## Instructions
+## Usage
 
 To run the data fetching script:
 
 ```bash
 python3 fetch_datasets.py -o <OUTPUT_PATH>
 ```
+
+This will fetch the raw datasets and place them in the relative directory defined by `<OUTPUT_PATH>`. Intermediate folders will be created if the path does not exist.
