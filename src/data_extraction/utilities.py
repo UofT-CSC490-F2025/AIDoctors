@@ -87,9 +87,10 @@ def excel_bytes_to_dfs(excel_bytes: bytes) -> Dict[str, pd.DataFrame]:
     return sheets
 
 
-def save_sheets_as_csv(sheets: Dict[str, pd.DataFrame], out_dir: str, base_name: str = "data") -> None:
-    """Save each DataFrame in `sheets` as a CSV file in `out_dir`.
-    """
+def save_sheets_as_csv(
+    sheets: Dict[str, pd.DataFrame], out_dir: str, base_name: str = "data"
+) -> None:
+    """Save each DataFrame in `sheets` as a CSV file in `out_dir`."""
     os.makedirs(out_dir, exist_ok=True)
     # If only one sheet is present, name the file as <base_name>.csv
     single_sheet = len(sheets) == 1
@@ -128,7 +129,9 @@ def extract_xlsx_and_save_csv(
             if sheet_arg in sheets:
                 selected[sheet_arg] = sheets[sheet_arg]
             else:
-                raise KeyError(f"Sheet '{sheet_arg}' not found. Available: {list(sheets.keys())}")
+                raise KeyError(
+                    f"Sheet '{sheet_arg}' not found. Available: {list(sheets.keys())}"
+                )
         else:
             keys = list(sheets.keys())
             if idx < 1 or idx > len(keys):
@@ -203,7 +206,10 @@ def extract_zip_and_save_members(
             # compute target path and prevent path traversal
             dest_path = os.path.join(out_dir, name)
             dest_path_abs = os.path.abspath(dest_path)
-            if not dest_path_abs.startswith(base_abs + os.sep) and dest_path_abs != base_abs:
+            if (
+                not dest_path_abs.startswith(base_abs + os.sep)
+                and dest_path_abs != base_abs
+            ):
                 raise ValueError(f"Attempted Path Traversal in ZIP member: {name}")
 
             dest_dir = os.path.dirname(dest_path_abs)
@@ -218,7 +224,7 @@ def extract_zip_and_save_members(
             extracted_paths.append(dest_path_abs)
 
         return extracted_paths
-    
+
 
 ### Kaggle downloads and extraction
 
@@ -262,7 +268,9 @@ def extract_kaggle_dataset_and_save_members(
                     src_path = os.path.join(root, fname)
                     dest_path = os.path.join(out_dir, fname)
                     if os.path.exists(dest_path) and not overwrite:
-                        raise FileExistsError(f"Target file already exists: {dest_path}")
+                        raise FileExistsError(
+                            f"Target file already exists: {dest_path}"
+                        )
                     # Ensure destination dir exists (out_dir already created)
                     shutil.move(src_path, dest_path)
                     moved.append(dest_path)
@@ -274,4 +282,3 @@ def extract_kaggle_dataset_and_save_members(
                 os.environ.pop("KAGGLEHUB_CACHE", None)
             else:
                 os.environ["KAGGLEHUB_CACHE"] = prev_cache
-
