@@ -34,6 +34,40 @@ from typing import Tuple, List, Dict, Any
 import numpy as np
 import pandas as pd
 
+def _uniq_nonempty(values: pd.Series) -> list:
+    arr = values.to_numpy()
+    seen = set()
+    out: list[Any] = []
+    for v in arr:
+        # Skip NaN / None
+        if v is None:
+            continue
+        if isinstance(v, float) and pd.isna(v):
+            continue
+
+        s = str(v).strip()
+        if not s:
+            continue
+        if s in seen:
+            continue
+        seen.add(s)
+        out.append(s)
+    return out
+
+
+def _first_non_null(values: pd.Series):
+    arr = values.to_numpy()
+    for v in arr:
+        if v is None:
+            continue
+        if isinstance(v, float) and pd.isna(v):
+            continue
+        s = str(v).strip()
+        if s:
+            return s
+    return np.nan
+
+
 # ----------------------------
 # Config
 # ----------------------------
@@ -203,78 +237,211 @@ def map_product_to_ingredient(meds: pd.DataFrame, use_rxnav: bool=False) -> pd.D
 # ----------------------------
 # Stage 4: Patient AE risks (join) + enriched + Top-K
 # ----------------------------
-def build_patient_ae_tables(meds: pd.DataFrame,
-                            patients: pd.DataFrame,
-                            conds: pd.DataFrame,
-                            aeolus_by_rxcui: pd.DataFrame,
-                            prod_ing_map: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    meds_min = (meds.rename(columns={"PATIENT":"patient_uuid"})
-                [["patient_uuid","DESCRIPTION","START","STOP","rxcui"]]
-                .dropna(subset=["rxcui"]))
+def build_patient_ae_tables(
+    meds: pd.DataFrame,
+    patients: pd.DataFrame,
+    conds: pd.DataFrame,
+    aeolus_by_rxcui: pd.DataFrame,
+    prod_ing_map: pd.DataFrame,
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    # ----------------------------
+    # 1) Minimal meds view + ingredient mapping
+    # ----------------------------
+    meds_min = (
+        meds.rename(columns={"PATIENT": "patient_uuid"})[
+            ["patient_uuid", "DESCRIPTION", "START", "STOP", "rxcui"]
+        ]
+        .dropna(subset=["rxcui"])
+    )
     meds_min["rxcui"] = meds_min["rxcui"].astype(int)
 
     # map to ingredient
     meds_min = meds_min.merge(prod_ing_map, on="rxcui", how="left")
-    aeolus_by_rxcui = aeolus_by_rxcui.astype({"rxcui":"int"})
-    risk = meds_min.merge(aeolus_by_rxcui, left_on="ingredient_rxcui", right_on="rxcui", how="inner")
+    aeolus_by_rxcui = aeolus_by_rxcui.astype({"rxcui": "int"})
 
-    risk["estimated_onset"] = (risk["START"] + pd.to_timedelta(5, unit="D")).dt.tz_convert("UTC")
+    risk = meds_min.merge(
+        aeolus_by_rxcui, left_on="ingredient_rxcui", right_on="rxcui", how="inner"
+    )
 
-    risk_ann = (risk.rename(columns={"DESCRIPTION":"synthea_drug_desc","drug_name":"aeolus_drug_name"})[[
-        "patient_uuid","rxcui_x","ingredient_rxcui","synthea_drug_desc","aeolus_drug_name",
-        "START","STOP","estimated_onset",
-        "outcome_concept_id","outcome_text","meddra_code",
-        "case_count","prr","ror"
-    ]].sort_values(["patient_uuid","ingredient_rxcui","ror"], ascending=[True, True, False]).reset_index(drop=True))
+    # estimated onset (still vectorized)
+    risk["estimated_onset"] = (
+        risk["START"] + pd.to_timedelta(5, unit="D")
+    ).dt.tz_convert("UTC")
+
+    # ----------------------------
+    # 2) Base risk annotation table
+    # ----------------------------
+    risk_ann = (
+        risk.rename(
+            columns={
+                "DESCRIPTION": "synthea_drug_desc",
+                "drug_name": "aeolus_drug_name",
+            }
+        )[
+            [
+                "patient_uuid",
+                "rxcui_x",
+                "ingredient_rxcui",
+                "synthea_drug_desc",
+                "aeolus_drug_name",
+                "START",
+                "STOP",
+                "estimated_onset",
+                "outcome_concept_id",
+                "outcome_text",
+                "meddra_code",
+                "case_count",
+                "prr",
+                "ror",
+            ]
+        ]
+        .sort_values(
+            ["patient_uuid", "ingredient_rxcui", "ror"],
+            ascending=[True, True, False],
+        )
+        .reset_index(drop=True)
+    )
 
     risk_path = OUT / "patient_ae_risk_annotations_rxnav.csv"
     risk_ann.to_csv(risk_path, index=False)
-    log(f"Saved patient AE risks → {risk_path} (rows={len(risk_ann):,})")
+    log(
+        f"Saved patient AE risks → {risk_path} "
+        f"(rows={len(risk_ann):,})"
+    )
 
-    # demographics
-    idx_date = risk_ann["START"].dropna().min() if risk_ann["START"].notna().any() else pd.Timestamp.now(tz="UTC")
+    # ----------------------------
+    # 3) Demographics (already cheap & vectorized)
+    # ----------------------------
+    if risk_ann["START"].notna().any():
+        idx_date = risk_ann["START"].dropna().min()
+    else:
+        idx_date = pd.Timestamp.now(tz="UTC")
+
     age_years = ((idx_date - patients["BIRTHDATE"]).dt.days // 365).astype("Int64")
-    demo = patients.rename(columns={"Id":"patient_uuid","GENDER":"Sex"})[["patient_uuid","Sex"]].copy()
+
+    demo = patients.rename(columns={"Id": "patient_uuid", "GENDER": "Sex"})[
+        ["patient_uuid", "Sex"]
+    ].copy()
     demo["Age"] = age_years
 
-    # comorbidities
-    comorb = (conds.groupby("PATIENT")["DESCRIPTION"]
-                    .apply(lambda x: sorted({str(v) for v in x if pd.notna(v)}))
-                    .reset_index()
-                    .rename(columns={"PATIENT":"patient_uuid","DESCRIPTION":"Comorbidities"}))
+    # ----------------------------
+    # 4) Comorbidities – optimized groupby
+    # ----------------------------
+    # Pre-clean once: drop NA, cast to str, sort so pd.unique() gives stable order
+    conds_clean = (
+        conds.loc[conds["DESCRIPTION"].notna(), ["PATIENT", "DESCRIPTION"]]
+        .copy()
+    )
+    conds_clean["DESCRIPTION"] = conds_clean["DESCRIPTION"].astype(str)
+    conds_clean = conds_clean.sort_values(
+        ["PATIENT", "DESCRIPTION"], kind="mergesort"
+    )
 
-    enriched = (risk_ann
-                .merge(demo, on="patient_uuid", how="left")
-                .merge(comorb, on="patient_uuid", how="left"))
+    def _uniq_sorted(values: pd.Series) -> list[str]:
+        """
+        Return a sorted list of unique comorbidities for a patient.
 
-    # nice subset/order
-    keep_cols = [c for c in [
-        "patient_uuid","Age","Sex","Comorbidities",
-        "START","STOP",
-        "synthea_drug_desc","rxcui_x","ingredient_rxcui",
-        "aeolus_drug_name","outcome_text","meddra_code","case_count","prr","ror"
-    ] if c in enriched.columns]
+        Using pd.unique over a pre-sorted series avoids Python-level sets
+        and repeated isinstance / notna calls in the hot path.
+        """
+        if values.empty:
+            return []
+        # values are already sorted by (PATIENT, DESCRIPTION)
+        uniq = pd.unique(values.to_numpy(dtype="str", copy=False))
+        return uniq.tolist()
+
+    comorb = (
+        conds_clean.groupby("PATIENT", sort=False)["DESCRIPTION"]
+        .agg(_uniq_sorted)
+        .reset_index()
+        .rename(
+            columns={
+                "PATIENT": "patient_uuid",
+                "DESCRIPTION": "Comorbidities",
+            }
+        )
+    )
+
+    # ----------------------------
+    # 5) Enriched table (risk + demo + comorb)
+    # ----------------------------
+    enriched = (
+        risk_ann.merge(demo, on="patient_uuid", how="left")
+        .merge(comorb, on="patient_uuid", how="left")
+    )
+
+    keep_cols = [
+        c
+        for c in [
+            "patient_uuid",
+            "Age",
+            "Sex",
+            "Comorbidities",
+            "START",
+            "STOP",
+            "synthea_drug_desc",
+            "rxcui_x",
+            "ingredient_rxcui",
+            "aeolus_drug_name",
+            "outcome_text",
+            "meddra_code",
+            "case_count",
+            "prr",
+            "ror",
+        ]
+        if c in enriched.columns
+    ]
     enriched = enriched[keep_cols].copy()
+
     enriched["ror"] = pd.to_numeric(enriched["ror"], errors="coerce")
     enriched["case_count"] = pd.to_numeric(enriched["case_count"], errors="coerce")
-    enriched = enriched.sort_values(["patient_uuid","ror","case_count"], ascending=[True, False, False]).reset_index(drop=True)
+
+    enriched = (
+        enriched.sort_values(
+            ["patient_uuid", "ror", "case_count"],
+            ascending=[True, False, False],
+        )
+        .reset_index(drop=True)
+    )
 
     enriched_path = OUT / "ae_risk_enriched.csv"
     enriched.to_csv(enriched_path, index=False)
-    log(f"Saved enriched table → {enriched_path} (rows={len(enriched):,})")
+    log(
+        f"Saved enriched table → {enriched_path} "
+        f"(rows={len(enriched):,})"
+    )
 
-    # Top-K per patient×drug
-    enriched["synthea_drug"] = enriched["synthea_drug_desc"].astype(str).map(clean_synthea_drug)
-    sorted_enriched = enriched.sort_values(["patient_uuid","synthea_drug","ror","case_count"],
-                                           ascending=[True, True, False, False])
-    topk = (sorted_enriched.groupby(["patient_uuid","synthea_drug"], as_index=False, sort=False)
-            .head(TOP_K).reset_index(drop=True))
+    # ----------------------------
+    # 6) Top-K per patient × drug
+    # ----------------------------
+    enriched["synthea_drug"] = (
+        enriched["synthea_drug_desc"].astype(str).map(clean_synthea_drug)
+    )
+
+    sorted_enriched = enriched.sort_values(
+        ["patient_uuid", "synthea_drug", "ror", "case_count"],
+        ascending=[True, True, False, False],
+    )
+
+    topk = (
+        sorted_enriched.groupby(
+            ["patient_uuid", "synthea_drug"],
+            as_index=False,
+            sort=False,
+        )
+        .head(TOP_K)
+        .reset_index(drop=True)
+    )
 
     topk_path = OUT / "ae_risk_topk_per_patient_drug.csv"
     topk.to_csv(topk_path, index=False)
-    log(f"Saved Top-{TOP_K} per patient×drug → {topk_path} (rows={len(topk):,})")
+    log(
+        f"Saved Top-{TOP_K} per patient×drug → {topk_path} "
+        f"(rows={len(topk):,})"
+    )
 
     return risk_ann, enriched, topk
+
 
 # ----------------------------
 # Stage 5: DDI sources → unified reference
@@ -308,10 +475,17 @@ def build_ddi_reference() -> pd.DataFrame:
                       .merge(mendeley, on=["drug1_name","drug2_name"], how="outer"))
     merged.columns = [c.lower() for c in merged.columns]
 
-    # normalize + pair key
     merged["drug1_norm"] = merged["drug1_name"].map(normalize_name)
     merged["drug2_norm"] = merged["drug2_name"].map(normalize_name)
-    merged["pair_key"]   = merged.apply(lambda r: tuple(sorted([r["drug1_norm"], r["drug2_norm"]])), axis=1)
+
+    d1 = merged["drug1_norm"].fillna("")
+    d2 = merged["drug2_norm"].fillna("")
+
+    # Ensure canonical (sorted) ordering without row-wise apply
+    left  = np.where(d1 <= d2, d1, d2)
+    right = np.where(d1 <= d2, d2, d1)
+    merged["pair_key"] = list(zip(left, right))
+
 
     # helpers
     def uniq_list(s: pd.Series) -> list:
@@ -331,16 +505,20 @@ def build_ddi_reference() -> pd.DataFrame:
             if pd.notna(v) and str(v).strip()!="": return v
         return np.nan
 
-    ddi_ref = (merged.groupby("pair_key", as_index=False)
-        .agg({
-            "ddinter_level": uniq_list,
-            "micromedex_sev_level": uniq_list,
-            "micromedex_evid_level": uniq_list,
-            "interaction_type_crescenddi": first_non_null,
-            "interaction_type_mendeley": uniq_list,
-            "drug1_norm": first_non_null,
-            "drug2_norm": first_non_null
-        }))
+    ddi_ref = (
+        merged.groupby("pair_key", as_index=False)
+        .agg(
+            {
+                "ddinter_level": _uniq_nonempty,
+                "micromedex_sev_level": _uniq_nonempty,
+                "micromedex_evid_level": _uniq_nonempty,
+                "interaction_type_mendeley": _uniq_nonempty,
+                "interaction_type_crescenddi": _first_non_null,
+                "drug1_norm": _first_non_null,
+                "drug2_norm": _first_non_null,
+            }
+        )
+    )
 
     # source coverage / confidence
     ddi_ref["has_ddinter"]    = ddi_ref["ddinter_level"].apply(lambda x: isinstance(x, list) and len(x)>0)

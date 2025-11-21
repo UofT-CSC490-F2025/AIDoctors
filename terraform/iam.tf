@@ -27,36 +27,6 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-# Additional policy for ECR access
-resource "aws_iam_role_policy" "ecs_task_execution_ecr_policy" {
-  name = "${local.name}-ecs-task-execution-ecr-policy"
-  role = aws_iam_role.ecs_task_execution_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage"
-        ]
-        Resource = "*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
-}
 
 # ECS Task Role
 # This role is used by the application running inside the container
@@ -106,7 +76,9 @@ resource "aws_iam_role_policy" "ecs_task_role_policy" {
           "s3:*",
           "ecr:*",
           "ecs:*",
-          "rds:*"
+          "rds:*",
+          "secretsmanager:*",
+          "bedrock:*"
         ]
         Resource = "*"
       }

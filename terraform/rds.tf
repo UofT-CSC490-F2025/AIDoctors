@@ -20,6 +20,7 @@ module "db" {
   db_name  = "aidoctorsdb" # Must be alphanumeric only
   username = "aidoctors_admin"
   port     = 5432
+  publicly_accessible = true
 
   # Password Management - RDS will manage the password automatically
   manage_master_user_password_rotation              = true

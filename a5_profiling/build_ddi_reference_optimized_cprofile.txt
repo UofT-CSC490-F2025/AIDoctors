@@ -1,0 +1,48 @@
+         190594330 function calls (190589475 primitive calls) in 45.401 seconds
+
+   Ordered by: cumulative time
+   List reduced from 2342 to 40 due to restriction <40>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.040    0.040   45.401   45.401 profile_build_ddi_reference.py:19(run_once)
+        1    0.077    0.077   45.362   45.362 pipeline.py:316(build_ddi_reference)
+        1    0.000    0.000   29.957   29.957 generic.py:1420(aggregate)
+        1    0.000    0.000   29.954   29.954 apply.py:172(agg)
+        1    0.006    0.006   29.954   29.954 apply.py:415(agg_dict_like)
+        1    0.000    0.000   29.948   29.948 apply.py:1575(agg_or_apply_dict_like)
+        1    0.000    0.000   29.918   29.918 apply.py:425(compute_dict_like)
+        1    0.000    0.000   29.918   29.918 apply.py:496(<listcomp>)
+        7    0.000    0.000   29.917    4.274 generic.py:232(aggregate)
+        7    0.000    0.000   29.651    4.236 generic.py:318(_python_agg_general)
+        7    0.009    0.001   29.650    4.236 ops.py:840(agg_series)
+        7    1.504    0.215   29.641    4.234 ops.py:873(_aggregate_series_pure_python)
+  2407048    0.767    0.000   19.763    0.000 ops.py:1149(__iter__)
+  2407041    1.917    0.000   18.977    0.000 ops.py:1171(_chop)
+        3    0.000    0.000   11.094    3.698 frame.py:10170(apply)
+        3    0.004    0.001   11.094    3.698 apply.py:864(apply)
+        3    0.000    0.000   11.090    3.697 apply.py:1061(apply_standard)
+        3    0.414    0.138   10.980    3.660 apply.py:1070(apply_series_generator)
+  2407041    0.522    0.000    7.919    0.000 generic.py:324(<lambda>)
+  2407041    3.032    0.000    6.585    0.000 managers.py:1974(get_slice)
+   343863    0.679    0.000    5.138    0.000 pipeline.py:402(choose_severity)
+  2407067    1.020    0.000    5.100    0.000 series.py:664(_constructor_from_mgr)
+  2407041    1.845    0.000    4.805    0.000 base.py:541(to_numpy)
+  2407192    3.381    0.000    4.750    0.000 generic.py:6236(__finalize__)
+  2058207    1.294    0.000    4.536    0.000 series.py:1095(__getitem__)
+  1375452    1.219    0.000    4.525    0.000 pipeline.py:37(_uniq_nonempty)
+  2935955    0.454    0.000    3.208    0.000 missing.py:101(isna)
+  2407184    0.651    0.000    2.910    0.000 generic.py:339(_from_mgr)
+  1031589    0.614    0.000    2.872    0.000 pipeline.py:58(_first_non_null)
+  2407041    0.944    0.000    2.871    0.000 base.py:5425(_getitem_slice)
+33698399/33698317    1.748    0.000    2.777    0.000 {built-in method builtins.isinstance}
+  2935955    0.824    0.000    2.754    0.000 missing.py:184(_isna)
+   519380    0.226    0.000    2.704    0.000 missing.py:380(notna)
+        6    0.000    0.000    2.573    0.429 base.py:891(_map_values)
+        6    0.219    0.037    2.573    0.429 algorithms.py:1667(map_array)
+  1026618    0.157    0.000    2.493    0.000 generic.py:4526(get)
+   343863    0.170    0.000    2.434    0.000 pipeline.py:395(<lambda>)
+        2    0.000    0.000    2.244    1.122 series.py:4620(map)
+   831614    0.515    0.000    2.153    0.000 pipeline.py:109(normalize_name)
+  2407251    1.698    0.000    2.087    0.000 generic.py:278(__init__)
+
+

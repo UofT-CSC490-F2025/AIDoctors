@@ -5,6 +5,9 @@ module "ecr_app" {
 
   repository_name = "${local.name}-app"
 
+  # Make image tags mutable
+  repository_image_tag_mutability = "MUTABLE"
+
   # Lifecycle policy to manage image retention
   repository_lifecycle_policy = jsonencode({
     rules = [
@@ -57,6 +60,9 @@ module "ecr_pipeline" {
   version = "~> 2.0"
 
   repository_name = "${local.name}-pipeline"
+
+  # Make image tags mutable
+  repository_image_tag_mutability = "MUTABLE"
 
   # Lifecycle policy to manage image retention
   repository_lifecycle_policy = jsonencode({
