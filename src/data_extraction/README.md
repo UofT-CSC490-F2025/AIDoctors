@@ -35,5 +35,5 @@ pip install -r requirements.txt
 To run the data fetching script:
 
 ```bash
-python3 main.py -o <OUTPUT_PATH>
+python3 fetch_datasets.py -o <OUTPUT_PATH>
 ```
