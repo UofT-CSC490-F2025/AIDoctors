@@ -1,0 +1,48 @@
+467913089 function calls (465157323 primitive calls) in 110.071 seconds
+
+   Ordered by: cumulative time
+   List reduced from 2333 to 40 due to restriction <40>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.035    0.035  110.071  110.071 profile_build_ddi_reference.py:19(run_once)
+        1    0.060    0.060  110.036  110.036 pipeline.py:282(build_ddi_reference)
+        1    0.000    0.000   91.439   91.439 generic.py:1420(aggregate)
+        1    0.000    0.000   91.436   91.436 apply.py:172(agg)
+        1    0.006    0.006   91.436   91.436 apply.py:415(agg_dict_like)
+        1    0.000    0.000   91.430   91.430 apply.py:1575(agg_or_apply_dict_like)
+        1    0.000    0.000   91.399   91.399 apply.py:425(compute_dict_like)
+        1    0.000    0.000   91.399   91.399 apply.py:496(<listcomp>)
+        7    0.000    0.000   91.399   13.057 generic.py:232(aggregate)
+        7    0.000    0.000   91.116   13.017 generic.py:318(_python_agg_general)
+        7    0.009    0.001   91.115   13.016 ops.py:840(agg_series)
+        7    1.731    0.247   91.106   13.015 ops.py:873(_aggregate_series_pure_python)
+  2407041    0.605    0.000   68.323    0.000 generic.py:324(<lambda>)
+  1375452    1.675    0.000   64.865    0.000 pipeline.py:317(uniq_list)
+  1375452    1.274    0.000   61.573    0.000 series.py:5820(dropna)
+  1375453    1.148    0.000   57.823    0.000 missing.py:718(remove_na_arraylike)
+  4265273    4.378    0.000   43.072    0.000 series.py:1095(__getitem__)
+  2407048    0.896    0.000   20.515    0.000 ops.py:1149(__iter__)
+  2407041    2.134    0.000   19.601    0.000 ops.py:1171(_chop)
+  1375452    0.901    0.000   18.694    0.000 series.py:1216(_get_rows_with_mask)
+7397168/6021715    2.053    0.000   14.796    0.000 {built-in method numpy.asarray}
+        4    0.000    0.000   14.269    3.567 frame.py:10170(apply)
+        4    0.006    0.001   14.269    3.567 apply.py:864(apply)
+        4    0.000    0.000   14.263    3.566 apply.py:1061(apply_standard)
+        4    0.591    0.148   14.105    3.526 apply.py:1070(apply_series_generator)
+104488691/104488611    6.646    0.000   11.813    0.000 {built-in method builtins.isinstance}
+  1375452    2.634    0.000   11.458    0.000 managers.py:1954(get_rows_with_mask)
+  2750962    1.895    0.000   11.347    0.000 generic.py:6284(__getattr__)
+  1375452    0.846    0.000    9.374    0.000 indexing.py:2632(check_bool_indexer)
+  2750904    1.698    0.000    8.801    0.000 base.py:5437(_can_hold_identifiers_and_holds_name)
+  2991750    1.351    0.000    8.648    0.000 missing.py:380(notna)
+  3782517    1.681    0.000    8.544    0.000 series.py:664(_constructor_from_mgr)
+  1375508    2.382    0.000    8.189    0.000 base.py:5373(__getitem__)
+  2750917    1.439    0.000    7.882    0.000 common.py:97(is_bool_indexer)
+  3782642    5.153    0.000    7.452    0.000 generic.py:6236(__finalize__)
+  3823475    0.652    0.000    7.396    0.000 missing.py:101(isna)
+  2407041    3.315    0.000    7.145    0.000 managers.py:1974(get_slice)
+  3823475    1.563    0.000    6.744    0.000 missing.py:184(_isna)
+  4126360    2.304    0.000    5.634    0.000 common.py:1198(is_bool_dtype)
+  4126488    1.540    0.000    5.609    0.000 common.py:137(is_object_dtype)
+
+
