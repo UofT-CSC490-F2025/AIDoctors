@@ -29,3 +29,11 @@ Install the required dependencies:
 ```bash
 pip install -r requirements.txt
 ```
+
+## Instructions
+
+To run the data fetching script:
+
+```bash
+python3 main.py -o <OUTPUT_PATH>
+```

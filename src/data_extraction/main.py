@@ -8,13 +8,27 @@ Script to download and extract CSVs from:
 """
 
 if __name__ == "__main__":
+    import argparse
+    import os
     from utilities import (
         extract_and_save,
         extract_zip_and_save_members,
         extract_kaggle_dataset_and_save_members,
     )
 
-    EXTRACTION_DESTINATION = "data/raw_datasets"
+    # Get output directory from command-line arguments
+    parser = argparse.ArgumentParser(
+        description="Download and extract raw datasets to a destination folder"
+    )
+    parser.add_argument(
+        "--output-dir",
+        "-o",
+        default="data/raw_datasets",
+        help="Path to save the raw datasets (default: data/raw_datasets)",
+    )
+    args = parser.parse_args()
+    EXTRACTION_DESTINATION = os.path.expanduser(args.output_dir)
+    os.makedirs(EXTRACTION_DESTINATION, exist_ok=True)  # Create output dir if needed
 
     # Extract CRESCENDDI files (can also use extract_xlsx_and_save_csv to save as CSVs)
     print("Extracting CRESCENDDI files...")
