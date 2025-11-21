@@ -1,0 +1,384 @@
+index,true,pred,raw
+6912,Major,Major,"{""severity"":""Major""}
+Verapamil inhibits P‑glycoprotein (and to a lesser extent CYP3A4), markedly reducing digoxin clearance and raising its plasma concentration. The resulting digoxin toxicity can be life‑threatening, so this drug‑drug interaction is classified as a major severity."
+5053,Moderate,Moderate,"{""severity"":""Moderate""}
+The thiazide diuretic hydrochlorothiazide reduces plasma volume, while lisinopril blocks angiotensin‑II–mediated vasoconstriction. When used together they produce an additive blood‑pressure‑lowering effect, increasing the risk of symptomatic hypotension, especially after initiation or dose changes. This additive effect is generally considered a moderate‑severity interaction."
+13786,Major,Major,"{""severity"":""Major""}
+Verapamil inhibits P‑glycoprotein and CYP3A4, which are key pathways for digoxin clearance. Co‑administration can markedly raise digoxin plasma concentrations, increasing the risk of digoxin toxicity (arrhythmias, nausea, visual disturbances). This interaction is therefore classified as a major DDI."
+5933,Major,Major,"{""severity"":""Major""}  
+Verapamil inhibits P‑glycoprotein and CYP3A4, which are key pathways for digoxin clearance. This raises digoxin plasma concentrations and can precipitate digoxin toxicity (arrhythmias, nausea, visual disturbances). Because the interaction can lead to serious, potentially life‑threatening effects, it is classified as a major DDI."
+18136,Minor,Moderate,"{""severity"":""Moderate""}
+
+Simvastatin can inhibit CYP3A4 metabolism, which also contributes to warfarin clearance, leading to increased warfarin plasma levels and an elevated INR. This raises the risk of bleeding, warranting close INR monitoring, thus the interaction is classified as moderate in severity."
+17090,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide and lisinopril both lower blood pressure; when used together they can produce an additive antihypertensive effect that may lead to symptomatic hypotension, particularly in patients who are volume‑depleted or have renal impairment. This risk is clinically relevant but generally manageable, so the interaction is classified as moderate."
+6229,Moderate,Moderate,"{""severity"":""Moderate""}
+Hydrochlorothiazide reduces plasma volume through diuresis, while lisinopril decreases systemic vascular resistance via inhibition of angiotensin‑converting enzyme. When used together the antihypertensive effects are additive, increasing the risk of clinically significant hypotension, especially in patients who are volume‑depleted or have other risk factors. This additive effect is generally classified as a moderate‑severity drug‑drug interaction."
+1974,Major,Moderate,"{""severity"":""Moderate""}
+
+Amlodipine inhibits CYP3A4, which metabolizes simvastatin. Co‑administration raises simvastatin plasma concentrations, increasing the risk of myopathy and rhabdomyolysis. Because dose adjustment (e.g., limiting simvastatin to ≤20 mg) is required, the interaction is classified as moderate."
+17654,Major,Moderate,"{""severity"":""Moderate""}
+
+Amlodipine inhibits CYP3A4, the enzyme responsible for metabolizing simvastatin. Co‑administration raises simvastatin plasma concentrations, increasing the risk of dose‑related myopathy and rhabdomyolysis. Because the interaction is clinically significant but can be managed by limiting the simvastatin dose (≤20 mg) or choosing an alternative statin, it is classified as a moderate‑severity DDI."
+3260,Minor,Moderate,"{""severity"":""Moderate""}
+
+Simvastatin can potentiate the anticoagulant effect of warfarin, likely through displacement from plasma proteins and inhibition of CYP enzymes that metabolize the S‑enantiomer of warfarin. This may raise INR and increase bleeding risk, warranting close INR monitoring, which classifies the interaction as moderate in severity."
+6721,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide and lisinopril both lower blood pressure through complementary mechanisms (diuresis and inhibition of the renin‑angiotensin system). When used together they can produce an additive hypotensive effect, especially in patients who are volume‑depleted or start therapy simultaneously. This risk is clinically relevant but manageable with blood pressure monitoring, thus it is classified as a moderate interaction."
+8059,Major,Moderate,"{""severity"":""Moderate""}
+Amlodipine inhibits CYP3A4, which metabolizes simvastatin. Co‑administration raises simvastatin plasma concentrations, increasing the risk of dose‑related myopathy and rhabdomyolysis. This interaction is generally classified as moderate in severity."
+4501,Moderate,Moderate,"{""severity"":""Moderate""}  
+Hydrochlorothiazide and lisinopril both lower blood pressure; when combined they can produce an additive hypotensive effect, especially after the initial doses or in patients with reduced intravascular volume. This synergistic drop in blood pressure is clinically relevant and warrants monitoring, placing the interaction at a moderate severity level."
+20391,Moderate,Moderate,"{""severity"":""Moderate""}
+The thiazide diuretic hydrochlorothiazide and the ACE‑inhibitor lisinopril both lower blood pressure and can produce additive hypotensive effects, especially in patients who are volume‑depleted or have renal impairment. This synergistic drop in blood pressure is clinically relevant but is generally manageable with monitoring, thus the interaction is classified as moderate."
+4503,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide reduces plasma volume through diuresis, while lisinopril lowers systemic vascular resistance by inhibiting angiotensin‑converting enzyme. Their combined antihypertensive actions can produce an additive drop in blood pressure, increasing the risk of symptomatic hypotension, which is generally classified as a moderate‑severity drug‑drug interaction."
+14239,Moderate,Minor,"{""severity"":""Minor""}
+
+Leuprolide (a GnRH agonist) and galantamine (an acetylcholinesterase inhibitor) have no known pharmacokinetic or pharmacodynamic synergy; each acts on distinct pathways (hormonal axis vs. cholinergic neurotransmission). At most, overlapping side effects such as nausea or cardiovascular effects could modestly increase patient discomfort, but no serious adverse outcome is expected, supporting a minor interaction rating."
+16108,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide reduces intravascular volume through diuresis, while lisinopril blocks angiotensin‑II–mediated vasoconstriction. When combined, these effects are additive and can precipitate symptomatic hypotension, especially in patients who are volume‑depleted or on other antihypertensives. This additive blood‑pressure‑lowering potential is generally classified as a moderate‑severity drug‑drug interaction."
+18323,Major,Moderate,"{""severity"":""Moderate""}  
+Hydrochlorothiazide’s antihypertensive effect can be attenuated by naproxen’s inhibition of prostaglandin synthesis, which reduces renal blood flow and sodium excretion. This may diminish blood‑pressure control and increase the risk of renal impairment, a clinically relevant but not life‑threatening interaction, thus classified as moderate."
+1886,Moderate,Moderate,"{""severity"":""Moderate""}  
+The thiazide diuretic hydrochlorothiazide and the ACE‑inhibitor lisinopril both lower blood pressure; when combined they can produce an additive hypotensive effect, especially after the first dose or in volume‑depleted patients. This synergistic drop in blood pressure is clinically relevant and warrants monitoring, placing the interaction at a moderate severity level."
+4241,Major,Major,"{""severity"":""Major""}
+
+Both oxycodone and tramadol are centrally acting opioids that depress the respiratory center and cause sedation. When used together their effects are additive, markedly increasing the risk of profound respiratory depression, profound sedation, and potentially fatal overdose. Tramadol’s additional serotonergic activity can further compound adverse CNS effects, supporting a major severity classification for this interaction."
+6353,Moderate,Moderate,"{""severity"":""Moderate""}  
+Hydrochlorothiazide promotes sodium and water loss, while lisinopril causes vasodilation by inhibiting angiotensin‑converting enzyme. When combined, the diuretic‑induced volume depletion and the ACE‑inhibitor‑mediated reduction in systemic vascular resistance can produce an additive drop in blood pressure, increasing the risk of clinically relevant hypotension. This synergistic effect is generally classified as a moderate‑severity drug‑drug interaction."
+761,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide and lisinopril both lower blood pressure through complementary mechanisms (diuresis and inhibition of the renin‑angiotensin system). Their combined effect can potentiate hypotension, particularly in patients who are volume‑depleted or on a low‑salt diet. This additive risk is generally classified as a moderate interaction because it may require dose adjustment or monitoring but is not usually contraindicated."
+18248,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide and lisinopril both lower blood pressure through complementary mechanisms (diuresis and inhibition of the renin‑angiotensin system). When used together they can produce an additive hypotensive effect, increasing the risk of symptomatic hypotension, especially in patients who are volume‑depleted or have renal impairment. This additive effect is generally classified as a moderate‑severity drug‑drug interaction."
+12101,Major,Major,"{""severity"":""Major""}
+
+Both oxycodone and tramadol are central nervous system depressants that act on μ‑opioid receptors, and tramadol also inhibits serotonin and norepinephrine reuptake. When used together they produce additive opioid effects and can precipitate profound respiratory depression, excessive sedation, and, in patients taking other serotonergic agents, serotonin syndrome. This combination therefore carries a major risk of serious adverse outcomes."
+19051,Major,Moderate,"{""severity"":""Moderate""}
+
+Amlodipine inhibits CYP3A4, the enzyme responsible for metabolizing simvastatin. Co‑administration raises simvastatin plasma concentrations, increasing the risk of dose‑related adverse effects such as myopathy and rhabdomyolysis. Because the interaction is clinically significant but can be managed by dose adjustment (e.g., limiting simvastatin to ≤20 mg), it is classified as a moderate‑severity DDI."
+966,Major,Moderate,"{""severity"":""Moderate""}
+
+Amlodipine inhibits CYP3A4, which metabolizes simvastatin. Co‑administration raises simvastatin plasma concentrations, increasing the risk of myopathy and rhabdomyolysis. This pharmacokinetic interaction is generally classified as moderate in severity."
+2865,Major,Major,"{""severity"":""Major""}  
+Verapamil is a potent inhibitor of CYP3A4, the enzyme responsible for metabolizing simvastatin. Co‑administration markedly raises simvastatin plasma concentrations, substantially increasing the risk of dose‑related myopathy and potentially life‑threatening rhabdomyolysis. This interaction is therefore classified as a major safety concern."
+18236,Major,Major,"{""severity"":""Major""}  
+Verapamil inhibits P‑glycoprotein and CYP3A4, which are key pathways for digoxin clearance. This raises digoxin plasma concentrations and can precipitate digoxin toxicity (arrhythmias, nausea, visual disturbances). The clinical impact is significant, so the interaction is classified as a major DDI."
+20069,Moderate,Minor,"{""severity"":""Minor""}
+
+Diphenhydramine’s anticholinergic and sedating effects can increase the likelihood of dizziness or orthostatic hypotension when combined with the antihypertensive lisinopril. This interaction is generally mild and does not usually lead to serious adverse outcomes, thus it is classified as a minor DDI."
+4299,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide reduces plasma volume through diuresis, while lisinopril decreases systemic vascular resistance via inhibition of angiotensin‑converting enzyme. When used together they have an additive antihypertensive effect, increasing the risk of clinically significant hypotension, especially in patients who are volume‑depleted or have renal impairment. Therefore the interaction is classified as moderate and warrants blood pressure monitoring."
+12054,Moderate,Minor,"{""severity"":""Minor""}  
+Diphenhydramine and lisinopril have no clinically significant pharmacokinetic interaction; the antihistamine’s anticholinergic and sedative effects may modestly increase the risk of dizziness or orthostatic hypotension when combined with an ACE‑inhibitor, but this effect is generally mild and does not require dose adjustment. Hence the interaction is classified as minor."
+15104,Moderate,Minor,"{""severity"":""Minor""}
+
+Leuprolide (a GnRH agonist) and oxaliplatin (a platinum‑based chemotherapeutic) have no known pharmacokinetic or pharmacodynamic interaction; they act via unrelated pathways and are not metabolized by the same enzymes. At most, any overlap could be limited to additive myelosuppression, which is generally mild and manageable, so the interaction is classified as minor."
+10544,Major,Moderate,"{""severity"":""Moderate""}
+The ibuprofen can antagonize the antihypertensive effect of hydrochlorothiazide by reducing renal prostaglandin synthesis, which diminishes diuretic‑induced natriuresis and may lead to fluid retention and loss of blood‑pressure control. This interaction is generally classified as moderate because it can compromise therapeutic efficacy but is not typically associated with life‑threatening outcomes."
+18427,Major,Major,"{""severity"":""Major""}
+
+Verapamil inhibits P‑glycoprotein and CYP3A4, the primary pathways that clear digoxin. This inhibition markedly raises digoxin plasma concentrations, increasing the risk of digoxin toxicity (e.g., arrhythmias). Because the interaction can lead to serious adverse events, it is classified as a major DDI."
+11903,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide (a thiazide diuretic) and lisinopril (an ACE inhibitor) both lower blood pressure through complementary mechanisms—diuresis and inhibition of the renin‑angiotensin system. When used together they can produce an additive antihypertensive effect, increasing the risk of symptomatic hypotension, especially in patients who are volume‑depleted or start therapy rapidly. This additive risk is generally classified as a moderate‑severity drug‑drug interaction that warrants monitoring of blood pressure after initiation or dose changes."
+14164,Minor,Minor,"{""severity"":""Minor""}  
+Furosemide and doxycycline have no direct pharmacodynamic synergy or antagonism, and the only potential interaction would be a modest change in doxycycline absorption or renal clearance due to diuresis, which is not clinically significant. Consequently, the DDI is classified as a minor interaction."
+17546,Moderate,Moderate,"{""severity"":""Moderate""}  
+Hydrochlorothiazide promotes sodium and water loss, while lisinopril blocks angiotensin‑II–mediated vasoconstriction and aldosterone release. Their combined effect can produce an additive drop in blood pressure, especially after the first dose or in volume‑depleted patients, warranting monitoring for symptomatic hypotension. This additive effect is generally considered a moderate‑severity interaction rather than a contraindication."
+13825,Major,Major,"{""severity"":""Major""}
+
+Verapamil is a moderate inhibitor of CYP3A4, the enzyme responsible for metabolizing simvastatin. Co‑administration raises simvastatin plasma concentrations, markedly increasing the risk of dose‑related myopathy and potentially life‑threatening rhabdomyolysis. This interaction is therefore classified as a major safety concern."
+1222,Moderate,Moderate,"{""severity"":""Moderate""}
+The thiazide diuretic hydrochlorothiazide and the ACE‑inhibitor lisinopril both lower blood pressure; when used together they can produce an additive hypotensive effect, especially in patients who are volume‑depleted or start therapy abruptly. This synergistic drop in blood pressure is clinically relevant but generally manageable with dose adjustment, fitting a moderate‑severity interaction."
+11660,Major,Major,"{""severity"":""Major""}
+
+Combining ibuprofen and naproxen results in additive COX‑1 inhibition, markedly increasing the risk of gastrointestinal ulceration/bleeding, renal impairment, and cardiovascular events. Because the overlapping toxicities can lead to serious, potentially life‑threatening adverse effects, the interaction is classified as a major one."
+11134,Moderate,Moderate,"{""severity"":""Moderate""}  
+The thiazide diuretic hydrochlorothiazide decreases intravascular volume, while lisinopril blocks angiotensin‑II–mediated vasoconstriction and aldosterone release. Their combined effect can produce an additive drop in blood pressure, increasing the risk of symptomatic hypotension, which is generally classified as a moderate‑severity drug‑drug interaction."
+20162,Moderate,Moderate,"{""severity"":""Moderate""}  
+The thiazide diuretic hydrochlorothiazide and the ACE‑inhibitor lisinopril both lower blood pressure via complementary mechanisms (volume depletion and inhibition of the renin‑angiotensin system). When used together they can produce an additive hypotensive effect, especially after the initial dose or in patients who are volume‑depleted, which is generally classified as a moderate‑severity drug‑drug interaction."
+8235,Moderate,Moderate,"{""severity"":""Moderate""}
+Hydrochlorothiazide and lisinopril both lower blood pressure through complementary mechanisms—diuresis and inhibition of the renin‑angiotensin system, respectively. When used together they can produce an additive hypotensive effect, especially in patients who are volume‑depleted or on a low‑salt diet, warranting a moderate‑severity interaction rating. The risk of severe outcomes is low and the combination is often intentional in hypertension management, so it is not classified as a major interaction."
+9246,Moderate,Moderate,"{""severity"":""Moderate""}
+Carbamazepine is a strong inducer of hepatic enzymes and can also cause hyponatremia as a side effect. Hydrochlorothiazide, a thiazide diuretic, commonly induces electrolyte loss, especially sodium and potassium. When used together the risk of clinically significant hyponatremia (and related symptoms) is increased, which is generally classified as a moderate‑severity drug‑drug interaction."
+18563,Major,Moderate,"{""severity"":""Moderate""}
+
+Amlodipine inhibits CYP3A4, the enzyme that metabolizes simvastatin, leading to higher plasma concentrations of simvastatin. Elevated simvastatin levels increase the risk of dose‑related adverse effects such as myopathy and rhabdomyolysis, which is why the interaction is classified as moderate in severity."
+5329,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide and lisinopril both lower blood pressure through complementary mechanisms (diuresis and inhibition of the renin‑angiotensin system). When used together they can produce an additive antihypertensive effect, increasing the risk of symptomatic hypotension, especially in patients who are volume‑depleted or have other precipitants. This potential for clinically relevant hypotension is generally classified as a moderate‑severity drug‑drug interaction."
+17259,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide and lisinopril both lower blood pressure through different mechanisms (diuresis and inhibition of the renin‑angiotensin system). When used together they can produce an additive effect, increasing the risk of symptomatic hypotension, especially after dose initiation or in volume‑depleted patients. This additive effect is clinically relevant but generally manageable, thus it is classified as a moderate‑severity interaction."
+433,Moderate,Moderate,"{""severity"":""Moderate""}
+Ibuprofen can diminish the antihypertensive effect of amlodipine by causing sodium and water retention and vasoconstriction, which may lead to a rise in blood pressure. This interaction is clinically relevant enough to warrant monitoring or dose adjustment, but it is not typically associated with severe toxicity, placing it at a moderate severity level."
+11671,Major,Major,"{""severity"":""Major""}
+
+Both fentanyl and oxycodone are potent μ‑opioid receptor agonists, and their concurrent use leads to additive central nervous system and respiratory depression. This synergistic effect markedly increases the risk of profound sedation, respiratory failure, and potentially fatal overdose, classifying the interaction as a major safety concern."
+13623,Moderate,Moderate,"{""severity"":""Moderate""}
+The combination of a thiazide diuretic (hydrochlorothiazide) with an ACE inhibitor (lisinopril) produces additive antihypertensive effects, increasing the risk of clinically significant hypotension, particularly after initiation or dose changes. This additive effect is generally classified as a moderate‑severity interaction, warranting blood pressure monitoring and possible dose adjustment."
+11758,Major,Major,"{""severity"":""Major""}
+
+Both oxycodone and tramadol are μ‑opioid receptor agonists, so their concurrent use produces additive central nervous system and respiratory depression, markedly increasing the risk of profound sedation, respiratory failure, and potentially fatal overdose. Tramadol’s additional serotonergic activity further heightens the danger of serotonin‑related adverse effects when combined with other opioids, supporting a major‑severity classification."
+10755,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide reduces plasma volume through diuresis, while lisinopril decreases systemic vascular resistance via inhibition of angiotensin‑converting enzyme. When used together, these complementary mechanisms can produce an additive drop in blood pressure, increasing the risk of symptomatic hypotension, especially in patients who are volume‑depleted or on high doses. Therefore the interaction is classified as moderate, warranting blood pressure monitoring and possible dose adjustment."
+3060,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide decreases extracellular fluid volume while lisinopril blocks angiotensin‑II–mediated vasoconstriction; together they produce an additive blood‑pressure‑lowering effect that can precipitate symptomatic hypotension, especially in patients who are volume‑depleted. This synergistic risk is generally classified as a moderate‑severity drug‑drug interaction."
+17121,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide and lisinopril both lower blood pressure through different mechanisms (diuresis vs inhibition of the renin‑angiotensin system). When used together they can produce an additive hypotensive effect, especially after the initial doses or in volume‑depleted patients. This increased risk of clinically significant hypotension is generally classified as a moderate‑severity drug‑drug interaction."
+20167,Moderate,Moderate,"{""severity"":""Moderate""}
+The combination of a thiazide diuretic (hydrochlorothiazide) with an ACE inhibitor (lisinopril) produces additive blood‑pressure lowering effects, increasing the risk of symptomatic hypotension, especially in patients who are volume‑depleted. This interaction is generally classified as moderate because it may require dose adjustment or close monitoring, but it is not typically life‑threatening."
+4188,Major,Major,"{""severity"":""Major""}
+
+Verapamil inhibits P‑glycoprotein (and to a lesser extent CYP3A4), which markedly reduces the clearance of digoxin, a P‑gp substrate. This can raise digoxin plasma concentrations to toxic levels, increasing the risk of arrhythmias and other digoxin‑related adverse effects. Consequently, the interaction is classified as a major one requiring dose adjustment and close monitoring."
+2545,Major,Major,"{""severity"":""Major""}
+
+Both fentanyl and oxycodone are potent μ‑opioid receptor agonists that cause central nervous system and respiratory depression. When used together their effects are additive, markedly increasing the risk of profound sedation, respiratory failure, and potentially fatal overdose. This synergistic risk classifies the interaction as a major severity."
+17637,Major,Moderate,"{""severity"":""Moderate""}
+
+Amlodipine inhibits CYP3A4, the enzyme that metabolizes simvastatin, leading to increased plasma concentrations of simvastatin. Elevated simvastatin levels raise the risk of dose‑related adverse effects such as myopathy and rhabdomyolysis, which is why the interaction is generally classified as moderate in severity."
+15974,Moderate,Moderate,"{""severity"":""Moderate""}  
+Both furosemide and lisinopril lower blood pressure—furosemide by reducing intravascular volume and lisinopril by inhibiting angiotensin‑II–mediated vasoconstriction. When used together, their effects are additive, increasing the risk of symptomatic hypotension (and potentially renal hypoperfusion). This interaction is generally classified as moderate because it can be clinically important but is usually manageable with dose adjustments and monitoring."
+16114,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide reduces intravascular volume through diuresis, while lisinopril blocks angiotensin‑II–mediated vasoconstriction; together they produce an additive antihypertensive effect that can precipitate symptomatic hypotension, especially in patients who are volume‑depleted or on other BP‑lowering agents. This risk is generally classified as a moderate‑severity drug‑drug interaction."
+10529,Moderate,Minor,"{""severity"":""Minor""}
+
+Hydrochlorothiazide can cause mild elevations in blood glucose by inducing insulin resistance, which may blunt the glucose‑lowering effect of metformin. This pharmacodynamic antagonism is generally modest and does not lead to serious toxicity, so the interaction is classified as a minor one."
+17372,Moderate,Moderate,"{""severity"":""Moderate""}
+Hydrochlorothiazide and lisinopril both lower blood pressure; the diuretic reduces plasma volume while the ACE inhibitor decreases systemic vascular resistance. Their combined effect can lead to additive hypotension, especially in patients who are volume‑depleted or have other risk factors, so the interaction is generally classified as moderate and warrants monitoring of blood pressure."
+5600,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide promotes sodium and water loss, while lisinopril blocks angiotensin‑II–mediated vasoconstriction and aldosterone release. Together they produce an additive blood‑pressure‑lowering effect that can precipitate symptomatic hypotension, especially in patients who are volume‑depleted or on other antihypertensives. This synergistic effect is generally classified as a moderate‑severity drug‑drug interaction."
+16474,Major,Moderate,"{""severity"":""Moderate""}  
+Amlodipine inhibits CYP3A4, the enzyme that metabolizes simvastatin, leading to higher plasma concentrations of simvastatin. Elevated simvastatin levels increase the risk of dose‑related adverse effects such as myopathy and rhabdomyolysis, which is clinically significant but generally managed by dose reduction or avoiding high‑dose simvastatin, thus classified as a moderate interaction."
+14632,Moderate,Moderate,"{""severity"":""Moderate""}  
+Hydrochlorothiazide and lisinopril both lower blood pressure; when used together they can produce an additive antihypertensive effect that may lead to symptomatic hypotension, particularly in patients who are volume‑depleted or on high doses. This interaction is generally classified as moderate because the risk is clinically relevant but can be managed with dose adjustment and monitoring."
+4747,Major,Major,"{""severity"":""Major""}  
+Naproxen, an NSAID, can impair platelet aggregation and cause gastrointestinal mucosal injury, while warfarin reduces clotting factor synthesis. Their combined use markedly increases the risk of serious bleeding events, a clinically significant interaction classified as a major DDI."
+1685,Major,Moderate,"{""severity"":""Moderate""}
+The antiplatelet effect of clopidogrel combined with the cyclo‑oxygenase inhibition of naproxen can synergistically impair platelet aggregation and damage gastric mucosa, leading to an increased risk of gastrointestinal bleeding. This heightened bleeding potential is generally classified as a moderate‑severity drug‑drug interaction."
+17850,Moderate,Minor,"{""severity"":""Minor""}
+
+Atropine and tramadol have no clinically significant pharmacokinetic or pharmacodynamic interaction; the anticholinergic effects of atropine do not markedly alter tramadol’s opioid or serotonergic activity. Any potential additive CNS effects are modest, so the interaction is considered minor."
+10167,Major,Major,"{""severity"":""Major""}
+Verapamil inhibits P‑glycoprotein and CYP3A4–mediated clearance of digoxin, markedly raising serum digoxin concentrations and increasing the risk of digoxin toxicity (arrhythmias, nausea, visual disturbances). This pharmacokinetic interaction is considered clinically significant and is classified as a major DDI."
+15821,Moderate,Minor,"{""severity"":""Minor""}
+
+Carbamazepine is a potent inducer of CYP3A4 and other enzymes that metabolize chlorpheniramine, leading to reduced plasma concentrations of the antihistamine and potentially diminished therapeutic effect. This pharmacokinetic interaction is generally not associated with serious adverse outcomes, so it is classified as a minor interaction."
+6740,Moderate,Moderate,"{""severity"":""Moderate""}  
+Both hydrochlorothiazide (a thiazide diuretic) and lisinopril (an ACE inhibitor) lower blood pressure through complementary mechanisms—diuresis and inhibition of the renin‑angiotensin system. When used together they can produce an additive antihypertensive effect, increasing the risk of symptomatic hypotension, particularly after dose initiation or in volume‑depleted patients. This potential for clinically relevant hypotension warrants a moderate severity rating."
+1064,Major,Major,"{""severity"":""Major""}
+
+Both oxycodone and tramadol are opioid agonists that depress the central nervous system, and tramadol also inhibits serotonin reuptake. When used together they produce additive respiratory depression, profound sedation, and increase the risk of serotonin syndrome and seizures. This synergistic toxicity is classified as a major drug‑drug interaction."
+10607,Moderate,Moderate,"{""severity"":""Moderate""}
+The thiazide diuretic hydrochlorothiazide and the ACE‑inhibitor lisinopril both lower blood pressure and can cause additive vasodilatory and volume‑depleting effects, increasing the risk of symptomatic hypotension, especially after initiation or dose changes. This interaction is generally classified as moderate because it requires monitoring and possible dose adjustment but is not usually life‑threatening."
+2984,Moderate,Moderate,"{""severity"":""Moderate""}
+The thiazide diuretic hydrochlorothiazide and the ACE‑inhibitor lisinopril both lower blood pressure; when used together they can produce an additive hypotensive effect, especially after the initial doses. Clinical interaction databases typically rate this combination as a moderate‑severity DDI, recommending blood pressure monitoring and possible dose adjustment."
+13150,Major,Major,"{""severity"":""Major""}
+
+Verapamil inhibits P‑glycoprotein and CYP3A4, which are key pathways for digoxin clearance. This inhibition markedly raises digoxin plasma concentrations, increasing the risk of digoxin toxicity (arrhythmias, nausea, visual disturbances). Because the interaction can lead to serious, potentially life‑threatening effects, it is classified as a major DDI."
+2300,Major,Moderate,"{""severity"":""Moderate""}
+
+Amlodipine inhibits CYP3A4, the enzyme responsible for metabolizing simvastatin. Co‑administration raises simvastatin plasma concentrations, increasing the risk of dose‑related adverse effects such as myopathy and, in rare cases, rhabdomyolysis. Because the interaction is clinically significant but can be managed by dose adjustment (e.g., limiting simvastatin to ≤20 mg), it is classified as a moderate‑severity DDI."
+4254,Major,Moderate,"{""severity"":""Moderate""}  
+Both oxycodone and tramadol are centrally acting opioids that can be metabolized by CYP2D6, leading to increased plasma levels when used together. Their combined opioid and serotonergic effects raise the risk of additive CNS depression, respiratory depression, and serotonin syndrome, which is generally classified as a moderate‑severity drug‑drug interaction."
+13044,Major,Major,"{""severity"":""Major""}  
+Both fentanyl and oxycodone are potent μ‑opioid receptor agonists that cause central nervous system and respiratory depression. When used together, their effects are additive, markedly increasing the risk of profound sedation, respiratory failure, and potentially fatal overdose. This synergistic risk classifies the interaction as a **major** severity."
+12942,Major,Major,"{""severity"":""Major""}
+
+Verapamil inhibits intestinal P‑glycoprotein and hepatic CYP3A4, both important for digoxin elimination. This raises digoxin plasma concentrations and can precipitate digoxin toxicity (e.g., arrhythmias), which is considered a major clinically significant interaction."
+17472,Moderate,Moderate,"{""severity"":""Moderate""}
+Cisplatin does not markedly inhibit CYP3A4, but it can impair renal function and alter hepatic transporters, which may increase simvastatin exposure and raise the risk of statin‑related myopathy or rhabdomyolysis. Given the potential for serious muscle toxicity, the interaction is considered moderate."
+17593,Major,Major,"{""severity"":""Major""}
+
+Both fentanyl and oxycodone are potent μ‑opioid receptor agonists that cause dose‑dependent respiratory depression, sedation, and CNS depression. When used together, their effects are additive/synergistic, markedly increasing the risk of profound respiratory depression, profound sedation, and potentially fatal overdose. Therefore, the interaction is classified as a major severity."
+8787,Moderate,Moderate,"{""severity"":""Moderate""}
+
+The thiazide diuretic hydrochlorothiazide and the ACE inhibitor lisinopril both lower blood pressure through complementary mechanisms (diuresis and inhibition of the renin‑angiotensin system). When used together they can produce an additive hypotensive effect, especially after the first dose or in volume‑depleted patients, which is generally classified as a moderate‑severity drug‑drug interaction."
+11458,Major,Major,"{""severity"":""Major""}
+
+Verapamil inhibits both P‑glycoprotein–mediated transport and CYP3A4 metabolism of digoxin, markedly raising digoxin plasma concentrations. This can precipitate digoxin toxicity (e.g., arrhythmias, nausea, visual disturbances), which is considered a major clinically significant interaction."
+1103,Major,Moderate,"{""severity"":""Moderate""}
+
+Naproxen, an NSAID, inhibits renal prostaglandin synthesis, which diminishes the vasodilatory response that facilitates furosemide delivery to its site of action in the thick ascending limb. This can blunt the diuretic’s efficacy and increase the risk of renal impairment, especially in a patient with heart failure and hypertension. Consequently, the interaction is classified as moderate in severity."
+10283,Major,Moderate,"{""severity"":""Moderate""}
+
+Both naproxen (an NSAID) and duloxetine (an SNRI) can impair platelet aggregation—naproxen via COX inhibition and duloxetine via reduced serotonin uptake in platelets. Their combined use therefore raises the risk of gastrointestinal bleeding, which is generally classified as a moderate‑severity drug‑drug interaction requiring caution and possible gastro‑protective measures."
+4250,Major,Major,"{""severity"":""Major""}
+
+Both oxycodone and tramadol are central nervous system depressants that act on opioid receptors, and tramadol also inhibits serotonin and norepinephrine reuptake. Co‑administration can lead to additive sedation, profound respiratory depression, and an increased risk of seizures or serotonin syndrome, which are serious, potentially life‑threatening events. Therefore the interaction is classified as a major severity."
+7308,Major,Major,"{""severity"":""Major""}
+
+Both fentanyl and oxycodone are potent μ‑opioid receptor agonists that cause dose‑dependent respiratory depression, sedation, and CNS depression. When used together, their effects are additive, markedly increasing the risk of profound respiratory depression, profound sedation, and potentially fatal overdose, which classifies the interaction as a major severity."
+4122,Moderate,Moderate,"{""severity"":""Moderate""}
+The combination of hydrochlorothiazide, a diuretic that reduces plasma volume, with lisinopril, an ACE‑inhibitor that causes vasodilation, can produce an additive blood‑pressure‑lowering effect and increase the risk of symptomatic hypotension, especially in patients who are volume‑depleted. This interaction is generally classified as moderate, requiring blood‑pressure monitoring and possible dose adjustment."
+17980,Moderate,Moderate,"{""severity"":""Moderate""}
+The interaction is considered moderate because NSAIDs such as naproxen inhibit prostaglandin synthesis, leading to afferent arteriolar constriction and reduced renal perfusion. This can blunt the antihypertensive and renoprotective effects of losartan and increase the risk of renal impairment, especially in patients with heart failure."
+7291,Major,Major,"{""severity"":""Major""}  
+Both fentanyl and oxycodone are potent μ‑opioid receptor agonists that cause dose‑dependent respiratory depression, profound sedation, and CNS depression. When used together, their effects are additive (or synergistic), markedly increasing the risk of life‑threatening respiratory compromise and overdose, which classifies the interaction as a major severity."
+17612,Major,Major,"{""severity"":""Major""}
+
+Both fentanyl and oxycodone are potent μ‑opioid receptor agonists; when used together they produce additive central nervous system and respiratory depression. This synergistic effect markedly increases the risk of profound sedation, respiratory failure, and overdose, which is classified as a major drug‑drug interaction."
+2656,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Fentanyl is a potent μ‑opioid receptor agonist that causes respiratory depression and sedation, while diphenhydramine has strong anticholinergic and antihistaminic properties that also produce CNS depression and impair respiratory drive. When used together, their effects on the central nervous system are additive, increasing the risk of profound sedation and respiratory depression, which is generally classified as a moderate‑severity drug‑drug interaction."
+13662,Moderate,Moderate,"{""severity"":""Moderate""}  
+Ibuprofen can blunt the antihypertensive effect of lisinopril and, when combined, may increase the risk of acute kidney injury due to reduced renal prostaglandin synthesis and altered glomerular hemodynamics. This interaction is generally considered of moderate clinical significance because it may necessitate monitoring of blood pressure and renal function, especially in patients with hypertension or other risk factors."
+14807,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide and lisinopril both lower blood pressure; when used together they can produce an additive hypotensive effect, increasing the risk of symptomatic hypotension, especially in patients who are volume‑depleted or have renal impairment. This potential for clinically relevant blood pressure reduction is generally classified as a moderate‑severity drug‑drug interaction."
+3605,Major,Major,"{""severity"":""Major""}  
+Verapamil inhibits P‑glycoprotein and CYP3A4, markedly reducing digoxin clearance and raising its plasma concentration. This can precipitate digoxin toxicity (e.g., severe bradycardia, AV block), which is considered a major clinically significant interaction."
+14466,Moderate,Moderate,"{""severity"":""Moderate""}
+
+The combination of hydrochlorothiazide, a thiazide diuretic, with lisinopril, an ACE inhibitor, can produce an additive antihypertensive effect, increasing the risk of symptomatic hypotension, especially after initiation or dose changes. While this interaction is clinically recognized, it is generally manageable with dose titration and monitoring, thus it is classified as a moderate‑severity DDI."
+6223,Major,Moderate,"{""severity"":""Moderate""}  
+Hydrochlorothiazide’s antihypertensive effect relies on prostaglandin‑mediated renal vasodilation. Ibuprofen inhibits cyclo‑oxygenase, decreasing prostaglandin synthesis, which can blunt the diuretic’s blood‑pressure‑lowering action and may lead to fluid retention. This interaction is generally considered moderate because it can compromise therapeutic efficacy without causing direct toxicity."
+15389,Major,Major,"{""severity"":""Major""}
+
+Both fentanyl and tramadol are centrally acting opioids that can produce additive CNS and respiratory depression, markedly increasing the risk of profound sedation, respiratory failure, and potentially fatal outcomes. Tramadol also inhibits serotonin reuptake, raising the chance of serotonin syndrome when combined with fentanyl’s serotonergic effects. Consequently, the interaction is classified as a major safety concern."
+16636,Major,Major,"{""severity"":""Major""}
+
+Verapamil inhibits P‑glycoprotein (and to a lesser extent CYP3A4) that mediates digoxin elimination, markedly raising digoxin plasma concentrations. The resulting risk of digoxin toxicity (e.g., arrhythmias) is clinically significant, warranting a major severity rating."
+9258,Moderate,Minor,"{""severity"":""Minor""}
+
+Carbamazepine is a potent enzyme inducer but hydrochlorothiazide is eliminated unchanged in the urine and is not metabolized by CYP enzymes, so a pharmacokinetic interaction is unlikely. The main concern is an additive risk of electrolyte disturbances (e.g., hyponatremia) and hypotension, which is generally considered a minor clinical interaction."
+4242,Major,Major,"{""severity"":""Major""}
+
+Both oxycodone and tramadol are centrally acting opioids that depress the central nervous system and are metabolized by CYP2D6, leading to additive opioid effects and increased plasma concentrations. Their combined use markedly raises the risk of profound sedation, respiratory depression, and, because tramadol also inhibits serotonin reuptake, the potential for serotonin syndrome. Consequently, this drug‑drug interaction is classified as a major safety concern."
+6359,Moderate,Moderate,"{""severity"":""Moderate""}  
+Hydrochlorothiazide and lisinopril both lower blood pressure via complementary mechanisms (diuresis and inhibition of the renin‑angiotensin system). Their combined effect can lead to additive hypotension, especially in patients who are volume‑depleted or have renal impairment, which is generally classified as a moderate‑severity drug‑drug interaction."
+2765,Moderate,Minor,"{""severity"":""Minor""}
+
+Leuprolide (a GnRH agonist) and galantamine (a cholinesterase inhibitor) are metabolized via different pathways and have no direct pharmacodynamic synergy. The modest interaction reported is likely due to overlapping side‑effects such as nausea or dizziness rather than a clinically significant pharmacokinetic or pharmacodynamic conflict, placing the interaction at a minor severity level."
+13495,Moderate,Moderate,"{""severity"":""Moderate""}
+Hydrochlorothiazide and lisinopril both lower blood pressure through complementary mechanisms (diuresis and inhibition of the renin‑angiotensin system). When used together they can produce an additive antihypertensive effect, increasing the risk of symptomatic hypotension, especially after initiation or dose changes. This potential for clinically relevant hypotension warrants moderate‑level interaction monitoring."
+9434,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide reduces plasma volume through diuresis, while lisinopril decreases systemic vascular resistance via inhibition of angiotensin‑converting enzyme. When used together they have an additive antihypertensive effect, increasing the risk of symptomatic hypotension, especially after initiation or dose changes. This additive effect is clinically recognized and is generally classified as a moderate‑severity interaction."
+13061,Moderate,Moderate,"{""severity"":""Moderate""}  
+Hydrochlorothiazide and lisinopril both lower blood pressure; when used together they can produce an additive hypotensive effect, especially after the first dose or in patients who are volume‑depleted. This risk of clinically significant hypotension is generally classified as a moderate‑severity drug‑drug interaction."
+6233,Major,Moderate,"{""severity"":""Moderate""}
+
+Ibuprofen, an NSAID, inhibits renal prostaglandin synthesis, causing afferent arteriolar constriction and reducing renal blood flow. This attenuates the natriuretic and antihypertensive effects of hydrochlorothiazide, potentially diminishing blood‑pressure control. The interaction is therefore classified as moderate in severity."
+16283,Moderate,Moderate,"{""severity"":""Moderate""}
+The combination can impair renal clearance, leading to higher serum vancomycin concentrations and an increased risk of nephrotoxicity. Ibuprofen’s effect on prostaglandin-mediated renal perfusion augments vancomycin’s known kidney toxicity, which is generally considered a moderate‑severity interaction."
+8597,Moderate,Moderate,"{""severity"":""Moderate""}  
+Hydrochlorothiazide reduces plasma volume through diuresis, while lisinopril blocks angiotensin‑II–mediated vasoconstriction. When used together they have an additive blood‑pressure‑lowering effect, increasing the risk of clinically significant hypotension, especially after the first dose or in patients who are volume‑depleted. This interaction is therefore classified as moderate, warranting blood‑pressure monitoring and possible dose adjustment."
+17942,Major,Moderate,"{""severity"":""Moderate""}
+The NSAID naproxen inhibits renal prostaglandin synthesis, which diminishes the vasodilatory support that furosemide relies on for effective natriuresis. This can blunt the diuretic’s efficacy and increase the risk of renal impairment, especially in a patient with chronic congestive heart failure, warranting a moderate‑severity interaction classification."
+8794,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide and lisinopril both lower blood pressure through complementary mechanisms—diuresis and inhibition of the renin‑angiotensin system. When used together, especially in a child with multiple cardiovascular conditions, the additive effect can precipitate clinically relevant hypotension, warranting monitoring and dose adjustment. This potential for significant blood pressure reduction classifies the interaction as moderate."
+19719,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide reduces plasma volume through diuresis, while lisinopril blocks angiotensin‑II–mediated vasoconstriction; together they produce an additive blood‑pressure‑lowering effect. This can lead to clinically significant hypotension, especially in a young child, but the combination is not contraindicated and is commonly used with monitoring, fitting a moderate‑severity interaction."
+15589,Moderate,Major,"{""severity"":""Major""}
+
+Cisplatin and paclitaxel both cause profound myelosuppression; when given together their effects are additive, markedly increasing the risk of severe neutropenia, thrombocytopenia, and febrile neutropenia. This potential for life‑threatening hematologic toxicity warrants a major interaction classification."
+14072,Major,Major,"{""severity"":""Major""}
+
+Both oxycodone and tramadol are opioid agonists that depress the central nervous system; when used together they have additive effects on respiratory depression, sedation, and can lower the seizure threshold (tramadol). This synergistic CNS depression markedly increases the risk of life‑threatening respiratory compromise and possible serotonin syndrome, classifying the interaction as a major one."
+15487,Moderate,Moderate,"{""severity"":""Moderate""}
+The thiazide diuretic hydrochlorothiazide and the ACE‑inhibitor lisinopril both lower blood pressure; when used together they can produce an additive antihypertensive effect that may precipitate symptomatic hypotension, particularly in patients who are volume‑depleted or on high doses. This potential for clinically relevant hypotension warrants a moderate‑severity classification."
+3828,Major,Major,"{""severity"":""Major""}
+
+Alteplase is a fibrinolytic that dissolves clots, while clopidogrel inhibits platelet aggregation. Their combined use markedly amplifies bleeding risk, including potentially fatal intracranial hemorrhage, so the interaction is classified as a major safety concern."
+7333,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide and lisinopril both lower blood pressure; the diuretic can cause volume depletion while the ACE inhibitor reduces systemic vascular resistance. Their combined effect can lead to additive hypotension, especially in patients who are already volume‑depleted or have renal impairment. This interaction is generally classified as moderate because it may require monitoring or dose adjustment but is not typically life‑threatening."
+7073,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide and lisinopril both lower blood pressure through complementary mechanisms (diuresis and inhibition of the renin‑angiotensin system). When used together they can produce an additive hypotensive effect, especially in patients who are volume‑depleted, requiring monitoring of blood pressure and dose adjustments. This risk is generally classified as a moderate‑severity drug‑drug interaction."
+5619,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide reduces plasma volume through diuresis, while lisinopril decreases systemic vascular resistance via inhibition of angiotensin‑converting enzyme. When used together they have additive antihypertensive effects, increasing the risk of symptomatic hypotension, especially after the initial doses. This additive effect is generally classified as a moderate‑severity drug‑drug interaction."
+18235,Major,Major,"{""severity"":""Major""}
+
+Verapamil inhibits P‑glycoprotein and, to a lesser extent, CYP3A4, which are key pathways for digoxin clearance. This raises digoxin plasma concentrations and markedly increases the risk of digoxin toxicity (arrhythmias, nausea, visual disturbances). Because the interaction can lead to serious, potentially life‑threatening effects, it is classified as a major DDI."
+18025,Moderate,Minor,"{""severity"":""Minor""}
+
+Epinephrine stimulates glycogenolysis and gluconeogenesis, which can transiently raise blood glucose and blunt the glucose‑lowering effect of metformin. This interaction is generally mild and manageable with glucose monitoring, so it is classified as a minor DDI."
+7017,Major,Major,"{""severity"":""Major""}
+
+Verapamil inhibits P‑glycoprotein and, to a lesser extent, CYP3A4, both of which affect digoxin clearance. This raises digoxin plasma concentrations and markedly increases the risk of digoxin toxicity (arrhythmias, nausea, visual disturbances). Because the interaction can lead to serious, potentially life‑threatening effects, it is classified as a major DDI."
+7621,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide induces diuresis and reduces intravascular volume, while lisinopril blocks the renin‑angiotensin system‑mediated vasoconstriction. When combined, these mechanisms produce an additive blood‑pressure‑lowering effect that can precipitate symptomatic hypotension, particularly after the initial dose or in patients who are volume‑depleted. This additive risk is generally classified as a moderate‑severity drug‑drug interaction."
+14806,Moderate,Moderate,"{""severity"":""Moderate""}
+The combination of hydrochlorothiazide and lisinopril can produce additive blood‑pressure‑lowering effects, increasing the risk of symptomatic hypotension, particularly after initiation or dose changes. While this interaction is clinically useful for hypertension management, the potential for excessive hypotension warrants a moderate severity rating."
+6839,Moderate,Moderate,"{""severity"":""Moderate""}  
+The combination of hydrochlorothiazide, a diuretic that reduces intravascular volume, with lisinopril, an ACE‑inhibitor that impairs compensatory vasoconstriction, can produce additive blood‑pressure lowering and precipitate symptomatic hypotension, especially after initiation or dose changes. This effect is clinically relevant and warrants monitoring, placing the interaction in the moderate severity category."
+12251,Moderate,Moderate,"{""severity"":""Moderate""}  
+Both cisplatin and paclitaxel cause bone‑marrow suppression; when given together their myelosuppressive effects are additive, increasing the risk of severe neutropenia or thrombocytopenia. This interaction is clinically important and usually warrants dose adjustments and close hematologic monitoring, but it is not an absolute contraindication, fitting a moderate severity classification."
+3368,Major,Major,"{""severity"":""Major""}  
+Verapamil inhibits P‑glycoprotein and CYP3A4, reducing intestinal and renal clearance of digoxin and markedly raising its plasma concentration. This can precipitate digoxin toxicity (arrhythmias, nausea, visual disturbances), which is clinically significant; therefore the interaction is classified as a major DDI."
+5959,Minor,Moderate,"{""severity"":""Moderate""}
+
+Simvastatin can increase the anticoagulant effect of warfarin by inhibiting its metabolism and displacing it from plasma proteins, leading to higher INR and a heightened risk of bleeding. This interaction is generally classified as moderate in severity."
+18694,Major,Moderate,"{""severity"":""Moderate""}  
+Amlodipine inhibits CYP3A4, the enzyme that metabolizes simvastatin, raising simvastatin plasma concentrations. This increase heightens the risk of simvastatin‑related myopathy and rhabdomyolysis, which is generally classified as a moderate‑severity drug‑drug interaction."
+12891,Minor,Moderate,"{""severity"":""Moderate""}  
+Simvastatin can inhibit CYP3A4 metabolism of warfarin’s S‑enantiomer, leading to higher plasma warfarin concentrations and an increased INR. This raises the risk of bleeding, which is clinically significant but generally manageable with INR monitoring, thus classified as a moderate drug‑drug interaction."
+12339,Major,Moderate,"{""severity"":""Moderate""}
+
+Both lisinopril (an ACE inhibitor) and losartan (an angiotensin‑II receptor blocker) suppress the renin‑angiotensin‑aldosterone system, leading to additive effects on blood pressure, potassium retention, and renal perfusion. Co‑administration can increase the risk of hyperkalemia, hypotension, and acute kidney injury, which warrants close monitoring, thus the interaction is classified as moderate in severity."
+12097,Major,Moderate,"{""severity"":""Moderate""}  
+Both oxycodone and tramadol are centrally acting opioids that produce additive μ‑opioid receptor activation, markedly increasing the risk of profound sedation, respiratory depression, and CNS depression when used together. While tramadol’s serotonergic activity adds a theoretical risk of serotonin syndrome, the primary concern is the synergistic opioid effect, which is generally classified as a moderate‑severity interaction requiring dose adjustment or close monitoring."
+13544,Major,Major,"{""severity"":""Major""}  
+Verapamil inhibits P‑glycoprotein and CYP3A4, which are key pathways for digoxin clearance. This inhibition markedly raises digoxin plasma concentrations, increasing the risk of digoxin toxicity (arrhythmias, nausea, visual disturbances). Because the interaction can lead to serious, potentially life‑threatening effects, it is classified as a major DDI."
+10048,Moderate,Moderate,"{""severity"":""Moderate""}  
+The thiazide diuretic hydrochlorothiazide can cause volume depletion, while lisinopril reduces systemic vascular resistance via ACE inhibition. When combined, these effects are additive, increasing the risk of clinically significant hypotension, especially in a child. Monitoring blood pressure and adjusting doses is recommended, reflecting a moderate‑severity interaction."
+853,Major,Moderate,"{""severity"":""Moderate""}
+The NSAID naproxen can blunt the antihypertensive effect of hydrochlorothiazide by decreasing renal prostaglandin synthesis, leading to sodium and water retention and reduced diuretic efficacy. This interaction primarily compromises therapeutic effectiveness rather than causing serious toxicity, fitting a moderate‑severity classification."
+17473,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Both cisplatin and paclitaxel cause dose‑dependent bone‑marrow toxicity. When used together their myelosuppressive effects are additive, markedly increasing the risk of severe neutropenia and thrombocytopenia. This interaction is clinically important and warrants close hematologic monitoring and possible dose adjustments, fitting the “moderate” severity category."
+7234,Moderate,Moderate,"{""severity"":""Moderate""}  
+Hydrochlorothiazide can reduce renal clearance of metformin, leading to higher plasma concentrations and an increased risk of metformin‑associated lactic acidosis. This pharmacokinetic interaction warrants monitoring and possible dose adjustment, which is classified as a moderate‑severity DDI."
+6216,Moderate,Moderate,"{""severity"":""Moderate""}  
+The thiazide diuretic hydrochlorothiazide and the ACE‑inhibitor lisinopril both lower blood pressure via complementary mechanisms (diuresis and inhibition of the renin‑angiotensin system). When used together they can produce an additive hypotensive effect, especially after initiation or dose changes, which may lead to symptomatic hypotension. This interaction is therefore classified as moderate in severity and warrants blood‑pressure monitoring and possible dose adjustment."
+16651,Major,Major,"{""severity"":""Major""}  
+Verapamil inhibits P‑glycoprotein–mediated transport and CYP3A4 metabolism of digoxin, markedly decreasing digoxin clearance and raising its plasma concentration. This can precipitate digoxin toxicity, including life‑threatening arrhythmias, thus the interaction is classified as a major severity."
+3224,Major,Major,"{""severity"":""Major""}  
+Verapamil inhibits P‑glycoprotein and CYP3A4, reducing digoxin clearance and markedly raising serum digoxin concentrations. This can precipitate digoxin toxicity (arrhythmias, nausea, visual disturbances), so the interaction is classified as a major clinically significant DDI."
+5377,Moderate,Minor,"{""severity"":""Minor""}
+
+Amlodipine is metabolized primarily by CYP3A4, and glucocorticoids such as hydrocortisone can induce this enzyme, potentially lowering amlodipine plasma concentrations. However, hydrocortisone is a weak inducer and the effect is generally modest, making the interaction clinically minor."
+8266,Moderate,Moderate,"{""severity"":""Moderate""}
+The thiazide diuretic hydrochlorothiazide and the ACE‑inhibitor lisinopril both lower blood pressure via complementary mechanisms (diuresis and inhibition of the renin‑angiotensin system). When used together they can produce an additive antihypertensive effect, increasing the risk of symptomatic hypotension, particularly after the first dose or in patients with volume depletion. This interaction is generally classified as moderate, requiring blood pressure monitoring and possible dose adjustment."
+16170,Moderate,Moderate,"{""severity"":""Moderate""}
+The thiazide diuretic hydrochlorothiazide can cause volume depletion, while lisinopril induces vasodilation by blocking angiotensin‑II. Their combined effect can lead to an additive drop in blood pressure, increasing the risk of symptomatic hypotension, especially in patients who are already volume‑depleted or on other antihypertensives. This interaction is generally classified as moderate, warranting blood pressure monitoring and possible dose adjustment."
+12629,Moderate,Moderate,"{""severity"":""Moderate""}
+The thiazide diuretic hydrochlorothiazide and the ACE‑inhibitor lisinopril both lower blood pressure and can produce additive hypotensive effects, especially in patients who are volume‑depleted or on high doses. Clinical interaction databases typically rate this combination as a moderate interaction, recommending monitoring of blood pressure and possible dose adjustment."
+6659,Moderate,Moderate,"{""severity"":""Moderate""}
+The combination of hydrochlorothiazide and lisinopril can produce an additive antihypertensive effect, increasing the risk of symptomatic hypotension, especially when therapy is initiated or the patient is volume‑depleted. This interaction is generally classified as moderate, warranting blood pressure monitoring and possible dose adjustment."
+7473,Major,Moderate,"{""severity"":""Moderate""}
+Amlodipine inhibits CYP3A4, the enzyme that metabolizes simvastatin. Co‑administration raises simvastatin plasma concentrations, increasing the risk of dose‑related myopathy and rhabdomyolysis. Because the interaction can be clinically significant but is manageable by dose adjustment, it is classified as a moderate DDI."
+4832,Moderate,Moderate,"{""severity"":""Moderate""}
+
+The concurrent use of furosemide, a potent loop diuretic, and lisinopril, an ACE inhibitor, can produce additive hypotensive effects and may precipitate volume‑depletion–related renal impairment. While the combination is clinically useful (e.g., in heart failure), it warrants close blood pressure and renal function monitoring, reflecting a moderate‑severity interaction."
+11893,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide reduces plasma volume through diuresis, while lisinopril decreases systemic vascular resistance via inhibition of angiotensin‑converting enzyme. When used together they have an additive antihypertensive effect, increasing the risk of clinically significant hypotension, especially in patients who are volume‑depleted or have renal impairment. This potential for enhanced blood‑pressure lowering warrants a moderate‑severity classification."
+16178,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide and lisinopril both lower blood pressure through complementary mechanisms (diuresis and inhibition of the renin‑angiotensin system). When used together they can produce an additive hypotensive effect, especially in patients who are volume‑depleted or have renal impairment, warranting monitoring but not contraindicating co‑administration. Hence the interaction is classified as moderate."
+11078,Moderate,Moderate,"{""severity"":""Moderate""}
+
+Hydrochlorothiazide promotes sodium and water loss, lowering intravascular volume, while lisinopril blocks angiotensin‑II–mediated vasoconstriction. Their combined effect can produce an additive drop in blood pressure, increasing the risk of symptomatic hypotension, especially after dose initiation. This interaction is generally classified as moderate because it may require clinical monitoring or dose adjustment."
+11009,Major,Moderate,"{""severity"":""Moderate""}
+
+Amlodipine inhibits CYP3A4, the enzyme responsible for metabolizing simvastatin. Co‑administration can raise simvastatin plasma concentrations, increasing the risk of dose‑related adverse effects such as myopathy and rhabdomyolysis. Because dose adjustment (e.g., limiting simvastatin to ≤20 mg) mitigates but does not eliminate the risk, the interaction is classified as moderate."

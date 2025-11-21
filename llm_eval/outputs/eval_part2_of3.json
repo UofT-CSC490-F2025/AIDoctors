@@ -1,0 +1,25 @@
+{
+  "macro_f1": 0.545966709346991,
+  "accuracy": 0.7615894039735099,
+  "parse_rate": 1.0,
+  "report": "              precision    recall  f1-score   support\n\n       Major      0.917     0.468     0.620        47\n       Minor      0.200     0.167     0.182         6\n    Moderate      0.754     0.939     0.836        98\n\n    accuracy                          0.762       151\n   macro avg      0.624     0.525     0.546       151\nweighted avg      0.783     0.762     0.743       151\n",
+  "cm": [
+    [
+      22,
+      0,
+      25
+    ],
+    [
+      0,
+      1,
+      5
+    ],
+    [
+      2,
+      4,
+      92
+    ]
+  ],
+  "valid_counts": 151,
+  "total_counts": 151
+}
