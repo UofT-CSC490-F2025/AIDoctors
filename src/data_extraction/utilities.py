@@ -17,6 +17,8 @@ import kagglehub
 import tempfile
 import shutil
 
+from .s3_utils import upload_local_file
+
 
 ### General file downloads
 
@@ -69,6 +71,8 @@ def extract_and_save(
     data = download_file(url, timeout=timeout)
     with open(out_path, "wb") as fh:
         fh.write(data)
+
+    upload_local_file(out_path)
 
     return out_path
 
@@ -223,6 +227,8 @@ def extract_zip_and_save_members(
 
             extracted_paths.append(dest_path_abs)
 
+            upload_local_file(dest_path_abs)
+
         return extracted_paths
 
 
@@ -273,7 +279,10 @@ def extract_kaggle_dataset_and_save_members(
                         )
                     # Ensure destination dir exists (out_dir already created)
                     shutil.move(src_path, dest_path)
+                    
                     moved.append(dest_path)
+
+                    upload_local_file(dest_path)
 
             return moved
         finally:
