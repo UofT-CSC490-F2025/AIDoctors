@@ -1,6 +1,7 @@
+'use client';
 import { useUser } from '@/hooks/useUser';
 import { useRouter } from 'next/dist/client/components/navigation';
-import { LoadingScreen } from '../ui/loading-screen';
+import { LoadingScreen } from '@/components/ui/loading-screen';
 import { useEffect } from 'react';
 
 export function AuthRequired({ children }: { children: React.ReactNode }) {

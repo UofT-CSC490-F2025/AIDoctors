@@ -1,10 +1,11 @@
 import * as React from 'react';
-
 import { cn } from '@/utils/general';
 
-type SelectProps = React.ComponentProps<'select'>;
-
-function Select({ className, children, ...props }: SelectProps) {
+function Select({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<'select'>) {
   return (
     <select
       data-slot="select"

@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 export function LoadingScreen() {
   return (
     <div className="fixed top-0 left-0 z-50 w-screen h-screen flex items-center justify-center p-4 bg-white">

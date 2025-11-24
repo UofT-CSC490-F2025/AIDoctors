@@ -1,7 +1,13 @@
 'use client';
-import { User, UserContext } from '@/types/user-types';
+import { User } from '@/types/user-types';
 import { getApiBaseUrl } from '@/utils/api';
 import { createContext, useEffect, useState } from 'react';
+
+type UserContext = {
+  user: User | null;
+  setUser: (u: User | null) => void;
+  isLoading: boolean;
+};
 
 export const UserCtx = createContext<UserContext | undefined>(undefined);
 

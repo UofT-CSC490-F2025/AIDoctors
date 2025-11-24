@@ -6,9 +6,3 @@ export type User = {
   disabled: boolean;
   roles: string[];
 };
-
-export type UserContext = {
-  user: User | null;
-  setUser: (u: User | null) => void;
-  isLoading: boolean;
-};
