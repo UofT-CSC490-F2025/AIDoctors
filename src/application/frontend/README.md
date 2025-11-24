@@ -9,13 +9,34 @@ Next.js 15 app that connects to the FastAPI backend to surface patient-specific 
 - `/dashboard` – protected overview of the integration
 - `/dashboard/predict` – protected form to send patient context to the backend and render top-k alerts
 
-## Configuration
+## Setup
 
-Set `NEXT_PUBLIC_API_BASE_URL` in `.env` to the running FastAPI backend base URL (e.g., `http://localhost:8000` for dev environment)
-
-## Running locally
+Install the dependencies:
 
 ```bash
 npm install
+```
+
+Set `NEXT_PUBLIC_API_BASE_URL` in `.env` to the running FastAPI backend base URL. For example:
+
+```.env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+```
+
+## Running Locally
+
+Run the following command to spin up the development server:
+
+```bash
 npm run dev
 ```
+
+## Production Build
+
+Run the following command to build a static export of the frontend:
+
+```bash
+npm run build
+```
+
+This exports raw HTML/CSS/JS files and assets into the folder `out`. This folder can now be deployed on any HTTP server.
