@@ -7,7 +7,6 @@ from app.dependencies import get_db
 from app.services.auth_service import authenticate_user, create_access_token
 from app.config.security import (
     ACCESS_TOKEN_COOKIE_NAME,
-    ACCESS_TOKEN_COOKIE_SECURE,
     ACCESS_TOKEN_EXPIRE_MINUTES,
 )
 
@@ -40,7 +39,7 @@ async def login_for_access_token(
         key=ACCESS_TOKEN_COOKIE_NAME,
         value=access_token,
         httponly=True,
-        secure=ACCESS_TOKEN_COOKIE_SECURE,
+        secure=True,
         max_age=int(access_token_expires.total_seconds()),
         samesite="lax",
         path="/",
@@ -57,7 +56,7 @@ async def clear_access_token_cookie(
     response.delete_cookie(
         key=ACCESS_TOKEN_COOKIE_NAME,
         httponly=True,
-        secure=ACCESS_TOKEN_COOKIE_SECURE,
+        secure=True,
         samesite="lax",
         path="/",
     )
