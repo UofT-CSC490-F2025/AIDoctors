@@ -1,5 +1,4 @@
 import * as React from 'react';
-
 import { AlertResult } from '@/types/predict-types';
 import { cn } from '@/utils/general';
 
@@ -8,7 +7,12 @@ type AlertProps = React.ComponentProps<'div'> & {
   isPreview?: boolean;
 };
 
-function Alert({ info, isPreview = false, className, ...props }: AlertProps) {
+export function Alert({
+  info,
+  isPreview = false,
+  className,
+  ...props
+}: AlertProps) {
   const { drug1, drug2, known_severity, model_path, reasoning, content } = info;
   const {
     predicted_severity,
@@ -116,5 +120,3 @@ function Alert({ info, isPreview = false, className, ...props }: AlertProps) {
     </div>
   );
 }
-
-export { Alert };

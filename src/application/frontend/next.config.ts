@@ -1,11 +1,8 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  experimental: {
-    ppr: true,
-    clientSegmentCache: true,
-    nodeMiddleware: true,
-  },
+  output: 'export',
+  trailingSlash: true,
 };
 
 export default nextConfig;

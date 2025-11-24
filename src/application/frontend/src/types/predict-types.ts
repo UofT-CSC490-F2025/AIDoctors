@@ -1,13 +1,3 @@
-export type PredictFormValues = {
-  age: number;
-  sex: 'M' | 'F' | '';
-  drugCurrent: string;
-  drugNew: string;
-  comorbidities: string;
-  overlapStart: string;
-  overlapStop: string;
-};
-
 export type PredictionContent = {
   predicted_severity: 'Minor' | 'Moderate' | 'Major' | string;
   comparison_to_known_ddi: {
