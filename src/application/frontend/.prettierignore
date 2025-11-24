@@ -1,0 +1,12 @@
+# Ignore folders
+node_modules
+.next
+build
+dist
+
+# Ignore files
+package-lock.json
+yarn.lock
+.env
+.env.local
+next-env.d.ts

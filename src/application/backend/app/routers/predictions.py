@@ -23,7 +23,7 @@ router = APIRouter(
 async def predict(request: DDIPredictRequest):
     """
     Predict drug-drug interaction severity using AWS Bedrock.
-    
+
     Accepts application/json requests only.
     For form-data support, install python-multipart: pip install python-multipart
     """
@@ -41,13 +41,15 @@ async def predict(request: DDIPredictRequest):
         loop = asyncio.get_event_loop()
         completion = await loop.run_in_executor(
             None,  # Use default ThreadPoolExecutor
-            partial(invoke_bedrock_model, system_prompt, user_prompt)
+            partial(invoke_bedrock_model, system_prompt, user_prompt),
         )
-        
+
         # Parse the response to extract reasoning and content
         parsed_response = parse_bedrock_response(completion)
-        
+
         return {
+            "drug1": request.drug1,
+            "drug2": request.drug2,
             "reasoning": parsed_response["reasoning"],
             "content": parsed_response["content"],
             "model_path": model_id,

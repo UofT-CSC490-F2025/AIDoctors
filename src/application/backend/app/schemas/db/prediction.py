@@ -5,29 +5,24 @@ from pydantic import BaseModel, Field, validator
 
 class DDIPredictRequest(BaseModel):
     # Required core fields
-    patient_uuid: str = Field(examples=["patient-12345"])
+    patient_uuid: Optional[str] = Field(default=None, examples=["patient-12345"])
     drug1: str = Field(examples=["Warfarin"])
     drug2: str = Field(examples=["Aspirin"])
     drug1_norm: Optional[str] = Field(default=None, examples=["warfarin"])
     drug2_norm: Optional[str] = Field(default=None, examples=["aspirin"])
     overlap_start: Optional[str] = Field(default=None, examples=["2024-01-15"])
     overlap_stop: Optional[str] = Field(default=None, examples=["2024-02-15"])
-    Age: Optional[int] = Field(
-        default=None,
-        examples=[65]
-    )
+    Age: Optional[int] = Field(default=None, examples=[65])
     Sex: Optional[str] = Field(default=None, examples=["M"])
     Comorbidities: Optional[Any] = Field(
-        default=None,
-        examples=[["Hypertension", "Diabetes"]]
+        default=None, examples=[["Hypertension", "Diabetes"]]
     )
     pair_key: Optional[str] = Field(default=None, examples=["warfarin_aspirin"])
 
     # Optional labels/context
     unified_severity: Optional[str] = Field(default=None, examples=["Major"])
     unified_mechanism_text: Optional[str] = Field(
-        default=None,
-        examples=["Both drugs affect blood clotting mechanisms"]
+        default=None, examples=["Both drugs affect blood clotting mechanisms"]
     )
     ddi_confidence: Optional[float] = Field(default=None, examples=[0.95])
     ddi_known: Optional[bool] = Field(default=None, examples=[True])
