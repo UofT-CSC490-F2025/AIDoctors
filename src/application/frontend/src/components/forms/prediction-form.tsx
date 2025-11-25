@@ -22,7 +22,7 @@ type PredictFormValues = {
 };
 
 type PredictionFormProps = {
-  setResults: (results: AlertResult[]) => void;
+  setResults: (results: AlertResult | null) => void;
 };
 
 export function PredictionForm({ setResults }: PredictionFormProps) {
@@ -39,7 +39,7 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
 
   const onSubmit = async (data: PredictFormValues) => {
     setError(null);
-    setResults([]);
+    setResults(null);
 
     try {
       const comorbiditiesArr = data.comorbidities
@@ -82,7 +82,7 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
         return;
       }
 
-      setResults([responseData]);
+      setResults(responseData);
     } catch (error) {
       console.error('Prediction error:', error);
       setError('An unexpected error occurred. Please try again later.');

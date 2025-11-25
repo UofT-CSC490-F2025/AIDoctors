@@ -12,11 +12,11 @@ import { Alert } from '@/components/ui/alert';
 import { PredictionForm } from '@/components/forms/prediction-form';
 
 export default function PredictPage() {
-  const [results, setResults] = useState<AlertResult[]>([]);
+  const [results, setResults] = useState<AlertResult | null>(null);
 
   const alertsRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (results.length > 0) {
+    if (results) {
       alertsRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [results]);
@@ -59,12 +59,12 @@ export default function PredictPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3" ref={alertsRef}>
-            {results.length === 0 ? (
+            {results ? (
+              <Alert info={results} />
+            ) : (
               <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-6 text-sm text-gray-600">
                 Predictions will appear here.
               </div>
-            ) : (
-              results.map((alert, index) => <Alert key={index} info={alert} />)
             )}
           </CardContent>
         </Card>
