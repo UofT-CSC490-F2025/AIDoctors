@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Activity, Menu, Sparkles } from 'lucide-react';
+import { pathname_equal } from '@/utils/general';
 
 export default function DashboardLayout({
   children,
@@ -47,9 +48,11 @@ export default function DashboardLayout({
             {navItems.map((item) => (
               <Link key={item.href} href={item.href} passHref>
                 <Button
-                  variant={pathname === item.href ? 'secondary' : 'ghost'}
+                  variant={
+                    pathname_equal(pathname, item.href) ? 'secondary' : 'ghost'
+                  }
                   className={`shadow-none my-1 w-full justify-start ${
-                    pathname === item.href ? 'bg-gray-100' : ''
+                    pathname_equal(pathname, item.href) ? 'bg-gray-100' : ''
                   }`}
                   onClick={() => setIsSidebarOpen(false)}
                 >

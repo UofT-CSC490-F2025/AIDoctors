@@ -22,7 +22,7 @@ const steps = [
     icon: Sparkles,
   },
   {
-    title: 'Deliver the top-k alerts',
+    title: 'Deliver the top alerts',
     description:
       'Return only the most critical, explainable warnings so clinicians can act quickly.',
     icon: ShieldCheck,

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useUser } from '@/hooks/useUser';
 import { getApiBaseUrl } from '@/utils/api';
 import { usePathname } from 'next/navigation';
+import { pathname_equal } from '@/utils/general';
 
 const navLinks = [
   { href: '/dashboard', label: 'Overview' },
@@ -45,7 +46,7 @@ export function DashboardHeader() {
               key={link.href}
               href={link.href}
               className={`text-sm font-medium px-3 py-2 rounded-full transition ${
-                pathname === link.href
+                pathname_equal(pathname, link.href)
                   ? 'bg-orange-50 text-orange-700'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
