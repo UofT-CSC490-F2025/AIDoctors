@@ -5,12 +5,18 @@ from typing import Optional
 
 import boto3
 
-
-S3_BUCKET = os.getenv("RAW_DATA_S3_BUCKET")          
-S3_PREFIX = os.getenv("RAW_DATA_S3_PREFIX", "raw_datasets/")  
-
 _s3_client: Optional[boto3.client] = None
+S3_BUCKET: Optional[str] = None
+S3_PREFIX: Optional[str] = None
 
+
+def get_ssm_vars():
+    ssm = boto3.client("ssm")
+    response = ssm.get_parameter(Name="/aidoctors/s3/raw-datasets-bucket", WithDecryption=True)
+    bucket = response["Parameter"]["Value"]
+    response = ssm.get_parameter(Name="/aidoctors/s3/raw-datasets-prefix", WithDecryption=True)
+    prefix = response["Parameter"]["Value"]
+    return bucket, prefix
 
 def get_s3_client():
     global _s3_client
@@ -18,18 +24,18 @@ def get_s3_client():
         _s3_client = boto3.client("s3")
     return _s3_client
 
+def upload_local_file(local_path: str | Path) -> str:
 
-def s3_enabled() -> bool:
-    return S3_BUCKET is not None
+    global S3_BUCKET
+    global S3_PREFIX
 
+    print("Uploading to S3...")
 
-def upload_local_file(local_path: str | Path, key_prefix: str | None = None) -> str:
-    if not s3_enabled():
-        return ""
-
+    if S3_BUCKET is None or S3_PREFIX is None:
+       S3_BUCKET, S3_PREFIX = get_ssm_vars()
+    
     local_path = Path(local_path)
-    prefix = key_prefix if key_prefix is not None else S3_PREFIX
-    prefix = prefix.rstrip("/") + "/"
+    prefix = S3_PREFIX.rstrip("/") + "/"
 
     key = prefix + local_path.name
 

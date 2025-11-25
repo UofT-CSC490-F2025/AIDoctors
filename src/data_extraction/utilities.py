@@ -17,11 +17,10 @@ import kagglehub
 import tempfile
 import shutil
 
-from .s3_utils import upload_local_file
+from s3_utils import upload_local_file
 
 
 ### General file downloads
-
 
 def download_file(url: str, timeout: int = 30) -> bytes:
     """Download the file at `url` and return its bytes.
@@ -78,7 +77,6 @@ def extract_and_save(
 
 
 ### Excel file downloads as CSVs
-
 
 def excel_bytes_to_dfs(excel_bytes: bytes) -> Dict[str, pd.DataFrame]:
     """Read an Excel file in memory and return a dict of sheet_name -> DataFrame.
