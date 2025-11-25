@@ -82,7 +82,7 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
         return;
       }
 
-      setResults(responseData.alerts || []);
+      setResults([responseData]);
     } catch (error) {
       console.error('Prediction error:', error);
       setError('An unexpected error occurred. Please try again later.');
