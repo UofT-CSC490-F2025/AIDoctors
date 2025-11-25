@@ -193,12 +193,13 @@ def build_aeolus_lookup() -> pd.DataFrame:
 # ----------------------------
 # Stage 3: RxCUI product→ingredient mapping
 # ----------------------------
-def map_product_to_ingredient(meds: pd.DataFrame, use_rxnav: bool=False) -> pd.DataFrame:
+def map_product_to_ingredient(meds: pd.DataFrame) -> pd.DataFrame:
     """
-    If OUT/rxcui_to_ingredient_map.csv exists, reuse it.
-    Otherwise:
-      - if use_rxnav=False, fall back to identity mapping (product == ingredient)
-      - if use_rxnav=True, call RxNav (online) to get ingredient RxCUI
+    Map Synthea product RxCUIs → ingredient RxCUIs using RxNav.
+
+    Behaviour:
+      - If OUT/rxcui_to_ingredient_map.csv exists, reuse it.
+      - Otherwise, call RxNav for each unique RxCUI in Synthea meds and cache the result.
     """
     cache_path = OUT / "rxcui_to_ingredient_map.csv"
     if cache_path.exists():
@@ -207,32 +208,37 @@ def map_product_to_ingredient(meds: pd.DataFrame, use_rxnav: bool=False) -> pd.D
         return m
 
     rxcuis = meds["rxcui"].dropna().astype(int).unique().tolist()
-    mapping = []
+    log(f"Querying RxNav for {len(rxcuis):,} unique RxCUIs…")
 
-    if not use_rxnav:
-        # Offline-friendly fallback: identity map (works for ingredients; products remain same)
-        mapping = [{"rxcui": int(r), "ingredient_rxcui": int(r)} for r in rxcuis]
-    else:
-        import requests
-        def get_ing(rxcui: int) -> int|None:
-            try:
-                url = f"https://rxnav.nlm.nih.gov/REST/rxcui/{rxcui}/related.json?tty=IN"
-                resp = requests.get(url, timeout=8)
-                if not resp.ok:
-                    return None
-                data = resp.json()
-                for grp in data.get("relatedGroup", {}).get("conceptGroup", []):
-                    if grp.get("tty") == "IN" and "conceptProperties" in grp:
-                        return int(grp["conceptProperties"][0]["rxcui"])
-            except Exception:
+    import requests
+
+    def get_ing(rxcui: int) -> int | None:
+        try:
+            url = f"https://rxnav.nlm.nih.gov/REST/rxcui/{rxcui}/related.json?tty=IN"
+            resp = requests.get(url, timeout=8)
+            if not resp.ok:
                 return None
-        for r in rxcuis:
-            mapping.append({"rxcui": int(r), "ingredient_rxcui": get_ing(int(r))})
+            data = resp.json()
+            for grp in data.get("relatedGroup", {}).get("conceptGroup", []):
+                if grp.get("tty") == "IN" and "conceptProperties" in grp:
+                    return int(grp["conceptProperties"][0]["rxcui"])
+        except Exception:
+            return None
+
+    mapping = []
+    for r in rxcuis:
+        ing = get_ing(int(r))
+        # If RxNav fails to give an ingredient, fall back to self
+        # so we at least keep a mapping and don't lose the record.
+        if ing is None:
+            ing = int(r)
+        mapping.append({"rxcui": int(r), "ingredient_rxcui": ing})
 
     mp = pd.DataFrame(mapping)
     mp.to_csv(cache_path, index=False)
-    log(f"Saved product→ingredient map → {cache_path} (rows={len(mp):,})")
+    log(f"Saved product→ingredient map (RxNav) → {cache_path} (rows={len(mp):,})")
     return mp
+
 
 # ----------------------------
 # Stage 4: Patient AE risks (join) + enriched + Top-K
@@ -653,9 +659,7 @@ def build_patient_ddi_collapsed(topk: pd.DataFrame, ddi_ref_unified: pd.DataFram
 # ----------------------------
 def main():
     ap = argparse.ArgumentParser(description="Rebuild the Synthea×AEOLUS×DDI pipeline.")
-    ap.add_argument("--use-rxnav", action="store_true",
-                    help="Call RxNav to convert product RxCUI → ingredient RxCUI (requires internet). "
-                         "If omitted, uses identity fallback or existing cache.")
+
     args = ap.parse_args()
 
     log("Loading Synthea…")
@@ -665,7 +669,7 @@ def main():
     aeolus_lookup = build_aeolus_lookup()
 
     log("Mapping RxCUI product→ingredient…")
-    prod_ing_map = map_product_to_ingredient(meds, use_rxnav=args.use_rxnav)
+    prod_ing_map = map_product_to_ingredient(meds)
 
     log("Joining patient AE risks + enriched + Top-K…")
     risk_ann, enriched, topk = build_patient_ae_tables(meds, patients, conds, aeolus_lookup, prod_ing_map)
