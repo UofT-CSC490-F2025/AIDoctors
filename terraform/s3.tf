@@ -59,3 +59,59 @@ module "s3_alb_logs" {
     Purpose = "ALB Access Logs"
   }
 }
+
+# S3 Bucket for Raw Datasets
+module "s3_raw_datasets" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 5.0"
+
+  bucket        = "${local.name}-raw-datasets"
+  force_destroy = true 
+
+  # Allow public access
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+
+  # Enable versioning for data protection
+  versioning = {
+    enabled = true
+  }
+
+  # Server-side encryption
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  # Lifecycle rules for cost optimization
+  lifecycle_rule = [
+    {
+      id      = "archive-old-datasets"
+      enabled = true
+
+      transition = [
+        {
+          days          = 90
+          storage_class = "STANDARD_IA"
+        },
+        {
+          days          = 180
+          storage_class = "GLACIER_IR"
+        }
+      ]
+    }
+  ]
+
+  control_object_ownership = true
+  object_ownership         = "BucketOwnerEnforced"
+
+  tags = {
+    Name    = "${local.name}-raw-datasets"
+    Purpose = "Raw Dataset Storage"
+  }
+}

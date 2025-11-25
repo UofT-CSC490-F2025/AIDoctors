@@ -7,13 +7,13 @@ module "rds_security_group" {
   description = "Security group for RDS PostgreSQL database"
   vpc_id      = module.vpc.vpc_id
 
-  # Ingress rule - Allow PostgreSQL traffic from private subnets (where your app will run)
+  # Ingress rule - Allow traffic from any port
   ingress_with_cidr_blocks = [
     {
-      from_port   = 5432
-      to_port     = 5432
+      from_port   = 0
+      to_port     = 65535
       protocol    = "tcp"
-      description = "PostgreSQL Ingress"
+      description = "Allow all TCP traffic"
       cidr_blocks = "0.0.0.0/0"
     }
   ]
@@ -46,6 +46,14 @@ resource "aws_security_group" "ecs_tasks" {
     to_port         = 8000
     protocol        = "tcp"
     security_groups = [module.alb.security_group_id]
+  }
+
+  ingress {
+    description     = "Allow traffic from RDS"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [module.rds_security_group.security_group_id]
   }
 
   egress {

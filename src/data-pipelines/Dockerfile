@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -10,13 +10,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl && \
     rm -rf /var/lib/apt/lists/*
 
-COPY src/data-pipelines/requirements.txt /app/requirements.txt
+COPY requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
 
-COPY src/data-pipelines/pipeline.py          /app/src/data-pipelines/pipeline.py
-COPY src/data-pipelines/load_to_postgres.py  /app/src/data-pipelines/load_to_postgres.py
-COPY src/data-pipelines/sync_raw_from_s3.py  /app/src/data-pipelines/sync_raw_from_s3.py
-
+COPY . /app/src/data-pipelines/
 
 CMD python /app/src/data-pipelines/sync_raw_from_s3.py && \
     python /app/src/data-pipelines/pipeline.py && \

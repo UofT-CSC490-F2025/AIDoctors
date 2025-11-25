@@ -78,7 +78,8 @@ resource "aws_iam_role_policy" "ecs_task_role_policy" {
           "ecs:*",
           "rds:*",
           "secretsmanager:*",
-          "bedrock:*"
+          "bedrock:*",
+          "ssm:*",
         ]
         Resource = "*"
       }
