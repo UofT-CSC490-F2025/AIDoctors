@@ -2,7 +2,7 @@ module "db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~> 6.0"
 
-  identifier = "${local.name}-db"
+  identifier = "${local.name}-db-v2" # Changed to force recreation for subnet move
 
   # PostgreSQL Configuration
   engine                   = "postgres"
@@ -28,8 +28,8 @@ module "db" {
   master_user_password_rotation_schedule_expression = "rate(30 days)"
 
   # High Availability & Networking
-  multi_az               = true
-  db_subnet_group_name   = module.vpc.database_subnet_group
+  multi_az               = false # Keep disabled during subnet move
+  db_subnet_group_name   = aws_db_subnet_group.public.name # Now change to public
   vpc_security_group_ids = [module.rds_security_group.security_group_id]
 
   # IAM Authentication
@@ -67,7 +67,7 @@ module "db" {
     }
   ]
 
-  depends_on = [module.vpc, module.rds_security_group]
+  depends_on = [module.vpc, module.rds_security_group, aws_db_subnet_group.public]
 
   tags = {
     Name = "${local.name}-postgres"

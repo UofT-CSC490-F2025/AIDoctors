@@ -86,8 +86,7 @@ CREATE TABLE IF NOT EXISTS ae_risk_enriched (
   meddra_code        TEXT,
   case_count         INTEGER,
   prr                DOUBLE PRECISION,
-  ror                DOUBLE PRECISION,
-  synthea_drug       TEXT
+  ror                DOUBLE PRECISION
 );
 """,
 "ae_risk_topk_per_patient_drug": """
@@ -198,7 +197,8 @@ def main():
         cur.execute(f"CREATE SCHEMA IF NOT EXISTS {schema}; SET search_path TO {schema};")
 
         for tbl, _ in TABLES:
-            print(f"[loader] Creating table: {tbl}")
+            print(f"[loader] Dropping and creating table: {tbl}")
+            cur.execute(f"DROP TABLE IF EXISTS {schema}.{tbl} CASCADE;")
             cur.execute(DDL[tbl])
 
         for tbl, _ in TABLES:

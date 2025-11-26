@@ -20,3 +20,13 @@ module "vpc" {
   }
 }
 
+# DB Subnet Group for public access (development)
+resource "aws_db_subnet_group" "public" {
+  name       = "${local.name}-public-db-subnet-group"
+  subnet_ids = module.vpc.public_subnets
+
+  tags = {
+    Name = "${local.name}-public-db-subnet-group"
+  }
+}
+
