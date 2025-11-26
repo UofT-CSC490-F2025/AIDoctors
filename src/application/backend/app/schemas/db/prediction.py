@@ -73,18 +73,26 @@ class DDIPredictRequest(BaseModel):
 
 
 class DDIPredictResponse(BaseModel):
-    patient_uuid: str = Field(examples=["patient-12345"])
+    drug1: str = Field(examples=["Warfarin"])
+    drug2: str = Field(examples=["Aspirin"])
     severity: str = Field(examples=["Major"])
+    reasoning: str = Field(examples=[
+        "The combination of warfarin and aspirin significantly increases bleeding risk due to their synergistic anticoagulant effects."
+    ])
     completion: str = Field(
         examples=[
             '{"severity": "Major"} The combination of warfarin and aspirin significantly increases bleeding risk due to their synergistic anticoagulant effects.'
         ]
     )
     model_path: str = Field(examples=["Qwen/Qwen2.5-0.5B"])
-    used_prompt: str = Field(
-        examples=[
-            "A patient is concurrently prescribed two medications.\n\nPatient information:\n- Age: 65\n- Sex: M\n- Comorbidities: ['Hypertension', 'Diabetes']\n\nMedication exposure:\n- Start: 2024-01-15\n- End: 2024-02-15\n- Overlap days: 31\n\nDrugs:\n- Drug 1: warfarin\n- Drug 2: aspirin\n- Known interaction in clinical sources: True\n- Number of data sources supporting this: 0.95\n\nMechanistic context:\nBoth drugs affect blood clotting mechanisms\n\nReturn:\n1) A JSON object: {\"severity\":\"<Minor|Moderate|Major>\"} (exactly).\n2) 1–3 sentence explanation citing your decision"
-        ]
-    )
     # Optional echo of known label if provided
     known_severity: Optional[str] = Field(default=None, examples=["Major"])
+    enriched_context: Optional[dict] = Field(default=None, examples=[{
+        "similar_cases": [],
+        "top_mechanisms": [],
+        "representative_cases": [],
+        "severity_distribution": {
+            "known_severity_count": 10,
+            "total_cases": 20
+        }
+    }])

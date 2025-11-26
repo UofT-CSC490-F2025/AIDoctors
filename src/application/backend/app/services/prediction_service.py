@@ -4,6 +4,9 @@ import json
 from dotenv import load_dotenv
 import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
+from sqlalchemy.orm import Session
+from app.schemas.db.prediction import DDIPredictRequest
+from app.repositories.ddi_repository import find_similar_interactions, get_interaction_statistics
 load_dotenv()
 
 def parse_bedrock_response(response_text: str) -> dict:
@@ -134,3 +137,63 @@ def invoke_bedrock_model(system_prompt: str, user_prompt: str) -> str:
     except Exception as e:
         raise Exception(f"Error invoking Bedrock model: {str(e)}")
     
+def enrich_from_database(
+    db: Session,
+    request: DDIPredictRequest
+) -> dict:
+    """
+    Query database to enrich the prediction context (RAG approach)
+    """
+    # Find similar cases
+    similar_cases = find_similar_interactions(
+        db=db,
+        drug1=request.drug1,
+        drug2=request.drug2,
+        age=request.Age,
+        sex=request.Sex,
+        comorbidities=request.Comorbidities,
+        limit=10
+    )
+    
+    # Get statistics
+    stats = get_interaction_statistics(
+        db=db,
+        drug1=request.drug1,
+        drug2=request.drug2
+    )
+    
+    # Extract mechanisms
+    mechanisms = list(set([
+        case.unified_mechanism_text 
+        for case in similar_cases 
+        if case.unified_mechanism_text
+    ]))
+    
+    # Format representative cases
+    representative_cases = [
+        {
+            'patient_uuid': case.patient_uuid,
+            'age': case.age,
+            'sex': case.sex,
+            'severity': case.unified_severity,
+            'mechanism': case.unified_mechanism_text,
+            'confidence': case.ddi_confidence,
+            'comorbidities': case.comorbidities or []
+        }
+        for case in similar_cases[:5]
+    ]
+    enriched_context = {
+        "similar_cases_count": len(similar_cases),
+        "known_interaction": stats['is_known_interaction'] if stats else False,
+        "avg_confidence": stats['avg_confidence'] if stats else None,
+        "severity_distribution": {},
+        "top_mechanisms": mechanisms,
+        "representative_cases": representative_cases
+    }
+    if stats and stats['known_severity_count'] and stats['total_cases']:
+        enriched_context["severity_distribution"] = {
+            "known_severity_count": stats['known_severity_count'],
+            "total_cases": stats['total_cases']
+        }
+        
+    return enriched_context

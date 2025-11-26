@@ -40,4 +40,14 @@ export type AlertResult = {
   known_severity?: string;
   drug1: string;
   drug2: string;
+  enriched_context?: {
+    similar_cases: any[];
+    top_mechanisms: any[];
+    representative_cases: any[];
+    severity_distribution: {
+      known_severity_count: number;
+      total_cases: number;
+    };
+  };
+  severity: string;
 };

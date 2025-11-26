@@ -35,7 +35,7 @@ def build_system_prompt() -> str:
     return system_prompt
 
 
-def build_user_prompt(payload: DDIPredictRequest) -> str:
+def build_user_prompt(payload: DDIPredictRequest, enriched_context: dict) -> str:
     """
     Build the user prompt containing the patient-specific information.
     """
@@ -49,11 +49,15 @@ def build_user_prompt(payload: DDIPredictRequest) -> str:
 
     drug1 = payload.drug1_norm or payload.drug1 or ""
     drug2 = payload.drug2_norm or payload.drug2 or ""
-    known = payload.ddi_known
+    enriched_similar_cases = enriched_context.get("representative_cases", [])
+    mech_list = enriched_context.get("top_mechanisms", [])
+    if mech_list:
+        mech += "\n".join(f"- {m}" for m in mech_list)
+    enriched_mechanisms = "\n".join(f"- {case['mechanism']}" for case in enriched_similar_cases if case.get('mechanism')) or ""
+    avg_confidence = enriched_context.get("avg_confidence") or ""
+    known = enriched_context.get("known_interaction")
     known_str = "Unknown" if known is None else ("True" if known else "False")
-    support = "" if payload.ddi_confidence is None else str(payload.ddi_confidence)
-    mech = payload.unified_mechanism_text or ""
-
+    
     user_prompt = (
         "A patient is concurrently prescribed two medications.\n\n"
         "Patient information:\n"
@@ -68,10 +72,11 @@ def build_user_prompt(payload: DDIPredictRequest) -> str:
         f"- Drug 1: {drug1}\n"
         f"- Drug 2: {drug2}\n"
         f"- Known interaction in clinical sources: {known_str}\n"
-        f"- Number of data sources supporting this: {support}\n\n"
+        f"- Number of data sources supporting this: {avg_confidence}\n\n"
         "Mechanistic context:\n"
-        f"{mech}\n\n"
+        f"{enriched_mechanisms}\n\n"
         "Please analyze this drug-drug interaction according to the format specified in the system instructions."
+        f"\n\nRepresentative historical cases:\n {enriched_similar_cases}"
     )
     return user_prompt
 
