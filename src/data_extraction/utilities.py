@@ -17,9 +17,10 @@ import kagglehub
 import tempfile
 import shutil
 
+from s3_utils import upload_local_file
+
 
 ### General file downloads
-
 
 def download_file(url: str, timeout: int = 30) -> bytes:
     """Download the file at `url` and return its bytes.
@@ -70,11 +71,12 @@ def extract_and_save(
     with open(out_path, "wb") as fh:
         fh.write(data)
 
+    upload_local_file(out_path)
+
     return out_path
 
 
 ### Excel file downloads as CSVs
-
 
 def excel_bytes_to_dfs(excel_bytes: bytes) -> Dict[str, pd.DataFrame]:
     """Read an Excel file in memory and return a dict of sheet_name -> DataFrame.
@@ -223,6 +225,8 @@ def extract_zip_and_save_members(
 
             extracted_paths.append(dest_path_abs)
 
+            upload_local_file(dest_path_abs)
+
         return extracted_paths
 
 
@@ -273,7 +277,10 @@ def extract_kaggle_dataset_and_save_members(
                         )
                     # Ensure destination dir exists (out_dir already created)
                     shutil.move(src_path, dest_path)
+                    
                     moved.append(dest_path)
+
+                    upload_local_file(dest_path)
 
             return moved
         finally:

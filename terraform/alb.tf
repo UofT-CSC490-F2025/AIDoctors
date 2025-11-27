@@ -36,7 +36,6 @@ module "alb" {
   }
 
   listeners = {
-    # HTTP listener - forward directly to application (no HTTPS until domain is registered)
     ex-http = {
       port     = 80
       protocol = "HTTP"
@@ -45,27 +44,6 @@ module "alb" {
         target_group_key = "aidoctors-application"
       }
     }
-
-    # Redirect HTTP to HTTPS - Uncomment after domain registration and ACM setup
-    # ex-http-https-redirect = {
-    #   port     = 80
-    #   protocol = "HTTP"
-    #   redirect = {
-    #     port        = "443"
-    #     protocol    = "HTTPS"
-    #     status_code = "HTTP_301"
-    #   }
-    # }
-    # Forward HTTPS to Application Target Group - Uncomment after domain registration and ACM setup
-    # ex-https = {
-    #   port            = 443
-    #   protocol        = "HTTPS"
-    #   certificate_arn = module.acm.acm_certificate_arn
-    #
-    #   forward = {
-    #     target_group_key = "aidoctors-application"
-    #   }
-    # }
   }
 
   target_groups = {
@@ -90,7 +68,6 @@ module "alb" {
         unhealthy_threshold = 3
       }
 
-      # Don't create target group attachments - ECS will handle this
       create_attachment = false
     }
   }

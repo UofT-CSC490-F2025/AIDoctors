@@ -80,13 +80,13 @@ resource "aws_ecs_task_definition" "app" {
       }
 
       # Update After Deployment
-      #   healthCheck = {
-      #     command     = ["CMD-SHELL", "curl -f http://localhost/ || exit 1"]
-      #     interval    = 30
-      #     timeout     = 5
-      #     retries     = 3
-      #     startPeriod = 60
-      #   }
+      healthCheck = {
+          command     = ["CMD-SHELL", "curl -f http://localhost/ || exit 1"]
+          interval    = 30
+          timeout     = 5
+          retries     = 3
+          startPeriod = 60
+        }
     }
   ])
 
@@ -100,8 +100,8 @@ resource "aws_ecs_task_definition" "pipeline" {
   family                   = "${local.name}-pipeline"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "512" # 0.5 vCPU
-  memory                   = "1024" # 1 GB
+  cpu                      = "2048" # 2 vCPU
+  memory                   = "4096" # 4 GB
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
 
@@ -140,7 +140,7 @@ resource "aws_ecs_service" "app" {
   name            = "${local.name}-app-service"
   cluster         = module.ecs_cluster.id
   task_definition = aws_ecs_task_definition.app.arn
-  desired_count   = 3
+  desired_count   = 0
 
   launch_type = "FARGATE"
 
@@ -162,30 +162,5 @@ resource "aws_ecs_service" "app" {
 
   tags = {
     Name = "${local.name}-app-service"
-  }
-}
-
-# ECS Service for Data Pipeline
-resource "aws_ecs_service" "pipeline" {
-  name            = "${local.name}-pipeline-service"
-  cluster         = module.ecs_cluster.id
-  task_definition = aws_ecs_task_definition.pipeline.arn
-  desired_count   = 0
-
-  launch_type = "FARGATE"
-
-  network_configuration {
-    subnets          = module.vpc.private_subnets
-    security_groups  = [aws_security_group.ecs_tasks.id]
-    assign_public_ip = false
-  }
-
-  # Allow external changes without Terraform plan difference
-  lifecycle {
-    ignore_changes = [desired_count]
-  }
-
-  tags = {
-    Name = "${local.name}-pipeline-service"
   }
 }

@@ -1,11 +1,10 @@
-import os
+import json
 from pathlib import Path
 import sys
 import pandas as pd
 import psycopg2
+import boto3
 import io
-
-import numpy as np
 
 def coerce_intlike(df, cols):
     for c in cols:
@@ -87,8 +86,7 @@ CREATE TABLE IF NOT EXISTS ae_risk_enriched (
   meddra_code        TEXT,
   case_count         INTEGER,
   prr                DOUBLE PRECISION,
-  ror                DOUBLE PRECISION,
-  synthea_drug       TEXT
+  ror                DOUBLE PRECISION
 );
 """,
 "ae_risk_topk_per_patient_drug": """
@@ -143,19 +141,43 @@ CREATE TABLE IF NOT EXISTS patient_ddi_collapsed_from_topk (
 """
 }
 
+def get_db_credentials():
+    """Fetch database connection details from SSM and Secrets Manager"""
+    ssm = boto3.client("ssm")
+    secrets = boto3.client("secretsmanager")
+    
+    # Get connection details from SSM Parameter Store
+    host = ssm.get_parameter(Name="/aidoctors/db/host")["Parameter"]["Value"]
+    port = ssm.get_parameter(Name="/aidoctors/db/port")["Parameter"]["Value"]
+    user = ssm.get_parameter(Name="/aidoctors/db/user")["Parameter"]["Value"]
+    dbname = ssm.get_parameter(Name="/aidoctors/db/name")["Parameter"]["Value"]
+    schema = ssm.get_parameter(Name="/aidoctors/db/schema")["Parameter"]["Value"]
+    
+    # Get the secret ARN from SSM
+    secret_arn = ssm.get_parameter(Name="/aidoctors/db/password-secret-arn")["Parameter"]["Value"]
+    
+    # Get password from Secrets Manager (RDS managed secret)
+    secret_value = secrets.get_secret_value(SecretId=secret_arn)
+    secret_dict = json.loads(secret_value["SecretString"])
+    password = secret_dict["password"]
+    
+    return host, port, user, password, dbname, schema
+
 def connect():
     try:
-        print(f"[loader] Attempting connection to Postgres at {os.getenv('PGHOST', 'db')}:{os.getenv('PGPORT', '5432')}...")
+        host, port, user, password, dbname, schema = get_db_credentials()
+        print(f"[loader] Attempting connection to Postgres at {host}:{port}...")
+
         conn = psycopg2.connect(
-            host=os.getenv("PGHOST", "db"),
-            port=os.getenv("PGPORT", "5432"),
-            user=os.getenv("PGUSER", "postgres"),
-            password=os.getenv("PGPASSWORD", "postgres"),
-            dbname=os.getenv("PGDATABASE", "ddi"),
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            dbname=dbname,
         )
         conn.autocommit = True
         print("[loader] ✅ Connection successful.")
-        return conn
+        return conn, schema
     except Exception as e:
         print(f"[loader] ❌ Failed to connect to Postgres: {type(e).__name__}: {e}")
         sys.exit(1)
@@ -168,16 +190,15 @@ def copy_df(cur, df: pd.DataFrame, table: str):
 
 def main():
     print("[loader] Connecting to Postgres...")
-    conn = connect()
+    conn, schema = connect()
     print("[loader] Connection established ✅")
-
-    schema = os.getenv("PGSCHEMA", "public")
     with conn.cursor() as cur:
         print(f"[loader] Using schema: {schema}")
         cur.execute(f"CREATE SCHEMA IF NOT EXISTS {schema}; SET search_path TO {schema};")
 
         for tbl, _ in TABLES:
-            print(f"[loader] Creating table: {tbl}")
+            print(f"[loader] Dropping and creating table: {tbl}")
+            cur.execute(f"DROP TABLE IF EXISTS {schema}.{tbl} CASCADE;")
             cur.execute(DDL[tbl])
 
         for tbl, _ in TABLES:

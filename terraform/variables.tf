@@ -9,3 +9,9 @@ variable "pipeline_image_tag" {
   type        = string
   default     = "latest"
 }
+
+variable "pipeline_schedule" {
+  description = "Cron expression for pipeline schedule (default: daily at 2 AM UTC)"
+  type        = string
+  default     = "cron(0 0 1 * ? *)"
+}
