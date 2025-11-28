@@ -32,9 +32,9 @@ jobs:
         run: npm ci
 
       - name: Run Jest Coverage
-        run: npm run test:ci
+        run: npm run test:ci | tee coverage-summary.txt
 
-      - name: Extract Coverage Metrics
+      - name: Extract Coverage Metrics Table
         id: cov
         run: |
           lines=$(jq '.total.lines.pct' coverage/coverage-summary.json)
@@ -51,6 +51,13 @@ jobs:
           cat coverage/lcov-report/index.html | sed 's/<[^>]*>//g' | head -n 200 > coverage.txt
           echo "text_report<<EOF" >> $GITHUB_OUTPUT
           cat coverage.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Extract Coverage Metrics Summary
+        id: covtext
+        run: |
+          echo "text<<EOF" >> $GITHUB_OUTPUT
+          cat coverage-summary.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Comment on PR
@@ -72,7 +79,7 @@ jobs:
             <summary>Coverage Report Summary</summary>
 
             ```
-            ${{ steps.cov.outputs.text_report }}
+            ${{ steps.covtext.outputs.text }}
             ```
 
             </details>
