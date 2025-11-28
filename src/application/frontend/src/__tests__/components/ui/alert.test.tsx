@@ -159,7 +159,9 @@ describe('Alert Component', () => {
   });
 
   it('should apply default grid styling when isPreview is false', () => {
-    const { container } = render(<Alert info={mockAlertInfo} isPreview={false} />);
+    const { container } = render(
+      <Alert info={mockAlertInfo} isPreview={false} />
+    );
 
     const gridDiv = container.querySelector('.grid');
     expect(gridDiv?.className).toContain('md:grid-cols-3');
@@ -186,7 +188,7 @@ describe('Alert Component', () => {
 
     // This assertion covers the 'Low concern' branch (Line 104)
     expect(screen.getByText(/Low concern/)).toBeInTheDocument();
-    
+
     // Check for the combined text to ensure context
     expect(screen.getByText(/Low concern · critical/)).toBeInTheDocument();
   });

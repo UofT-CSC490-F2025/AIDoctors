@@ -67,7 +67,9 @@ describe('NotFound Page', () => {
     const { default: NotFound } = await import('@/app/not-found');
     const { container } = render(<NotFound />);
 
-    const mainDiv = container.querySelector('.flex.items-center.justify-center');
+    const mainDiv = container.querySelector(
+      '.flex.items-center.justify-center'
+    );
     expect(mainDiv).toBeInTheDocument();
   });
 

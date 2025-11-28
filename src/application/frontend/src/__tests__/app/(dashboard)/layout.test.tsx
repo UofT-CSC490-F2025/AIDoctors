@@ -12,7 +12,9 @@ jest.mock('@/components/features/auth/auth-required', () => ({
 }));
 
 jest.mock('@/components/layout/dashboard-header', () => ({
-  DashboardHeader: () => <header data-testid="dashboard-header">Dashboard Header</header>,
+  DashboardHeader: () => (
+    <header data-testid="dashboard-header">Dashboard Header</header>
+  ),
 }));
 
 describe('Dashboard Layout', () => {
@@ -22,7 +24,7 @@ describe('Dashboard Layout', () => {
 
   it('should render children within AuthRequired wrapper', async () => {
     const { default: Layout } = await import('@/app/(dashboard)/layout');
-    
+
     render(
       <Layout>
         <div>Dashboard Content</div>
@@ -35,7 +37,7 @@ describe('Dashboard Layout', () => {
 
   it('should render the DashboardHeader', async () => {
     const { default: Layout } = await import('@/app/(dashboard)/layout');
-    
+
     render(
       <Layout>
         <div>Test Content</div>
@@ -47,7 +49,7 @@ describe('Dashboard Layout', () => {
 
   it('should apply flex layout classes', async () => {
     const { default: Layout } = await import('@/app/(dashboard)/layout');
-    
+
     const { container } = render(
       <Layout>
         <div>Test Content</div>
@@ -62,7 +64,7 @@ describe('Dashboard Layout', () => {
 
   it('should render multiple children correctly', async () => {
     const { default: Layout } = await import('@/app/(dashboard)/layout');
-    
+
     render(
       <Layout>
         <div>Child 1</div>
@@ -78,7 +80,7 @@ describe('Dashboard Layout', () => {
 
   it('should protect content with AuthRequired', async () => {
     const { default: Layout } = await import('@/app/(dashboard)/layout');
-    
+
     render(
       <Layout>
         <div>Protected Content</div>
@@ -87,6 +89,8 @@ describe('Dashboard Layout', () => {
 
     const authRequired = screen.getByTestId('auth-required');
     expect(authRequired).toBeInTheDocument();
-    expect(authRequired).toContainElement(screen.getByText('Protected Content'));
+    expect(authRequired).toContainElement(
+      screen.getByText('Protected Content')
+    );
   });
 });

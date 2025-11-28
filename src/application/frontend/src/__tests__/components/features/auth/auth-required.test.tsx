@@ -39,7 +39,9 @@ describe('AuthRequired Component', () => {
       isLoading: true,
     });
 
-    const { AuthRequired } = await import('@/components/features/auth/auth-required');
+    const { AuthRequired } = await import(
+      '@/components/features/auth/auth-required'
+    );
     render(
       <AuthRequired>
         <div>Protected Content</div>
@@ -57,7 +59,9 @@ describe('AuthRequired Component', () => {
       isLoading: false,
     });
 
-    const { AuthRequired } = await import('@/components/features/auth/auth-required');
+    const { AuthRequired } = await import(
+      '@/components/features/auth/auth-required'
+    );
     render(
       <AuthRequired>
         <div>Protected Content</div>
@@ -79,7 +83,9 @@ describe('AuthRequired Component', () => {
       isLoading: false,
     });
 
-    const { AuthRequired } = await import('@/components/features/auth/auth-required');
+    const { AuthRequired } = await import(
+      '@/components/features/auth/auth-required'
+    );
     render(
       <AuthRequired>
         <div>Protected Content</div>
@@ -98,7 +104,9 @@ describe('AuthRequired Component', () => {
       isLoading: true,
     });
 
-    const { AuthRequired } = await import('@/components/features/auth/auth-required');
+    const { AuthRequired } = await import(
+      '@/components/features/auth/auth-required'
+    );
     render(
       <AuthRequired>
         <div>Protected Content</div>
@@ -112,13 +120,15 @@ describe('AuthRequired Component', () => {
   it('should redirect only once when user state changes from loading to null', async () => {
     const { useUser } = require('@/hooks/useUser');
     const mockUseUser = useUser as jest.Mock;
-    
+
     mockUseUser.mockReturnValue({
       user: null,
       isLoading: true,
     });
 
-    const { AuthRequired } = await import('@/components/features/auth/auth-required');
+    const { AuthRequired } = await import(
+      '@/components/features/auth/auth-required'
+    );
     const { rerender } = render(
       <AuthRequired>
         <div>Protected Content</div>
@@ -148,13 +158,15 @@ describe('AuthRequired Component', () => {
   it('should render children when user becomes authenticated after loading', async () => {
     const { useUser } = require('@/hooks/useUser');
     const mockUseUser = useUser as jest.Mock;
-    
+
     mockUseUser.mockReturnValue({
       user: null,
       isLoading: true,
     });
 
-    const { AuthRequired } = await import('@/components/features/auth/auth-required');
+    const { AuthRequired } = await import(
+      '@/components/features/auth/auth-required'
+    );
     const { rerender } = render(
       <AuthRequired>
         <div>Protected Content</div>
@@ -187,7 +199,9 @@ describe('AuthRequired Component', () => {
       isLoading: false,
     });
 
-    const { AuthRequired } = await import('@/components/features/auth/auth-required');
+    const { AuthRequired } = await import(
+      '@/components/features/auth/auth-required'
+    );
     render(
       <AuthRequired>
         <div>First Child</div>

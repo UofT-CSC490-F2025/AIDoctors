@@ -8,7 +8,11 @@ describe('cn utility function', () => {
   });
 
   it('should handle conditional classes', () => {
-    const result = cn('base-class', true && 'conditional-class', false && 'not-included');
+    const result = cn(
+      'base-class',
+      true && 'conditional-class',
+      false && 'not-included'
+    );
     expect(result).toBe('base-class conditional-class');
   });
 
@@ -23,7 +27,7 @@ describe('cn utility function', () => {
   });
 
   it('should handle objects with conditional classes', () => {
-    const result = cn({ 'active': true, 'disabled': false, 'text-bold': true });
+    const result = cn({ active: true, disabled: false, 'text-bold': true });
     expect(result).toBe('active text-bold');
   });
 

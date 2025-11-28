@@ -55,7 +55,6 @@ describe('Input Component', () => {
     expect(input).toBeInTheDocument();
   });
 
-
   it('should be disabled when disabled prop is true', () => {
     render(<Input disabled data-testid="input" />);
 

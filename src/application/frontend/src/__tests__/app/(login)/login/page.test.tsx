@@ -15,7 +15,9 @@ const mockUser = {
 // Mock dependencies BEFORE any imports
 jest.mock('next/link', () => {
   const Link = ({ children, href, className, ...props }: any) => (
-    <a href={href} className={className} {...props}>{children}</a>
+    <a href={href} className={className} {...props}>
+      {children}
+    </a>
   );
   return {
     __esModule: true,
