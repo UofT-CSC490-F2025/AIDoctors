@@ -101,14 +101,7 @@ backend/
 ├── migrations/                     # Alembic migration scripts for schema versioning
 │   └── env.py
 │
-├── tests/                          # Automated tests (unit and integration)
-│   ├── unit/                       # Tests for isolated functions (services, utils)
-│   │   ├── test_services.py
-│   │   └── test_utils.py
-│   ├── integration/                # End-to-end and API-level tests
-│   │   ├── test_repositories.py
-│   │   └── test_api.py
-│   └── conftest.py                 # Pytest fixtures (e.g., test DB, test client)
+├── tests/                          # Automated tests
 │
 ├── .env.example                    # Example environment variables
 ├── alembic.ini                     # Alembic configuration
