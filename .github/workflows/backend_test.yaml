@@ -7,9 +7,17 @@ on:
         paths:
             - "src/application/backend/**"
 
+permissions:
+    id-token: write
+    contents: read
+    pull-requests: write
+    issues: write
+
 jobs:
     backend_test:
         runs-on: ubuntu-latest
+        env:
+            TESTING: "true"
 
         defaults:
             run:
@@ -37,7 +45,6 @@ jobs:
               run: |
                   set -o pipefail
                   uv run -m pytest 2>&1 | tee pytest-output.txt
-                  echo "exitcode=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
             - name: Comment pytest results on PR
               if: github.event_name == 'pull_request'
@@ -49,25 +56,22 @@ jobs:
                       const path = require('path');
 
                       const outputPath = path.join('src', 'application', 'backend', 'pytest-output.txt');
-                      const output = fs.readFileSync(outputPath, 'utf8');
+                      const testOutput = fs.readFileSync(outputPath, 'utf8');
 
-                      // truncate very long output so comment doesn't explode
-                      const MAX_LENGTH = 6000;
-                      let bodyText = output.length > MAX_LENGTH
-                        ? output.slice(0, MAX_LENGTH) + '\n\n... (truncated)'
-                        : output;
+                      const output = `#### Backend Test Results
+                      <details><summary>Show Output</summary>
 
-                      const body = [
-                        `${status} (exit code ${exitCode})`,
-                        '',
-                        '```text',
-                        bodyText,
-                        '```'
-                      ].join('\n');
+                      \`\`\`text
+                      ${testOutput}
+                      \`\`\`
 
-                      await github.rest.issues.createComment({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        issue_number: context.issue.number,
-                        body,
+                      </details>
+
+                      *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+                      github.rest.issues.createComment({
+                          issue_number: context.issue.number,
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          body: output
                       });
