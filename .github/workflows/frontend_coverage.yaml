@@ -1,9 +1,9 @@
 name: Frontend Code Coverage
 
 on:
-  pull_request:
-    paths:
-      - "src/application/frontend/**"
+  # pull_request:
+  #   paths:
+  #     - "src/application/frontend/**"
   push:
     branches: [frontend-badge-test]
     paths:
@@ -91,7 +91,7 @@ jobs:
             </details>
 
       - name: Generate Badge
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/frontend-badge-test'
         run: |
           pct="${{ steps.covpct.outputs.pct }}"
           color="red"
