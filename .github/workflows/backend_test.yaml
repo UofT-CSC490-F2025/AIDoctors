@@ -58,8 +58,6 @@ jobs:
                         : output;
 
                       const body = [
-                        `${status} (exit code ${exitCode})`,
-                        '',
                         '```text',
                         bodyText,
                         '```'
