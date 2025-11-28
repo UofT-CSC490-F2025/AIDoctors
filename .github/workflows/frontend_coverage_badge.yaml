@@ -2,7 +2,7 @@ name: Frontend Code Coverage (Badge Update)
 
 on:
   push:
-    branches: [main]
+    branches: [dummy]
     paths:
       - "src/application/frontend/**"
 
@@ -81,7 +81,7 @@ jobs:
           EOF
 
       - name: Commit badge
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/dummy'
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
