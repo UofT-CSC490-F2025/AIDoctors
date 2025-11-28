@@ -11,7 +11,7 @@ const config: Config = {
   collectCoverage: true,
 
   // A list of reporter names that Jest uses when writing coverage reports
-  coverageReporters: ['text-summary', 'lcov', 'json-summary'],
+  coverageReporters: ['text', 'lcov', 'json-summary'],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: './coverage',
