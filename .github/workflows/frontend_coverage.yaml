@@ -1,0 +1,82 @@
+name: Frontend Code Coverage
+
+on:
+  pull_request:
+    paths:
+      - "src/application/frontend/**"
+  push:
+    branches: [main]
+    paths:
+      - "src/application/frontend/**"
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/application/frontend
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.10.0
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Jest Coverage
+        run: npm run test:ci
+
+      - name: Upload Coverage Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: coverage
+
+      - name: Extract Coverage Percentage
+        id: cov
+        run: |
+          total=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+          echo "pct=$total" >> $GITHUB_OUTPUT
+
+      - name: Comment Coverage on PR
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            **Frontend Coverage:** ${{ steps.cov.outputs.pct }}%
+
+      - name: Generate Badge
+        if: github.ref == 'refs/heads/main'
+        run: |
+          pct="${{ steps.cov.outputs.pct }}"
+          color="red"
+          if (( $(echo "$pct >= 80" | bc -l) )); then color="yellow"; fi
+          if (( $(echo "$pct >= 90" | bc -l) )); then color="green"; fi
+
+          mkdir -p ../../../.github/badges
+          cat > ../../../.github/badges/frontend-coverage.svg <<EOF
+          <svg xmlns="http://www.w3.org/2000/svg" width="150" height="20">
+            <rect width="90" height="20" fill="#555"/>
+            <rect x="90" width="60" height="20" fill="$color"/>
+            <text x="45" y="14" fill="#fff" font-family="DejaVu Sans" font-size="11" text-anchor="middle">coverage</text>
+            <text x="120" y="14" fill="#fff" font-family="DejaVu Sans" font-size="11" text-anchor="middle">${pct}%</text>
+          </svg>
+          EOF
+
+      - name: Commit badge
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add ../../../.github/badges/frontend-coverage.svg
+          git commit -m "Update frontend coverage badge" || exit 0
+          git push
