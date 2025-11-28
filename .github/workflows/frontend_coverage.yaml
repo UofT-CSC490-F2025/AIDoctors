@@ -1,0 +1,118 @@
+name: Frontend Code Coverage
+
+on:
+  pull_request:
+    paths:
+      - "src/application/frontend/**"
+  push:
+    branches: [main]
+    paths:
+      - "src/application/frontend/**"
+
+jobs:
+  pr_comment_and_badge:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/application/frontend
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.10.0
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Jest Coverage
+        run: npm run test:ci | tee coverage-summary.txt
+
+      - name: Extract Coverage Percentage
+        id: covpct
+        run: |
+          total=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+          echo "pct=$total" >> $GITHUB_OUTPUT
+
+      - name: Extract Coverage Metrics Table
+        id: cov
+        run: |
+          lines=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+          branches=$(jq '.total.branches.pct' coverage/coverage-summary.json)
+          functions=$(jq '.total.functions.pct' coverage/coverage-summary.json)
+          statements=$(jq '.total.statements.pct' coverage/coverage-summary.json)
+
+          echo "lines=$lines" >> $GITHUB_OUTPUT
+          echo "branches=$branches" >> $GITHUB_OUTPUT
+          echo "functions=$functions" >> $GITHUB_OUTPUT
+          echo "statements=$statements" >> $GITHUB_OUTPUT
+
+          # Pretty text form for collapsible details
+          cat coverage/lcov-report/index.html | sed 's/<[^>]*>//g' | head -n 200 > coverage.txt
+          echo "text_report<<EOF" >> $GITHUB_OUTPUT
+          cat coverage.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Extract Coverage Metrics Summary
+        id: covtext
+        run: |
+          echo "text<<EOF" >> $GITHUB_OUTPUT
+          cat coverage-summary.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            **Frontend Test Coverage**
+
+            | Metric | Value |
+            |--------|-------|
+            | Statements | **${{ steps.cov.outputs.statements }}%** |
+            | Branches | **${{ steps.cov.outputs.branches }}%** |
+            | Functions | **${{ steps.cov.outputs.functions }}%** |
+            | Lines | **${{ steps.cov.outputs.lines }}%** |
+
+            <details>
+            <summary>Coverage Report Summary</summary>
+
+            ```
+            ${{ steps.covtext.outputs.text }}
+            ```
+
+            </details>
+
+      - name: Generate Badge
+        if: github.ref == 'refs/heads/main'
+        run: |
+          pct="${{ steps.covpct.outputs.pct }}"
+          color="red"
+          if (( $(echo "$pct >= 80" | bc -l) )); then color="yellow"; fi
+          if (( $(echo "$pct >= 90" | bc -l) )); then color="green"; fi
+
+          mkdir -p ../../../.github/badges
+          cat > ../../../.github/badges/frontend-coverage.svg <<EOF
+          <svg xmlns="http://www.w3.org/2000/svg" width="150" height="20">
+            <rect width="90" height="20" fill="#555"/>
+            <rect x="90" width="60" height="20" fill="$color"/>
+            <text x="45" y="14" fill="#fff" font-family="DejaVu Sans" font-size="11" text-anchor="middle">coverage</text>
+            <text x="120" y="14" fill="#fff" font-family="DejaVu Sans" font-size="11" text-anchor="middle">${pct}%</text>
+          </svg>
+          EOF
+
+      - name: Commit badge
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add ../../../.github/badges/frontend-coverage.svg
+          git commit -m "Update frontend coverage badge" || exit 0
+          git push
