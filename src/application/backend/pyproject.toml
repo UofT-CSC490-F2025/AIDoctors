@@ -14,9 +14,7 @@ dependencies = [
     "passlib[bcrypt]>=1.7.4",
     "sqlalchemy>=2.0.44",
     "bcrypt==4.3.0",
-    "boto3>=1.35.0",
-    "pytest-cov>=7.0.0",
-    "pytest>=9.0.0",
+    "boto3>=1.35.0"
 ]
 
 [project.optional-dependencies]
@@ -34,6 +32,7 @@ dev = [
     "httpx>=0.25.0,<0.27.0",
     "pytest-mock>=3.15.1",
     "pytest-cov>=7.0.0",
+    "coverage[toml]>=7.4.0",
 ]
 
 [build-system]
@@ -43,10 +42,20 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["."]
 
+[tool.coverage.run]
+source = ["app"]
+omit = [
+    "*/tests/*",
+    "*/app/config/config.py",
+    "*/app/db/models/*",
+    "*/app/schemas/*",
+    "*/app/db/session.py",
+    "*/app/db/setup.py",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-asyncio_mode = "auto"
 filterwarnings = [
     "ignore::DeprecationWarning:passlib.*:",
 ]
-addopts = "--cov --cov-config=pyproject.toml"
+addopts = "--cov=app --cov-report=term-missing"

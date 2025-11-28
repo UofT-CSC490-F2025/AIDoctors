@@ -1,3 +1,4 @@
+# pragma: no cover
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
@@ -49,7 +50,7 @@ if is_testing:
     )
 else:
     # Try to connect to AWS RDS
-    print("🔧 Configuring AWS RDS database connection...")
+    print("Configuring AWS RDS database connection...")
     try:
         host, port, user, password, dbname, schema = get_db_credentials()
         DATABASE_URL = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}?options=-csearch_path%3D{schema}"
@@ -65,13 +66,7 @@ else:
         print(f"AWS RDS connection configured: {host}:{port}/{dbname}")
 
     except Exception as e:
-        print(f"AWS RDS configuration failed: {e}")
-        
-        DATABASE_URL = "sqlite:///./app.db"
-        engine = create_engine(
-            DATABASE_URL,
-            connect_args={"check_same_thread": False}
-        )
+        raise Exception("Failed to configure AWS RDS database connection")
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
