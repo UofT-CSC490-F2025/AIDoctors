@@ -29,18 +29,20 @@ cp .env.example .env
 The application uses AWS Bedrock for drug-drug interaction predictions.
 
 **For local testing:**
-- Set your AWS credentials in the `.env` file:
-  ```
-  AWS_ACCESS_KEY_ID=your-access-key
-  AWS_SECRET_ACCESS_KEY=your-secret-key
-  AWS_REGION=us-east-1
-  BEDROCK_MODEL_ID=anthropic.claude-3-haiku-20240307-v1:0
-  ```
+
+-   Set your AWS credentials in the `.env` file:
+    ```
+    AWS_ACCESS_KEY_ID=your-access-key
+    AWS_SECRET_ACCESS_KEY=your-secret-key
+    AWS_REGION=us-east-1
+    BEDROCK_MODEL_ID=anthropic.claude-3-haiku-20240307-v1:0
+    ```
 
 **For ECS deployment:**
-- No credentials needed in `.env`
-- The ECS task will automatically inherit IAM role permissions
-- Ensure the task role has `bedrock:InvokeModel` permission
+
+-   No credentials needed in `.env`
+-   The ECS task will automatically inherit IAM role permissions
+-   Ensure the task role has `bedrock:InvokeModel` permission
 
 ### 4. Run the Server
 
@@ -174,3 +176,9 @@ uv sync --all-extras
 # Run tests
 uv run pytest
 ```
+
+### GitHub Actions
+
+The repository includes a GitHub Actions workflow for running tests:
+
+-   `backend_test.yaml`: Runs `uv run pytest` and comments the results on the PR.
