@@ -302,9 +302,6 @@ class TestPredictionService:
         EDGE CASE: Nested or malformed reasoning tags.
         Tests regex handling when reasoning tags appear multiple times or are nested.
         The regex should match the first occurrence using non-greedy matching.
-        NOTE: The content extraction uses find('</reasoning>') which gets everything after
-        the FIRST closing tag, so subsequent tags will be in the content and cause JSON parsing to fail.
-        This test validates that such malformed responses are rejected.
         """
         response_text = '<reasoning>First reasoning</reasoning><reasoning>Second reasoning</reasoning>{"severity": "Major"}'
         
