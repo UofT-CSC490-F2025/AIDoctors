@@ -35,6 +35,9 @@ class TestAuthService:
 
     def test_create_access_token_with_expiry(self, mocker):
         """Test creating access token with custom expiry."""
+        # Mock the secret key
+        mocker.patch("app.services.auth_service.ACCESS_TOKEN_SECRET_KEY", "test-secret-key")
+        
         data = {"sub": "testuser"}
         expires_delta = timedelta(minutes=30)
 
@@ -51,6 +54,9 @@ class TestAuthService:
 
     def test_create_access_token_default_expiry(self, mocker):
         """Test creating access token with default expiry."""
+        # Mock the secret key
+        mocker.patch("app.services.auth_service.ACCESS_TOKEN_SECRET_KEY", "test-secret-key")
+        
         data = {"sub": "testuser"}
 
         token = create_access_token(data)
@@ -64,6 +70,9 @@ class TestAuthService:
 
     def test_create_access_token_with_additional_data(self, mocker):
         """Test creating access token with additional claims."""
+        # Mock the secret key
+        mocker.patch("app.services.auth_service.ACCESS_TOKEN_SECRET_KEY", "test-secret-key")
+        
         data = {"sub": "testuser", "role": "admin", "email": "test@example.com"}
         expires_delta = timedelta(minutes=15)
 
