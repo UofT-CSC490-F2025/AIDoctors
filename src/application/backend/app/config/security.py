@@ -1,12 +1,22 @@
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
+import boto3
 import os
-from dotenv import load_dotenv
 
+secret_token = None
+try:
+    # Only attempt AWS fetch if not in test mode
+    if os.getenv("TESTING") != "true":
+        ssm = boto3.client("ssm")
+        secret_token = ssm.get_parameter(Name="/aidoctors/access-token-secret")["Parameter"]["Value"]
+except Exception as e:
+    print(f"Failed to fetch AWS credentials: {e}")
 
-load_dotenv()
+# Fallback to environment variable or test default
+if not secret_token:
+    secret_token = os.getenv("ACCESS_TOKEN_SECRET_KEY")
 
-ACCESS_TOKEN_SECRET_KEY = os.getenv("ACCESS_TOKEN_SECRET_KEY")
+ACCESS_TOKEN_SECRET_KEY = secret_token
 ACCESS_TOKEN_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 ACCESS_TOKEN_COOKIE_NAME = "access_token"
