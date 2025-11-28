@@ -10,6 +10,8 @@ on:
 jobs:
     backend_test:
         runs-on: ubuntu-latest
+        env:
+            TESTING: "true"
 
         defaults:
             run:
