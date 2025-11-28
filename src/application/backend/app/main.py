@@ -54,7 +54,7 @@ async def favicon():
 @app.get("/")
 async def root():
     """Root endpoint"""
-    return {"message": "Welcome to CSC490 API"}
+    return {"message": "Welcome to AIDoctors API"}
 
 
 @app.get("/health")
