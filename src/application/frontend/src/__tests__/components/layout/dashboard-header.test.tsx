@@ -211,6 +211,9 @@ describe('DashboardHeader Component', () => {
       );
     });
 
+    // Assert the error was handled/logged internally
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    // Restore console.error to avoid hiding real errors in other tests
     consoleErrorSpy.mockRestore();
   });
 
