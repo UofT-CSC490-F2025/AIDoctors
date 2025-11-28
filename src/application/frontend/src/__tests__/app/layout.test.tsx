@@ -24,6 +24,9 @@ describe('RootLayout', () => {
   });
 
   it('should render children within UserProvider', async () => {
+    // Suppress console.error
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    
     const { default: RootLayout } = await import('@/app/layout');
     
     render(
@@ -34,6 +37,8 @@ describe('RootLayout', () => {
 
     expect(screen.getByTestId('user-provider')).toBeInTheDocument();
     expect(screen.getByText('Test Content')).toBeInTheDocument();
+
+    consoleSpy.mockRestore();
   });
 
   it('should apply correct HTML attributes', async () => {

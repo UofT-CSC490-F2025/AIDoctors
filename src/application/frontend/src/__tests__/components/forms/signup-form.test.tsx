@@ -189,6 +189,9 @@ describe('SignupForm Component', () => {
   });
 
   it('should display error message when network error occurs', async () => {
+    // Suppress console.error
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
     const { SignupForm } = await import('@/components/forms/signup-form');
@@ -211,6 +214,11 @@ describe('SignupForm Component', () => {
     await waitFor(() => {
       expect(screen.getByText(/an unexpected error occurred/i)).toBeInTheDocument();
     });
+
+    // Assert the error was handled/logged internally
+    expect(consoleSpy).toHaveBeenCalled();
+    // Restore console.error to avoid hiding real errors in other tests
+    consoleSpy.mockRestore();
   });
 
   it('should format request body correctly with snake_case keys', async () => {
