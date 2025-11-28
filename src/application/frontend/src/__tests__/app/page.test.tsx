@@ -24,17 +24,32 @@ jest.mock('next/link', () => ({
 
 // Mock lucide-react icons
 jest.mock('lucide-react', () => ({
-  ArrowRight: ({ className }: any) => <span data-testid="arrow-right-icon" className={className} />,
-  ShieldCheck: ({ className }: any) => <span data-testid="shield-check-icon" className={className} />,
-  Activity: ({ className }: any) => <span data-testid="activity-icon" className={className} />,
-  Sparkles: ({ className }: any) => <span data-testid="sparkles-icon" className={className} />,
-  Brain: ({ className }: any) => <span data-testid="brain-icon" className={className} />,
+  ArrowRight: ({ className }: any) => (
+    <span data-testid="arrow-right-icon" className={className} />
+  ),
+  ShieldCheck: ({ className }: any) => (
+    <span data-testid="shield-check-icon" className={className} />
+  ),
+  Activity: ({ className }: any) => (
+    <span data-testid="activity-icon" className={className} />
+  ),
+  Sparkles: ({ className }: any) => (
+    <span data-testid="sparkles-icon" className={className} />
+  ),
+  Brain: ({ className }: any) => (
+    <span data-testid="brain-icon" className={className} />
+  ),
 }));
 
 // Mock UI components
 jest.mock('@/components/ui/button', () => ({
   Button: ({ children, asChild, variant, size, className, ...props }: any) => (
-    <button data-variant={variant} data-size={size} className={className} {...props}>
+    <button
+      data-variant={variant}
+      data-size={size}
+      className={className}
+      {...props}
+    >
       {children}
     </button>
   ),
@@ -59,7 +74,7 @@ describe('HomePage', () => {
 
     const aiDoctorsText = screen.getByText('AI Doctors');
     const brainIcon = screen.getByTestId('brain-icon');
-    
+
     expect(aiDoctorsText).toBeInTheDocument();
     expect(brainIcon).toBeInTheDocument();
   });
@@ -69,9 +84,7 @@ describe('HomePage', () => {
     render(<HomePage />);
 
     expect(screen.getByText('Catch drug interactions')).toBeInTheDocument();
-    expect(
-      screen.getByText('before they become harmful')
-    ).toBeInTheDocument();
+    expect(screen.getByText('before they become harmful')).toBeInTheDocument();
   });
 
   it('should render call-to-action buttons', async () => {

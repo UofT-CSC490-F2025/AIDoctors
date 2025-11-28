@@ -62,7 +62,9 @@ describe('DUMMY_ALERTS', () => {
     });
 
     it('should have at least 3 recommendations', () => {
-      expect(firstAlert.content.clinical_concern_assessment.recommendations).toHaveLength(3);
+      expect(
+        firstAlert.content.clinical_concern_assessment.recommendations
+      ).toHaveLength(3);
     });
   });
 
@@ -108,7 +110,8 @@ describe('DUMMY_ALERTS', () => {
     });
 
     it('should have recommendations array', () => {
-      const recommendations = secondAlert.content.clinical_concern_assessment.recommendations;
+      const recommendations =
+        secondAlert.content.clinical_concern_assessment.recommendations;
       expect(Array.isArray(recommendations)).toBe(true);
       expect(recommendations.length).toBeGreaterThan(0);
     });
@@ -148,7 +151,9 @@ describe('DUMMY_ALERTS', () => {
 
       DUMMY_ALERTS.forEach((alert) => {
         expect(validKnownSeverities).toContain(alert.known_severity);
-        expect(validPredictedSeverities).toContain(alert.content.predicted_severity);
+        expect(validPredictedSeverities).toContain(
+          alert.content.predicted_severity
+        );
       });
     });
 

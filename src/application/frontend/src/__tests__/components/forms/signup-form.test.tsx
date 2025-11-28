@@ -33,13 +33,25 @@ describe('SignupForm Component', () => {
   it('should render signup form with all required fields', async () => {
     const { SignupForm } = await import('@/components/forms/signup-form');
     render(<SignupForm />);
-    
-    expect(screen.getByPlaceholderText(/enter your first name/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/enter your last name/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/enter a username/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/enter your email/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/enter a password/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /sign up/i })).toBeInTheDocument();
+
+    expect(
+      screen.getByPlaceholderText(/enter your first name/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/enter your last name/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/enter a username/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/enter your email/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/enter a password/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /sign up/i })
+    ).toBeInTheDocument();
   });
 
   it('should submit form with valid data and redirect to login', async () => {
@@ -51,12 +63,22 @@ describe('SignupForm Component', () => {
 
     const { SignupForm } = await import('@/components/forms/signup-form');
     render(<SignupForm />);
-    
-    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i) as HTMLInputElement;
-    const lastNameInput = screen.getByPlaceholderText(/enter your last name/i) as HTMLInputElement;
-    const usernameInput = screen.getByPlaceholderText(/enter a username/i) as HTMLInputElement;
-    const emailInput = screen.getByPlaceholderText(/enter your email/i) as HTMLInputElement;
-    const passwordInput = screen.getByPlaceholderText(/enter a password/i) as HTMLInputElement;
+
+    const firstNameInput = screen.getByPlaceholderText(
+      /enter your first name/i
+    ) as HTMLInputElement;
+    const lastNameInput = screen.getByPlaceholderText(
+      /enter your last name/i
+    ) as HTMLInputElement;
+    const usernameInput = screen.getByPlaceholderText(
+      /enter a username/i
+    ) as HTMLInputElement;
+    const emailInput = screen.getByPlaceholderText(
+      /enter your email/i
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText(
+      /enter a password/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
     await userEvent.type(firstNameInput, 'John');
@@ -95,7 +117,7 @@ describe('SignupForm Component', () => {
 
   it('should display error message when API returns client error', async () => {
     const errorMessage = 'Username already exists';
-    
+
     mockFetch.mockResolvedValueOnce({
       status: 400,
       ok: false,
@@ -104,12 +126,22 @@ describe('SignupForm Component', () => {
 
     const { SignupForm } = await import('@/components/forms/signup-form');
     render(<SignupForm />);
-    
-    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i) as HTMLInputElement;
-    const lastNameInput = screen.getByPlaceholderText(/enter your last name/i) as HTMLInputElement;
-    const usernameInput = screen.getByPlaceholderText(/enter a username/i) as HTMLInputElement;
-    const emailInput = screen.getByPlaceholderText(/enter your email/i) as HTMLInputElement;
-    const passwordInput = screen.getByPlaceholderText(/enter a password/i) as HTMLInputElement;
+
+    const firstNameInput = screen.getByPlaceholderText(
+      /enter your first name/i
+    ) as HTMLInputElement;
+    const lastNameInput = screen.getByPlaceholderText(
+      /enter your last name/i
+    ) as HTMLInputElement;
+    const usernameInput = screen.getByPlaceholderText(
+      /enter a username/i
+    ) as HTMLInputElement;
+    const emailInput = screen.getByPlaceholderText(
+      /enter your email/i
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText(
+      /enter a password/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
     await userEvent.type(firstNameInput, 'John');
@@ -128,7 +160,7 @@ describe('SignupForm Component', () => {
 
   it('should display error message when email is already registered', async () => {
     const errorMessage = 'Email already registered';
-    
+
     mockFetch.mockResolvedValueOnce({
       status: 409,
       ok: false,
@@ -137,12 +169,22 @@ describe('SignupForm Component', () => {
 
     const { SignupForm } = await import('@/components/forms/signup-form');
     render(<SignupForm />);
-    
-    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i) as HTMLInputElement;
-    const lastNameInput = screen.getByPlaceholderText(/enter your last name/i) as HTMLInputElement;
-    const usernameInput = screen.getByPlaceholderText(/enter a username/i) as HTMLInputElement;
-    const emailInput = screen.getByPlaceholderText(/enter your email/i) as HTMLInputElement;
-    const passwordInput = screen.getByPlaceholderText(/enter a password/i) as HTMLInputElement;
+
+    const firstNameInput = screen.getByPlaceholderText(
+      /enter your first name/i
+    ) as HTMLInputElement;
+    const lastNameInput = screen.getByPlaceholderText(
+      /enter your last name/i
+    ) as HTMLInputElement;
+    const usernameInput = screen.getByPlaceholderText(
+      /enter a username/i
+    ) as HTMLInputElement;
+    const emailInput = screen.getByPlaceholderText(
+      /enter your email/i
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText(
+      /enter a password/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
     await userEvent.type(firstNameInput, 'John');
@@ -166,12 +208,22 @@ describe('SignupForm Component', () => {
 
     const { SignupForm } = await import('@/components/forms/signup-form');
     render(<SignupForm />);
-    
-    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i) as HTMLInputElement;
-    const lastNameInput = screen.getByPlaceholderText(/enter your last name/i) as HTMLInputElement;
-    const usernameInput = screen.getByPlaceholderText(/enter a username/i) as HTMLInputElement;
-    const emailInput = screen.getByPlaceholderText(/enter your email/i) as HTMLInputElement;
-    const passwordInput = screen.getByPlaceholderText(/enter a password/i) as HTMLInputElement;
+
+    const firstNameInput = screen.getByPlaceholderText(
+      /enter your first name/i
+    ) as HTMLInputElement;
+    const lastNameInput = screen.getByPlaceholderText(
+      /enter your last name/i
+    ) as HTMLInputElement;
+    const usernameInput = screen.getByPlaceholderText(
+      /enter a username/i
+    ) as HTMLInputElement;
+    const emailInput = screen.getByPlaceholderText(
+      /enter your email/i
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText(
+      /enter a password/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
     await userEvent.type(firstNameInput, 'John');
@@ -189,16 +241,31 @@ describe('SignupForm Component', () => {
   });
 
   it('should display error message when network error occurs', async () => {
+    // Suppress console.error
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
     const { SignupForm } = await import('@/components/forms/signup-form');
     render(<SignupForm />);
-    
-    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i) as HTMLInputElement;
-    const lastNameInput = screen.getByPlaceholderText(/enter your last name/i) as HTMLInputElement;
-    const usernameInput = screen.getByPlaceholderText(/enter a username/i) as HTMLInputElement;
-    const emailInput = screen.getByPlaceholderText(/enter your email/i) as HTMLInputElement;
-    const passwordInput = screen.getByPlaceholderText(/enter a password/i) as HTMLInputElement;
+
+    const firstNameInput = screen.getByPlaceholderText(
+      /enter your first name/i
+    ) as HTMLInputElement;
+    const lastNameInput = screen.getByPlaceholderText(
+      /enter your last name/i
+    ) as HTMLInputElement;
+    const usernameInput = screen.getByPlaceholderText(
+      /enter a username/i
+    ) as HTMLInputElement;
+    const emailInput = screen.getByPlaceholderText(
+      /enter your email/i
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText(
+      /enter a password/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
     await userEvent.type(firstNameInput, 'John');
@@ -209,8 +276,15 @@ describe('SignupForm Component', () => {
     await userEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/an unexpected error occurred/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/an unexpected error occurred/i)
+      ).toBeInTheDocument();
     });
+
+    // Assert the error was handled/logged internally
+    expect(consoleSpy).toHaveBeenCalled();
+    // Restore console.error to avoid hiding real errors in other tests
+    consoleSpy.mockRestore();
   });
 
   it('should format request body correctly with snake_case keys', async () => {
@@ -222,12 +296,22 @@ describe('SignupForm Component', () => {
 
     const { SignupForm } = await import('@/components/forms/signup-form');
     render(<SignupForm />);
-    
-    const firstNameInput = screen.getByPlaceholderText(/enter your first name/i) as HTMLInputElement;
-    const lastNameInput = screen.getByPlaceholderText(/enter your last name/i) as HTMLInputElement;
-    const usernameInput = screen.getByPlaceholderText(/enter a username/i) as HTMLInputElement;
-    const emailInput = screen.getByPlaceholderText(/enter your email/i) as HTMLInputElement;
-    const passwordInput = screen.getByPlaceholderText(/enter a password/i) as HTMLInputElement;
+
+    const firstNameInput = screen.getByPlaceholderText(
+      /enter your first name/i
+    ) as HTMLInputElement;
+    const lastNameInput = screen.getByPlaceholderText(
+      /enter your last name/i
+    ) as HTMLInputElement;
+    const usernameInput = screen.getByPlaceholderText(
+      /enter a username/i
+    ) as HTMLInputElement;
+    const emailInput = screen.getByPlaceholderText(
+      /enter your email/i
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText(
+      /enter a password/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /sign up/i });
 
     await userEvent.type(firstNameInput, 'Jane');
@@ -243,7 +327,7 @@ describe('SignupForm Component', () => {
 
     const fetchCall = mockFetch.mock.calls[0];
     const requestBody = JSON.parse(fetchCall[1].body);
-    
+
     // Verify snake_case formatting
     expect(requestBody).toHaveProperty('first_name', 'Jane');
     expect(requestBody).toHaveProperty('last_name', 'Smith');

@@ -7,7 +7,9 @@ import React from 'react';
 // Mock dependencies BEFORE any imports
 jest.mock('next/link', () => {
   const Link = ({ children, href, ...props }: any) => (
-    <a href={href} {...props}>{children}</a>
+    <a href={href} {...props}>
+      {children}
+    </a>
   );
   return {
     __esModule: true,
@@ -17,19 +19,27 @@ jest.mock('next/link', () => {
 
 jest.mock('@/components/ui/button', () => ({
   Button: ({ children, asChild, className, ...props }: any) => (
-    <button className={className} {...props}>{children}</button>
+    <button className={className} {...props}>
+      {children}
+    </button>
   ),
 }));
 
 jest.mock('@/components/ui/card', () => ({
-  Card: ({ children, ...props }: any) => <div data-testid="card" {...props}>{children}</div>,
+  Card: ({ children, ...props }: any) => (
+    <div data-testid="card" {...props}>
+      {children}
+    </div>
+  ),
   CardHeader: ({ children, className, ...props }: any) => (
     <div data-testid="card-header" className={className} {...props}>
       {children}
     </div>
   ),
   CardTitle: ({ children, ...props }: any) => (
-    <h3 data-testid="card-title" {...props}>{children}</h3>
+    <h3 data-testid="card-title" {...props}>
+      {children}
+    </h3>
   ),
   CardDescription: ({ children, className, ...props }: any) => (
     <p data-testid="card-description" className={className} {...props}>
@@ -62,7 +72,7 @@ describe('DashboardPage', () => {
     const { default: DashboardPage } = await import(
       '@/app/(dashboard)/dashboard/page'
     );
-    
+
     render(<DashboardPage />);
 
     expect(
@@ -74,7 +84,7 @@ describe('DashboardPage', () => {
     const { default: DashboardPage } = await import(
       '@/app/(dashboard)/dashboard/page'
     );
-    
+
     render(<DashboardPage />);
 
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
@@ -84,7 +94,7 @@ describe('DashboardPage', () => {
     const { default: DashboardPage } = await import(
       '@/app/(dashboard)/dashboard/page'
     );
-    
+
     render(<DashboardPage />);
 
     expect(
@@ -96,7 +106,7 @@ describe('DashboardPage', () => {
     const { default: DashboardPage } = await import(
       '@/app/(dashboard)/dashboard/page'
     );
-    
+
     render(<DashboardPage />);
 
     const link = screen.getByText('Run a prediction').closest('a');
@@ -110,7 +120,7 @@ describe('DashboardPage', () => {
     const { default: DashboardPage } = await import(
       '@/app/(dashboard)/dashboard/page'
     );
-    
+
     render(<DashboardPage />);
 
     expect(screen.getByText('Collect context')).toBeInTheDocument();
@@ -122,7 +132,7 @@ describe('DashboardPage', () => {
     const { default: DashboardPage } = await import(
       '@/app/(dashboard)/dashboard/page'
     );
-    
+
     render(<DashboardPage />);
 
     expect(
@@ -140,7 +150,7 @@ describe('DashboardPage', () => {
     const { default: DashboardPage } = await import(
       '@/app/(dashboard)/dashboard/page'
     );
-    
+
     render(<DashboardPage />);
 
     expect(screen.getByTestId('database-icon')).toBeInTheDocument();
@@ -152,7 +162,7 @@ describe('DashboardPage', () => {
     const { default: DashboardPage } = await import(
       '@/app/(dashboard)/dashboard/page'
     );
-    
+
     render(<DashboardPage />);
 
     expect(screen.getByTestId('arrow-right-icon')).toBeInTheDocument();
@@ -162,7 +172,7 @@ describe('DashboardPage', () => {
     const { default: DashboardPage } = await import(
       '@/app/(dashboard)/dashboard/page'
     );
-    
+
     render(<DashboardPage />);
 
     const cards = screen.getAllByTestId('card');
@@ -173,7 +183,7 @@ describe('DashboardPage', () => {
     const { default: DashboardPage } = await import(
       '@/app/(dashboard)/dashboard/page'
     );
-    
+
     const { container } = render(<DashboardPage />);
 
     const grid = container.querySelector('.grid');

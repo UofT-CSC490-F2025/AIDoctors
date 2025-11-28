@@ -24,7 +24,12 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('@/components/ui/button', () => ({
   Button: ({ children, onClick, variant, className, ...props }: any) => (
-    <button onClick={onClick} data-variant={variant} className={className} {...props}>
+    <button
+      onClick={onClick}
+      data-variant={variant}
+      className={className}
+      {...props}
+    >
       {children}
     </button>
   ),
@@ -55,7 +60,7 @@ describe('DashboardLayout', () => {
     const { default: DashboardLayout } = await import(
       '@/app/(dashboard)/dashboard/layout'
     );
-    
+
     render(
       <DashboardLayout>
         <div>Dashboard Content</div>
@@ -69,7 +74,7 @@ describe('DashboardLayout', () => {
     const { default: DashboardLayout } = await import(
       '@/app/(dashboard)/dashboard/layout'
     );
-    
+
     render(
       <DashboardLayout>
         <div>Content</div>
@@ -84,7 +89,7 @@ describe('DashboardLayout', () => {
     const { default: DashboardLayout } = await import(
       '@/app/(dashboard)/dashboard/layout'
     );
-    
+
     render(
       <DashboardLayout>
         <div>Content</div>
@@ -99,7 +104,7 @@ describe('DashboardLayout', () => {
     const { default: DashboardLayout } = await import(
       '@/app/(dashboard)/dashboard/layout'
     );
-    
+
     render(
       <DashboardLayout>
         <div>Content</div>
@@ -113,7 +118,7 @@ describe('DashboardLayout', () => {
     const { default: DashboardLayout } = await import(
       '@/app/(dashboard)/dashboard/layout'
     );
-    
+
     const { container } = render(
       <DashboardLayout>
         <div>Content</div>
@@ -147,7 +152,7 @@ describe('DashboardLayout', () => {
     const { default: DashboardLayout } = await import(
       '@/app/(dashboard)/dashboard/layout'
     );
-    
+
     render(
       <DashboardLayout>
         <div>Content</div>
@@ -165,7 +170,7 @@ describe('DashboardLayout', () => {
     const { default: DashboardLayout } = await import(
       '@/app/(dashboard)/dashboard/layout'
     );
-    
+
     render(
       <DashboardLayout>
         <div>Content</div>
@@ -180,7 +185,7 @@ describe('DashboardLayout', () => {
     const { default: DashboardLayout } = await import(
       '@/app/(dashboard)/dashboard/layout'
     );
-    
+
     const { container } = render(
       <DashboardLayout>
         <div>Content</div>
@@ -210,7 +215,7 @@ describe('DashboardLayout', () => {
     const { default: DashboardLayout } = await import(
       '@/app/(dashboard)/dashboard/layout'
     );
-    
+
     render(
       <DashboardLayout>
         <div>Content</div>
@@ -224,7 +229,7 @@ describe('DashboardLayout', () => {
     const { default: DashboardLayout } = await import(
       '@/app/(dashboard)/dashboard/layout'
     );
-    
+
     render(
       <DashboardLayout>
         <div>Content</div>
@@ -238,14 +243,16 @@ describe('DashboardLayout', () => {
     const { default: DashboardLayout } = await import(
       '@/app/(dashboard)/dashboard/layout'
     );
-    
+
     const { container } = render(
       <DashboardLayout>
         <div>Content</div>
       </DashboardLayout>
     );
 
-    const mainContainer = container.querySelector('.flex.flex-col.min-h-\\[calc\\(100dvh-68px\\)\\]');
+    const mainContainer = container.querySelector(
+      '.flex.flex-col.min-h-\\[calc\\(100dvh-68px\\)\\]'
+    );
     expect(mainContainer).toBeInTheDocument();
   });
 });

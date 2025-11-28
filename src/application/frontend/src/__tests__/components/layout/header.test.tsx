@@ -213,10 +213,10 @@ describe('Header Component', () => {
 
     const loginButton = screen.getByText('Log in').closest('button');
     const signupButton = screen.getByText('Sign up').closest('button');
-    
+
     expect(loginButton).not.toBeNull();
     expect(signupButton).not.toBeNull();
-    
+
     if (loginButton) {
       expect(loginButton.className).toContain('rounded-full');
     }

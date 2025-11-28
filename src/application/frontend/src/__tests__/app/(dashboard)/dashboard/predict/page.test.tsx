@@ -93,7 +93,7 @@ describe('PredictPage', () => {
     const { default: PredictPage } = await import(
       '@/app/(dashboard)/dashboard/predict/page'
     );
-    
+
     render(<PredictPage />);
 
     expect(
@@ -105,7 +105,7 @@ describe('PredictPage', () => {
     const { default: PredictPage } = await import(
       '@/app/(dashboard)/dashboard/predict/page'
     );
-    
+
     render(<PredictPage />);
 
     expect(screen.getByText('Predict')).toBeInTheDocument();
@@ -115,11 +115,13 @@ describe('PredictPage', () => {
     const { default: PredictPage } = await import(
       '@/app/(dashboard)/dashboard/predict/page'
     );
-    
+
     render(<PredictPage />);
 
     expect(
-      screen.getByText(/Submit the patient context plus a current and a new medication/)
+      screen.getByText(
+        /Submit the patient context plus a current and a new medication/
+      )
     ).toBeInTheDocument();
   });
 
@@ -127,7 +129,7 @@ describe('PredictPage', () => {
     const { default: PredictPage } = await import(
       '@/app/(dashboard)/dashboard/predict/page'
     );
-    
+
     render(<PredictPage />);
 
     expect(screen.getByTestId('prediction-form')).toBeInTheDocument();
@@ -137,7 +139,7 @@ describe('PredictPage', () => {
     const { default: PredictPage } = await import(
       '@/app/(dashboard)/dashboard/predict/page'
     );
-    
+
     render(<PredictPage />);
 
     const cards = screen.getAllByTestId('card');
@@ -148,17 +150,19 @@ describe('PredictPage', () => {
     const { default: PredictPage } = await import(
       '@/app/(dashboard)/dashboard/predict/page'
     );
-    
+
     render(<PredictPage />);
 
-    expect(screen.getByText('Patient & medication details')).toBeInTheDocument();
+    expect(
+      screen.getByText('Patient & medication details')
+    ).toBeInTheDocument();
   });
 
   it('should render Alerts card title', async () => {
     const { default: PredictPage } = await import(
       '@/app/(dashboard)/dashboard/predict/page'
     );
-    
+
     render(<PredictPage />);
 
     expect(screen.getByText('Alerts')).toBeInTheDocument();
@@ -168,17 +172,19 @@ describe('PredictPage', () => {
     const { default: PredictPage } = await import(
       '@/app/(dashboard)/dashboard/predict/page'
     );
-    
+
     render(<PredictPage />);
 
-    expect(screen.getByText('Predictions will appear here.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Predictions will appear here.')
+    ).toBeInTheDocument();
   });
 
   it('should render Alert component when results are set', async () => {
     const { default: PredictPage } = await import(
       '@/app/(dashboard)/dashboard/predict/page'
     );
-    
+
     const user = userEvent.setup();
     render(<PredictPage />);
 
@@ -193,7 +199,7 @@ describe('PredictPage', () => {
 
   it('should call scrollIntoView when results are set', async () => {
     const scrollIntoViewMock = jest.fn();
-    
+
     // Must set up mock before importing component
     const originalScrollIntoView = Element.prototype.scrollIntoView;
     Element.prototype.scrollIntoView = scrollIntoViewMock;
@@ -201,7 +207,7 @@ describe('PredictPage', () => {
     const { default: PredictPage } = await import(
       '@/app/(dashboard)/dashboard/predict/page'
     );
-    
+
     const user = userEvent.setup();
     render(<PredictPage />);
 
@@ -225,7 +231,7 @@ describe('PredictPage', () => {
     const { default: PredictPage } = await import(
       '@/app/(dashboard)/dashboard/predict/page'
     );
-    
+
     render(<PredictPage />);
 
     expect(
@@ -240,10 +246,12 @@ describe('PredictPage', () => {
     const { default: PredictPage } = await import(
       '@/app/(dashboard)/dashboard/predict/page'
     );
-    
+
     const { container } = render(<PredictPage />);
 
     // Should show placeholder, not alert
-    expect(screen.getByText('Predictions will appear here.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Predictions will appear here.')
+    ).toBeInTheDocument();
   });
 });

@@ -46,12 +46,20 @@ jest.mock('lucide-react', () => ({
 }));
 
 jest.mock('@/components/ui/button', () => ({
-  Button: ({ children, type, variant, size, className, onClick, ...props }: any) => (
-    <button 
-      type={type} 
-      data-variant={variant} 
-      data-size={size} 
-      className={className} 
+  Button: ({
+    children,
+    type,
+    variant,
+    size,
+    className,
+    onClick,
+    ...props
+  }: any) => (
+    <button
+      type={type}
+      data-variant={variant}
+      data-size={size}
+      className={className}
       onClick={onClick}
       {...props}
     >
@@ -67,7 +75,9 @@ describe('DashboardHeader Component', () => {
   });
 
   it('should render the logo and brand name', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     expect(screen.getByTestId('brain-icon')).toBeInTheDocument();
@@ -75,7 +85,9 @@ describe('DashboardHeader Component', () => {
   });
 
   it('should render navigation links', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     expect(screen.getByText('Overview')).toBeInTheDocument();
@@ -83,7 +95,9 @@ describe('DashboardHeader Component', () => {
   });
 
   it('should render overview link with correct href', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const overviewLink = screen.getByText('Overview').closest('a');
@@ -94,7 +108,9 @@ describe('DashboardHeader Component', () => {
   });
 
   it('should render predict link with correct href', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const predictLink = screen.getByText('Predict').closest('a');
@@ -105,14 +121,18 @@ describe('DashboardHeader Component', () => {
   });
 
   it('should render sign out button', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     expect(screen.getByText('Sign out')).toBeInTheDocument();
   });
 
   it('should apply active styling to current page', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const overviewLink = screen.getByText('Overview').closest('a');
@@ -124,7 +144,9 @@ describe('DashboardHeader Component', () => {
   });
 
   it('should not apply active styling to non-current page', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const predictLink = screen.getByText('Predict').closest('a');
@@ -141,7 +163,9 @@ describe('DashboardHeader Component', () => {
       json: async () => ({}),
     });
 
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const signOutButton = screen.getByText('Sign out');
@@ -164,7 +188,9 @@ describe('DashboardHeader Component', () => {
       json: async () => ({}),
     });
 
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const signOutButton = screen.getByText('Sign out');
@@ -181,7 +207,9 @@ describe('DashboardHeader Component', () => {
       json: async () => ({ error: 'Logout failed' }),
     });
 
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const signOutButton = screen.getByText('Sign out');
@@ -195,10 +223,14 @@ describe('DashboardHeader Component', () => {
   });
 
   it('should handle logout error gracefully', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const signOutButton = screen.getByText('Sign out');
@@ -211,11 +243,16 @@ describe('DashboardHeader Component', () => {
       );
     });
 
+    // Assert the error was handled/logged internally
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    // Restore console.error to avoid hiding real errors in other tests
     consoleErrorSpy.mockRestore();
   });
 
   it('should render home link with correct href', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const brainIcon = screen.getByTestId('brain-icon');
@@ -227,7 +264,9 @@ describe('DashboardHeader Component', () => {
   });
 
   it('should apply outline variant to sign out button', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const signOutButton = screen.getByText('Sign out');
@@ -236,7 +275,9 @@ describe('DashboardHeader Component', () => {
   });
 
   it('should apply rounded-full class to sign out button', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const signOutButton = screen.getByText('Sign out');
@@ -244,7 +285,9 @@ describe('DashboardHeader Component', () => {
   });
 
   it('should render brain icon with correct styling', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const brainIcon = screen.getByTestId('brain-icon');
@@ -254,7 +297,9 @@ describe('DashboardHeader Component', () => {
   });
 
   it('should have backdrop-blur styling on header', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     const { container } = render(<DashboardHeader />);
 
     const header = container.querySelector('header');
@@ -267,12 +312,15 @@ describe('DashboardHeader Component', () => {
   });
 
   it('should render all navigation links in order', async () => {
-    const { DashboardHeader } = await import('@/components/layout/dashboard-header');
+    const { DashboardHeader } = await import(
+      '@/components/layout/dashboard-header'
+    );
     render(<DashboardHeader />);
 
     const links = screen.getAllByRole('link');
-    const navLinks = links.filter((link) => 
-      link.textContent === 'Overview' || link.textContent === 'Predict'
+    const navLinks = links.filter(
+      (link) =>
+        link.textContent === 'Overview' || link.textContent === 'Predict'
     );
 
     expect(navLinks).toHaveLength(2);

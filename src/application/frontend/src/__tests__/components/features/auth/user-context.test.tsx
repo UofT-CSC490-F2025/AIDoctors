@@ -1,10 +1,10 @@
 /// <reference types="@testing-library/jest-dom" />
-import { describe, expect, it, jest, beforeEach } from '@jest/globals';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, jest, beforeEach } from '@jest/globals';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React, { useContext } from 'react';
 
-const mockFetch = jest.fn();
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 const mockGetApiBaseUrl = jest.fn(() => 'http://localhost:8000');
 
 // Setup global fetch mock
@@ -24,14 +24,20 @@ describe('UserProvider Component', () => {
   it('should provide user context with initial loading state', async () => {
     mockFetch.mockImplementation(() => new Promise(() => {})); // Never resolves
 
-    const { UserProvider, UserCtx } = await import('@/components/features/auth/user-context');
+    const { UserProvider, UserCtx } = await import(
+      '@/components/features/auth/user-context'
+    );
 
     const TestComponent = () => {
       const context = useContext(UserCtx);
       return (
         <div>
-          <div data-testid="user">{context?.user ? 'User exists' : 'No user'}</div>
-          <div data-testid="loading">{context?.isLoading ? 'Loading' : 'Not loading'}</div>
+          <div data-testid="user">
+            {context?.user ? 'User exists' : 'No user'}
+          </div>
+          <div data-testid="loading">
+            {context?.isLoading ? 'Loading' : 'Not loading'}
+          </div>
         </div>
       );
     };
@@ -59,14 +65,18 @@ describe('UserProvider Component', () => {
       json: async () => mockUser,
     });
 
-    const { UserProvider, UserCtx } = await import('@/components/features/auth/user-context');
+    const { UserProvider, UserCtx } = await import(
+      '@/components/features/auth/user-context'
+    );
 
     const TestComponent = () => {
       const context = useContext(UserCtx);
       return (
         <div>
           <div data-testid="user">{context?.user?.username || 'No user'}</div>
-          <div data-testid="loading">{context?.isLoading ? 'Loading' : 'Not loading'}</div>
+          <div data-testid="loading">
+            {context?.isLoading ? 'Loading' : 'Not loading'}
+          </div>
         </div>
       );
     };
@@ -97,14 +107,20 @@ describe('UserProvider Component', () => {
       status: 401,
     });
 
-    const { UserProvider, UserCtx } = await import('@/components/features/auth/user-context');
+    const { UserProvider, UserCtx } = await import(
+      '@/components/features/auth/user-context'
+    );
 
     const TestComponent = () => {
       const context = useContext(UserCtx);
       return (
         <div>
-          <div data-testid="user">{context?.user ? 'User exists' : 'No user'}</div>
-          <div data-testid="loading">{context?.isLoading ? 'Loading' : 'Not loading'}</div>
+          <div data-testid="user">
+            {context?.user ? 'User exists' : 'No user'}
+          </div>
+          <div data-testid="loading">
+            {context?.isLoading ? 'Loading' : 'Not loading'}
+          </div>
         </div>
       );
     };
@@ -123,16 +139,27 @@ describe('UserProvider Component', () => {
   });
 
   it('should set user to null when network error occurs', async () => {
+    // Suppress console.error
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
-    const { UserProvider, UserCtx } = await import('@/components/features/auth/user-context');
+    const { UserProvider, UserCtx } = await import(
+      '@/components/features/auth/user-context'
+    );
 
     const TestComponent = () => {
       const context = useContext(UserCtx);
       return (
         <div>
-          <div data-testid="user">{context?.user ? 'User exists' : 'No user'}</div>
-          <div data-testid="loading">{context?.isLoading ? 'Loading' : 'Not loading'}</div>
+          <div data-testid="user">
+            {context?.user ? 'User exists' : 'No user'}
+          </div>
+          <div data-testid="loading">
+            {context?.isLoading ? 'Loading' : 'Not loading'}
+          </div>
         </div>
       );
     };
@@ -148,6 +175,11 @@ describe('UserProvider Component', () => {
     });
 
     expect(screen.getByTestId('user')).toHaveTextContent('No user');
+
+    // Assert the error was handled/logged internally
+    expect(consoleSpy).toHaveBeenCalled();
+    // Restore console.error to avoid hiding real errors in other tests
+    consoleSpy.mockRestore();
   });
 
   it('should allow setUser to update user state', async () => {
@@ -164,11 +196,13 @@ describe('UserProvider Component', () => {
       status: 401,
     });
 
-    const { UserProvider, UserCtx } = await import('@/components/features/auth/user-context');
+    const { UserProvider, UserCtx } = await import(
+      '@/components/features/auth/user-context'
+    );
 
     const TestComponent = () => {
       const context = useContext(UserCtx);
-      
+
       return (
         <div>
           <div data-testid="user">{context?.user?.username || 'No user'}</div>
@@ -188,7 +222,8 @@ describe('UserProvider Component', () => {
     });
 
     const button = screen.getByText('Set User');
-    button.click();
+    // Use fireEvent to wrap the interaction in act()
+    fireEvent.click(button);
 
     await waitFor(() => {
       expect(screen.getByTestId('user')).toHaveTextContent('testuser');
@@ -209,11 +244,13 @@ describe('UserProvider Component', () => {
       json: async () => mockUser,
     });
 
-    const { UserProvider, UserCtx } = await import('@/components/features/auth/user-context');
+    const { UserProvider, UserCtx } = await import(
+      '@/components/features/auth/user-context'
+    );
 
     const TestComponent = () => {
       const context = useContext(UserCtx);
-      
+
       return (
         <div>
           <div data-testid="user">{context?.user?.username || 'No user'}</div>
@@ -233,7 +270,7 @@ describe('UserProvider Component', () => {
     });
 
     const button = screen.getByText('Clear User');
-    button.click();
+    fireEvent.click(button);
 
     await waitFor(() => {
       expect(screen.getByTestId('user')).toHaveTextContent('No user');
@@ -246,7 +283,9 @@ describe('UserProvider Component', () => {
       status: 401,
     });
 
-    const { UserProvider } = await import('@/components/features/auth/user-context');
+    const { UserProvider } = await import(
+      '@/components/features/auth/user-context'
+    );
 
     render(
       <UserProvider>
@@ -275,16 +314,24 @@ describe('UserProvider Component', () => {
       json: async () => mockUser,
     });
 
-    const { UserProvider, UserCtx } = await import('@/components/features/auth/user-context');
+    const { UserProvider, UserCtx } = await import(
+      '@/components/features/auth/user-context'
+    );
 
     const TestComponent = () => {
       const context = useContext(UserCtx);
-      
+
       return (
         <div>
-          <div data-testid="has-user">{context?.user !== undefined ? 'true' : 'false'}</div>
-          <div data-testid="has-setUser">{typeof context?.setUser === 'function' ? 'true' : 'false'}</div>
-          <div data-testid="has-isLoading">{context?.isLoading !== undefined ? 'true' : 'false'}</div>
+          <div data-testid="has-user">
+            {context?.user !== undefined ? 'true' : 'false'}
+          </div>
+          <div data-testid="has-setUser">
+            {typeof context?.setUser === 'function' ? 'true' : 'false'}
+          </div>
+          <div data-testid="has-isLoading">
+            {context?.isLoading !== undefined ? 'true' : 'false'}
+          </div>
         </div>
       );
     };
@@ -308,7 +355,9 @@ describe('UserProvider Component', () => {
       json: async () => ({ id: 1, username: 'test' }),
     });
 
-    const { UserProvider } = await import('@/components/features/auth/user-context');
+    const { UserProvider } = await import(
+      '@/components/features/auth/user-context'
+    );
 
     render(
       <UserProvider>
@@ -344,7 +393,9 @@ describe('UserProvider Component', () => {
       json: async () => mockUser,
     });
 
-    const { UserProvider, UserCtx } = await import('@/components/features/auth/user-context');
+    const { UserProvider, UserCtx } = await import(
+      '@/components/features/auth/user-context'
+    );
 
     const loadingStates: boolean[] = [];
 

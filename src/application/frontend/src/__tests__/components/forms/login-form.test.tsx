@@ -40,10 +40,16 @@ describe('LoginForm Component', () => {
   it('should render login form with username and password fields', async () => {
     const { LoginForm } = await import('@/components/forms/login-form');
     render(<LoginForm />);
-    
-    expect(screen.getByPlaceholderText(/enter your username/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/enter your password/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+
+    expect(
+      screen.getByPlaceholderText(/enter your username/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/enter your password/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /sign in/i })
+    ).toBeInTheDocument();
   });
 
   it('should display error message on invalid credentials', async () => {
@@ -54,9 +60,13 @@ describe('LoginForm Component', () => {
 
     const { LoginForm } = await import('@/components/forms/login-form');
     render(<LoginForm />);
-    
-    const usernameInput = screen.getByPlaceholderText(/enter your username/i) as HTMLInputElement;
-    const passwordInput = screen.getByPlaceholderText(/enter your password/i) as HTMLInputElement;
+
+    const usernameInput = screen.getByPlaceholderText(
+      /enter your username/i
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText(
+      /enter your password/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /sign in/i });
 
     await userEvent.type(usernameInput, 'testuser');
@@ -64,7 +74,9 @@ describe('LoginForm Component', () => {
     await userEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/invalid username or password/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/invalid username or password/i)
+      ).toBeInTheDocument();
     });
   });
 
@@ -90,9 +102,13 @@ describe('LoginForm Component', () => {
 
     const { LoginForm } = await import('@/components/forms/login-form');
     render(<LoginForm />);
-    
-    const usernameInput = screen.getByPlaceholderText(/enter your username/i) as HTMLInputElement;
-    const passwordInput = screen.getByPlaceholderText(/enter your password/i) as HTMLInputElement;
+
+    const usernameInput = screen.getByPlaceholderText(
+      /enter your username/i
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText(
+      /enter your password/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /sign in/i });
 
     await userEvent.type(usernameInput, 'testuser');
@@ -113,9 +129,13 @@ describe('LoginForm Component', () => {
 
     const { LoginForm } = await import('@/components/forms/login-form');
     render(<LoginForm />);
-    
-    const usernameInput = screen.getByPlaceholderText(/enter your username/i) as HTMLInputElement;
-    const passwordInput = screen.getByPlaceholderText(/enter your password/i) as HTMLInputElement;
+
+    const usernameInput = screen.getByPlaceholderText(
+      /enter your username/i
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText(
+      /enter your password/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /sign in/i });
 
     await userEvent.type(usernameInput, 'testuser');
@@ -140,9 +160,13 @@ describe('LoginForm Component', () => {
 
     const { LoginForm } = await import('@/components/forms/login-form');
     render(<LoginForm />);
-    
-    const usernameInput = screen.getByPlaceholderText(/enter your username/i) as HTMLInputElement;
-    const passwordInput = screen.getByPlaceholderText(/enter your password/i) as HTMLInputElement;
+
+    const usernameInput = screen.getByPlaceholderText(
+      /enter your username/i
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText(
+      /enter your password/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /sign in/i });
 
     await userEvent.type(usernameInput, 'testuser');
@@ -150,19 +174,30 @@ describe('LoginForm Component', () => {
     await userEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/failed to fetch user data/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/failed to fetch user data/i)
+      ).toBeInTheDocument();
       expect(mockSetUser).toHaveBeenCalledWith(null);
     });
   });
 
   it('should display error when network error occurs', async () => {
+    // Suppress console.error
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
     const { LoginForm } = await import('@/components/forms/login-form');
     render(<LoginForm />);
-    
-    const usernameInput = screen.getByPlaceholderText(/enter your username/i) as HTMLInputElement;
-    const passwordInput = screen.getByPlaceholderText(/enter your password/i) as HTMLInputElement;
+
+    const usernameInput = screen.getByPlaceholderText(
+      /enter your username/i
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText(
+      /enter your password/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /sign in/i });
 
     await userEvent.type(usernameInput, 'testuser');
@@ -170,8 +205,15 @@ describe('LoginForm Component', () => {
     await userEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/an unexpected error occurred/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/an unexpected error occurred/i)
+      ).toBeInTheDocument();
     });
+
+    // Assert the error was handled/logged internally
+    expect(consoleSpy).toHaveBeenCalled();
+    // Restore console.error to avoid hiding real errors in other tests
+    consoleSpy.mockRestore();
   });
 
   it('should show loading state when form is submitting', async () => {
@@ -179,9 +221,13 @@ describe('LoginForm Component', () => {
 
     const { LoginForm } = await import('@/components/forms/login-form');
     render(<LoginForm />);
-    
-    const usernameInput = screen.getByPlaceholderText(/enter your username/i) as HTMLInputElement;
-    const passwordInput = screen.getByPlaceholderText(/enter your password/i) as HTMLInputElement;
+
+    const usernameInput = screen.getByPlaceholderText(
+      /enter your username/i
+    ) as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText(
+      /enter your password/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /sign in/i });
 
     await userEvent.type(usernameInput, 'testuser');

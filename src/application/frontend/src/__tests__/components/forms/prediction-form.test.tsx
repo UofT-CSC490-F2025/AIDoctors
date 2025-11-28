@@ -35,17 +35,23 @@ describe('PredictionForm Component', () => {
   });
 
   it('should render prediction form with all required fields', async () => {
-    const { PredictionForm } = await import('@/components/forms/prediction-form');
+    const { PredictionForm } = await import(
+      '@/components/forms/prediction-form'
+    );
     render(<PredictionForm setResults={mockSetResults} />);
-    
+
     expect(screen.getByLabelText(/age/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/sex/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/current medication/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/new medication being considered/i)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(/new medication being considered/i)
+    ).toBeInTheDocument();
     expect(screen.getByLabelText(/comorbidities/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/overlap start/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/overlap stop/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /predict/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /predict/i })
+    ).toBeInTheDocument();
   });
 
   it('should submit form with valid data and display results', async () => {
@@ -61,14 +67,22 @@ describe('PredictionForm Component', () => {
       json: async () => mockResponse,
     });
 
-    const { PredictionForm } = await import('@/components/forms/prediction-form');
+    const { PredictionForm } = await import(
+      '@/components/forms/prediction-form'
+    );
     render(<PredictionForm setResults={mockSetResults} />);
-    
+
     const ageInput = screen.getByLabelText(/age/i) as HTMLInputElement;
     const sexSelect = screen.getByLabelText(/sex/i) as HTMLSelectElement;
-    const currentDrugInput = screen.getByLabelText(/current medication/i) as HTMLInputElement;
-    const newDrugInput = screen.getByLabelText(/new medication being considered/i) as HTMLInputElement;
-    const comorbiditiesInput = screen.getByLabelText(/comorbidities/i) as HTMLTextAreaElement;
+    const currentDrugInput = screen.getByLabelText(
+      /current medication/i
+    ) as HTMLInputElement;
+    const newDrugInput = screen.getByLabelText(
+      /new medication being considered/i
+    ) as HTMLInputElement;
+    const comorbiditiesInput = screen.getByLabelText(
+      /comorbidities/i
+    ) as HTMLTextAreaElement;
     const submitButton = screen.getByRole('button', { name: /predict/i });
 
     await userEvent.type(ageInput, '65');
@@ -102,11 +116,17 @@ describe('PredictionForm Component', () => {
       json: async () => ({ detail: 'Unauthorized' }),
     });
 
-    const { PredictionForm } = await import('@/components/forms/prediction-form');
+    const { PredictionForm } = await import(
+      '@/components/forms/prediction-form'
+    );
     render(<PredictionForm setResults={mockSetResults} />);
-    
-    const currentDrugInput = screen.getByLabelText(/current medication/i) as HTMLInputElement;
-    const newDrugInput = screen.getByLabelText(/new medication being considered/i) as HTMLInputElement;
+
+    const currentDrugInput = screen.getByLabelText(
+      /current medication/i
+    ) as HTMLInputElement;
+    const newDrugInput = screen.getByLabelText(
+      /new medication being considered/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /predict/i });
 
     await userEvent.type(currentDrugInput, 'Warfarin');
@@ -122,18 +142,24 @@ describe('PredictionForm Component', () => {
 
   it('should display error message when API returns client error', async () => {
     const errorMessage = 'Invalid drug name provided';
-    
+
     mockFetch.mockResolvedValueOnce({
       status: 400,
       ok: false,
       json: async () => ({ detail: errorMessage }),
     });
 
-    const { PredictionForm } = await import('@/components/forms/prediction-form');
+    const { PredictionForm } = await import(
+      '@/components/forms/prediction-form'
+    );
     render(<PredictionForm setResults={mockSetResults} />);
-    
-    const currentDrugInput = screen.getByLabelText(/current medication/i) as HTMLInputElement;
-    const newDrugInput = screen.getByLabelText(/new medication being considered/i) as HTMLInputElement;
+
+    const currentDrugInput = screen.getByLabelText(
+      /current medication/i
+    ) as HTMLInputElement;
+    const newDrugInput = screen.getByLabelText(
+      /new medication being considered/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /predict/i });
 
     await userEvent.type(currentDrugInput, 'InvalidDrug');
@@ -152,11 +178,17 @@ describe('PredictionForm Component', () => {
       json: async () => ({}),
     });
 
-    const { PredictionForm } = await import('@/components/forms/prediction-form');
+    const { PredictionForm } = await import(
+      '@/components/forms/prediction-form'
+    );
     render(<PredictionForm setResults={mockSetResults} />);
-    
-    const currentDrugInput = screen.getByLabelText(/current medication/i) as HTMLInputElement;
-    const newDrugInput = screen.getByLabelText(/new medication being considered/i) as HTMLInputElement;
+
+    const currentDrugInput = screen.getByLabelText(
+      /current medication/i
+    ) as HTMLInputElement;
+    const newDrugInput = screen.getByLabelText(
+      /new medication being considered/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /predict/i });
 
     await userEvent.type(currentDrugInput, 'Warfarin');
@@ -169,13 +201,24 @@ describe('PredictionForm Component', () => {
   });
 
   it('should display error message when network error occurs', async () => {
+    // Suppress console.error
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
-    const { PredictionForm } = await import('@/components/forms/prediction-form');
+    const { PredictionForm } = await import(
+      '@/components/forms/prediction-form'
+    );
     render(<PredictionForm setResults={mockSetResults} />);
-    
-    const currentDrugInput = screen.getByLabelText(/current medication/i) as HTMLInputElement;
-    const newDrugInput = screen.getByLabelText(/new medication being considered/i) as HTMLInputElement;
+
+    const currentDrugInput = screen.getByLabelText(
+      /current medication/i
+    ) as HTMLInputElement;
+    const newDrugInput = screen.getByLabelText(
+      /new medication being considered/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /predict/i });
 
     await userEvent.type(currentDrugInput, 'Warfarin');
@@ -183,18 +226,31 @@ describe('PredictionForm Component', () => {
     await userEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/an unexpected error occurred/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/an unexpected error occurred/i)
+      ).toBeInTheDocument();
     });
+
+    // Assert the error was handled/logged internally
+    expect(consoleSpy).toHaveBeenCalled();
+    // Restore console.error to avoid hiding real errors in other tests
+    consoleSpy.mockRestore();
   });
 
   it('should show loading state when form is submitting', async () => {
     mockFetch.mockImplementation(() => new Promise(() => {})); // Never resolves
 
-    const { PredictionForm } = await import('@/components/forms/prediction-form');
+    const { PredictionForm } = await import(
+      '@/components/forms/prediction-form'
+    );
     render(<PredictionForm setResults={mockSetResults} />);
-    
-    const currentDrugInput = screen.getByLabelText(/current medication/i) as HTMLInputElement;
-    const newDrugInput = screen.getByLabelText(/new medication being considered/i) as HTMLInputElement;
+
+    const currentDrugInput = screen.getByLabelText(
+      /current medication/i
+    ) as HTMLInputElement;
+    const newDrugInput = screen.getByLabelText(
+      /new medication being considered/i
+    ) as HTMLInputElement;
     const submitButton = screen.getByRole('button', { name: /predict/i });
 
     await userEvent.type(currentDrugInput, 'Warfarin');
@@ -220,12 +276,20 @@ describe('PredictionForm Component', () => {
       json: async () => mockResponse,
     });
 
-    const { PredictionForm } = await import('@/components/forms/prediction-form');
+    const { PredictionForm } = await import(
+      '@/components/forms/prediction-form'
+    );
     render(<PredictionForm setResults={mockSetResults} />);
-    
-    const currentDrugInput = screen.getByLabelText(/current medication/i) as HTMLInputElement;
-    const newDrugInput = screen.getByLabelText(/new medication being considered/i) as HTMLInputElement;
-    const comorbiditiesInput = screen.getByLabelText(/comorbidities/i) as HTMLTextAreaElement;
+
+    const currentDrugInput = screen.getByLabelText(
+      /current medication/i
+    ) as HTMLInputElement;
+    const newDrugInput = screen.getByLabelText(
+      /new medication being considered/i
+    ) as HTMLInputElement;
+    const comorbiditiesInput = screen.getByLabelText(
+      /comorbidities/i
+    ) as HTMLTextAreaElement;
     const submitButton = screen.getByRole('button', { name: /predict/i });
 
     await userEvent.type(currentDrugInput, 'Warfarin');
@@ -239,6 +303,10 @@ describe('PredictionForm Component', () => {
 
     const fetchCall = mockFetch.mock.calls[0];
     const requestBody = JSON.parse(fetchCall[1].body);
-    expect(requestBody.Comorbidities).toEqual(['Hypertension', 'Diabetes', 'COPD']);
+    expect(requestBody.Comorbidities).toEqual([
+      'Hypertension',
+      'Diabetes',
+      'COPD',
+    ]);
   });
 });

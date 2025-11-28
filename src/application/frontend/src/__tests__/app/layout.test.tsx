@@ -24,8 +24,13 @@ describe('RootLayout', () => {
   });
 
   it('should render children within UserProvider', async () => {
+    // Suppress console.error
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
     const { default: RootLayout } = await import('@/app/layout');
-    
+
     render(
       <RootLayout>
         <div>Test Content</div>
@@ -34,11 +39,13 @@ describe('RootLayout', () => {
 
     expect(screen.getByTestId('user-provider')).toBeInTheDocument();
     expect(screen.getByText('Test Content')).toBeInTheDocument();
+
+    consoleSpy.mockRestore();
   });
 
   it('should apply correct HTML attributes', async () => {
     const { default: RootLayout } = await import('@/app/layout');
-    
+
     const { container } = render(
       <RootLayout>
         <div>Test Content</div>
@@ -56,7 +63,7 @@ describe('RootLayout', () => {
 
   it('should apply correct body classes', async () => {
     const { default: RootLayout } = await import('@/app/layout');
-    
+
     const { container } = render(
       <RootLayout>
         <div>Test Content</div>
@@ -74,7 +81,7 @@ describe('RootLayout', () => {
 
   it('should render multiple children correctly', async () => {
     const { default: RootLayout } = await import('@/app/layout');
-    
+
     render(
       <RootLayout>
         <div>First Child</div>
@@ -90,15 +97,17 @@ describe('RootLayout', () => {
 
   it('should have correct metadata exports', async () => {
     const layoutModule = await import('@/app/layout');
-    
+
     expect(layoutModule.metadata).toBeDefined();
     expect(layoutModule.metadata.title).toBe('AI Doctors');
-    expect(layoutModule.metadata.description).toContain('medication interaction');
+    expect(layoutModule.metadata.description).toContain(
+      'medication interaction'
+    );
   });
 
   it('should have correct viewport exports', async () => {
     const layoutModule = await import('@/app/layout');
-    
+
     expect(layoutModule.viewport).toBeDefined();
     expect(layoutModule.viewport.maximumScale).toBe(1);
   });

@@ -159,7 +159,9 @@ describe('Alert Component', () => {
   });
 
   it('should apply default grid styling when isPreview is false', () => {
-    const { container } = render(<Alert info={mockAlertInfo} isPreview={false} />);
+    const { container } = render(
+      <Alert info={mockAlertInfo} isPreview={false} />
+    );
 
     const gridDiv = container.querySelector('.grid');
     expect(gridDiv?.className).toContain('md:grid-cols-3');
@@ -169,5 +171,25 @@ describe('Alert Component', () => {
     render(<Alert info={mockAlertInfo} data-testid="custom-alert" />);
 
     expect(screen.getByTestId('custom-alert')).toBeInTheDocument();
+  });
+
+  it('should display "Low concern" when should_be_concerned is false', () => {
+    const infoLowConcern = {
+      ...mockAlertInfo,
+      content: {
+        ...mockAlertInfo.content,
+        clinical_concern_assessment: {
+          ...mockAlertInfo.content.clinical_concern_assessment,
+          should_be_concerned: false,
+        },
+      },
+    };
+    render(<Alert info={infoLowConcern} />);
+
+    // This assertion covers the 'Low concern' branch (Line 104)
+    expect(screen.getByText(/Low concern/)).toBeInTheDocument();
+
+    // Check for the combined text to ensure context
+    expect(screen.getByText(/Low concern · critical/)).toBeInTheDocument();
   });
 });
