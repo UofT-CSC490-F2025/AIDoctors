@@ -10,6 +10,7 @@ import {
 const modulePath = '@/utils/api';
 const originalEnv = process.env;
 
+// Tests for getApiBaseUrl function
 describe('getApiBaseUrl', () => {
   beforeEach(() => {
     jest.resetModules();
