@@ -5,7 +5,7 @@ on:
     paths:
       - "src/application/frontend/**"
   push:
-    branches: [main]
+    branches: [frontend-badge-test]
     paths:
       - "src/application/frontend/**"
 
@@ -109,7 +109,7 @@ jobs:
           EOF
 
       - name: Commit badge
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/frontend-badge-test'
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
