@@ -1,16 +1,13 @@
-name: Frontend Code Coverage
+name: Frontend Code Coverage (Badge Update)
 
 on:
-  pull_request:
-    paths:
-      - "src/application/frontend/**"
   push:
     branches: [main]
     paths:
       - "src/application/frontend/**"
 
 jobs:
-  pr_comment_and_badge:
+  test-frontend:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -33,12 +30,6 @@ jobs:
 
       - name: Run Jest Coverage
         run: npm run test:ci | tee coverage-summary.txt
-
-      - name: Extract Coverage Percentage
-        id: covpct
-        run: |
-          total=$(jq '.total.lines.pct' coverage/coverage-summary.json)
-          echo "pct=$total" >> $GITHUB_OUTPUT
 
       - name: Extract Coverage Metrics Table
         id: cov
@@ -66,32 +57,13 @@ jobs:
           cat coverage-summary.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Comment on PR
-        if: github.event_name == 'pull_request'
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            **Frontend Test Coverage**
-
-            | Metric | Value |
-            |--------|-------|
-            | Statements | **${{ steps.cov.outputs.statements }}%** |
-            | Branches | **${{ steps.cov.outputs.branches }}%** |
-            | Functions | **${{ steps.cov.outputs.functions }}%** |
-            | Lines | **${{ steps.cov.outputs.lines }}%** |
-
-            <details>
-            <summary>Coverage Report Summary</summary>
-
-            ```
-            ${{ steps.covtext.outputs.text }}
-            ```
-
-            </details>
+      - name: Extract Coverage Percentage
+        id: covpct
+        run: |
+          total=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+          echo "pct=$total" >> $GITHUB_OUTPUT
 
       - name: Generate Badge
-        if: github.ref == 'refs/heads/main'
         run: |
           pct="${{ steps.covpct.outputs.pct }}"
           color="red"

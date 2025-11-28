@@ -1,0 +1,77 @@
+name: Frontend Code Coverage (PR Comment)
+
+on:
+  pull_request:
+    paths:
+      - "src/application/frontend/**"
+
+jobs:
+  test-frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/application/frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.10.0
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Jest Coverage
+        run: npm run test:ci | tee coverage-summary.txt
+
+      - name: Extract Coverage Metrics Table
+        id: cov
+        run: |
+          lines=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+          branches=$(jq '.total.branches.pct' coverage/coverage-summary.json)
+          functions=$(jq '.total.functions.pct' coverage/coverage-summary.json)
+          statements=$(jq '.total.statements.pct' coverage/coverage-summary.json)
+
+          echo "lines=$lines" >> $GITHUB_OUTPUT
+          echo "branches=$branches" >> $GITHUB_OUTPUT
+          echo "functions=$functions" >> $GITHUB_OUTPUT
+          echo "statements=$statements" >> $GITHUB_OUTPUT
+
+          # Pretty text form for collapsible details
+          cat coverage/lcov-report/index.html | sed 's/<[^>]*>//g' | head -n 200 > coverage.txt
+          echo "text_report<<EOF" >> $GITHUB_OUTPUT
+          cat coverage.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Extract Coverage Metrics Summary
+        id: covtext
+        run: |
+          echo "text<<EOF" >> $GITHUB_OUTPUT
+          cat coverage-summary.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            **Frontend Test Coverage**
+
+            | Metric | Value |
+            |--------|-------|
+            | Statements | **${{ steps.cov.outputs.statements }}%** |
+            | Branches | **${{ steps.cov.outputs.branches }}%** |
+            | Functions | **${{ steps.cov.outputs.functions }}%** |
+            | Lines | **${{ steps.cov.outputs.lines }}%** |
+
+            <details>
+            <summary>Coverage Report Summary</summary>
+
+            ```
+            ${{ steps.covtext.outputs.text }}
+            ```
+
+            </details>
