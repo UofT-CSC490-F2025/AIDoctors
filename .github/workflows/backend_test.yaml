@@ -46,17 +46,16 @@ jobs:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   script: |
                       const fs = require('fs');
+                      const path = require('path');
 
-                      const output = fs.readFileSync('pytest-output.txt', 'utf8');
-                      const exitCode = Number('${{ steps.pytest.outputs.exitcode }}');
+                      const outputPath = path.join('src', 'application', 'backend', 'pytest-output.txt');
+                      const output = fs.readFileSync(outputPath, 'utf8');
 
                       // truncate very long output so comment doesn't explode
                       const MAX_LENGTH = 6000;
                       let bodyText = output.length > MAX_LENGTH
                         ? output.slice(0, MAX_LENGTH) + '\n\n... (truncated)'
                         : output;
-
-                      const status = exitCode === 0 ? '✅ Tests passed' : '❌ Tests failed';
 
                       const body = [
                         `${status} (exit code ${exitCode})`,
