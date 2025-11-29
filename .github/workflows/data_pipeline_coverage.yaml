@@ -1,0 +1,49 @@
+name: Data pipeline tests
+
+on:
+  pull_request:
+    paths:
+      - "src/data_pipelines/**"
+      - "src/data_extraction/**"
+      - ".github/workflows/data_pipeline_coverage.yaml"
+  push:
+    branches:
+      - main
+      - a6
+    paths:
+      - "src/data_pipelines/**"
+      - "src/data_extraction/**"
+      - ".github/workflows/data_pipeline_coverage.yaml"
+
+jobs:
+  test-data-pipelines:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"   # or whatever you're using locally
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # adjust if your requirements file lives somewhere else
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          # make sure pytest + pytest-cov are installed
+          pip install pytest pytest-cov boto3 requests pandas kagglehub psycopg2-binary
+
+      - name: Run data_pipelines tests
+        working-directory: src/data_pipelines
+        run: |
+          pytest
+
+      - name: Run data_extraction tests
+        working-directory: src/data_extraction
+        run: |
+          pytest
