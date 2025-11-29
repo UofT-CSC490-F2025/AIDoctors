@@ -1,195 +1,287 @@
-/// <reference types="@testing-library/jest-dom" />
-import { describe, expect, it } from '@jest/globals';
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import React from 'react';
+import { render, screen, within } from '@testing-library/react';
 import { Alert } from '@/components/ui/alert';
-import { AlertResult } from '@/types/predict-types';
 
-const mockAlertInfo: AlertResult = {
-  drug1: 'Aspirin',
-  drug2: 'Warfarin',
-  known_severity: 'major',
-  model_path: 'model-v1.0',
-  reasoning: 'Test reasoning for the interaction',
-  severity: 'severe',
-  completion: {
-    predicted_severity: 'severe',
+const baseInfo = {
+  drug1: 'A',
+  drug2: 'B',
+  severity: 'Major',
+  reasoning: '',
+  model_path: 'm1',
+  known_severity: 'Moderate',
+  completion: JSON.stringify({
+    predicted_severity: 'Major',
     comparison_to_known_ddi: {
       known_interaction_exists: true,
-      alignment_with_knowledge: 'high',
-      explanation: 'Known interaction matches predicted severity',
+      alignment_with_knowledge: 'aligned',
+      explanation: 'exp',
     },
     historical_cases_analysis: {
-      cases_reviewed: '50',
-      risk_assessment: 'high risk',
+      cases_reviewed: '10',
+      risk_assessment: 'increased_risk',
       confidence: 'high',
-      reasoning: 'Multiple historical cases show similar patterns',
+      reasoning: 'reason',
     },
     clinical_concern_assessment: {
       should_be_concerned: true,
-      concern_level: 'critical',
-      primary_reason: 'High risk of bleeding complications',
-      recommendations: [
-        'Close monitoring required',
-        'Consider alternative medication',
-        'Monitor for signs of bleeding',
-      ],
+      concern_level: 'high',
+      primary_reason: 'severity_level',
+      recommendations: ['rec1'],
     },
-    summary: 'This is a critical drug interaction that requires attention',
+    summary: 'summary text',
+  }),
+  enriched_context: {
+    similar_cases_count: 2,
+    known_interaction: true,
+    avg_confidence: 0.9,
+    top_mechanisms: ['mA', 'mB'],
+    representative_cases: [
+      {
+        patient_uuid: 'u1',
+        age: 70,
+        sex: 'F',
+        severity: 'Moderate',
+        mechanism: 'mechanism long text here',
+        confidence: 0.88,
+        comorbidities: [],
+      },
+      {
+        patient_uuid: 'u2',
+        age: 40,
+        sex: 'M',
+        severity: 'Minor',
+        mechanism: 'another mechanism long text',
+        confidence: 0.65,
+        comorbidities: [],
+      },
+    ],
+    severity_distribution: { known_severity_count: {}, total_cases: 0 },
   },
-};
+} as const;
 
-describe('Alert Component', () => {
-  it('should render the alert component', () => {
-    render(<Alert info={mockAlertInfo} />);
-
-    expect(screen.getByText('Alert')).toBeInTheDocument();
-  });
-
-  it('should display drug names', () => {
-    render(<Alert info={mockAlertInfo} />);
-
-    expect(screen.getByText('Aspirin + Warfarin')).toBeInTheDocument();
-  });
-
-  it('should display model path when provided', () => {
-    render(<Alert info={mockAlertInfo} />);
-
-    expect(screen.getByText('Model: model-v1.0')).toBeInTheDocument();
-  });
-
-  it('should not display model path when not provided', () => {
-    const infoWithoutModel = { ...mockAlertInfo, model_path: undefined };
-    render(<Alert info={infoWithoutModel} />);
-
-    expect(screen.queryByText(/Model:/)).not.toBeInTheDocument();
-  });
-
-  it('should display known severity badge', () => {
-    render(<Alert info={mockAlertInfo} />);
-
-    expect(screen.getByText('Known: major')).toBeInTheDocument();
-  });
-
-  it('should display predicted severity badge', () => {
-    render(<Alert info={mockAlertInfo} />);
-
-    expect(screen.getByText('Predicted: severe')).toBeInTheDocument();
-  });
-
-  it('should not display known severity when not provided', () => {
-    const infoWithoutKnown = { ...mockAlertInfo, known_severity: undefined };
-    render(<Alert info={infoWithoutKnown} />);
-
-    expect(screen.queryByText(/Known:/)).not.toBeInTheDocument();
-  });
-
-  it('should display summary section', () => {
-    render(<Alert info={mockAlertInfo} />);
-
-    expect(screen.getByText('Summary')).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'This is a critical drug interaction that requires attention'
-      )
-    ).toBeInTheDocument();
-  });
-
-  it('should display reasoning text', () => {
-    render(<Alert info={mockAlertInfo} />);
-
-    expect(
-      screen.getByText('Test reasoning for the interaction')
-    ).toBeInTheDocument();
-  });
-
-  it('should display known DDI section', () => {
-    render(<Alert info={mockAlertInfo} />);
-
-    expect(screen.getByText('Known DDI')).toBeInTheDocument();
-    expect(screen.getByText('Known interaction')).toBeInTheDocument();
-    expect(screen.getByText('Alignment: high')).toBeInTheDocument();
-  });
-
-  it('should display "No known interaction" when appropriate', () => {
-    const infoNoKnown = {
-      ...mockAlertInfo,
-      content: {
-        ...mockAlertInfo.content,
-        comparison_to_known_ddi: {
-          ...mockAlertInfo.content.comparison_to_known_ddi,
-          known_interaction_exists: false,
-        },
+// Utility builder
+function buildInfo(overrides: Partial<any> = {}) {
+  return {
+    drug1: 'A',
+    drug2: 'B',
+    severity: 'Unknown',
+    reasoning: '',
+    model_path: 'm1',
+    known_severity: 'Moderate',
+    completion: JSON.stringify({
+      predicted_severity: 'Major',
+      summary: 'S',
+      comparison_to_known_ddi: {
+        known_interaction_exists: true,
+        alignment_with_knowledge: 'aligned',
+        explanation: 'E1',
       },
-    };
-    render(<Alert info={infoNoKnown} />);
+      historical_cases_analysis: {
+        cases_reviewed: '10',
+        risk_assessment: 'increased_risk',
+        confidence: 'high',
+        reasoning: 'E2',
+      },
+      clinical_concern_assessment: {
+        should_be_concerned: true,
+        concern_level: 'high',
+        primary_reason: 'severity_level',
+        recommendations: ['R1', 'R2'],
+      },
+    }),
+    enriched_context: {
+      similar_cases_count: 5,
+      known_interaction: true,
+      avg_confidence: 0.9,
+      top_mechanisms: ['M1', 'M2'],
+      representative_cases: [
+        {
+          patient_uuid: 'p1',
+          age: 60,
+          sex: 'M',
+          severity: 'Severe',
+          mechanism: 'Mechanism Long Text',
+          confidence: 0.8,
+          comorbidities: [],
+        },
+      ],
+      severity_distribution: { known_severity_count: {}, total_cases: 0 },
+    },
+    ...overrides,
+  };
+}
 
-    expect(screen.getByText('No known interaction')).toBeInTheDocument();
+describe('Alert', () => {
+  test('renders header, drug names, model path, known severity, predicted severity', () => {
+    render(<Alert info={baseInfo} />);
+
+    screen.getByText('DDI ALERT');
+    screen.getByText('A + B');
+    screen.getByText(/Model:/);
+    screen.getByText('m1');
+    screen.getByText('Known: Moderate');
+    screen.getByText('Predicted: Major');
   });
 
-  it('should display historical cases section', () => {
-    render(<Alert info={mockAlertInfo} />);
+  test('parses JSON completion and renders summary and all sections', () => {
+    render(<Alert info={buildInfo()} />);
 
-    expect(screen.getByText('Historical cases')).toBeInTheDocument();
-    expect(screen.getByText('50 cases · high risk')).toBeInTheDocument();
-    expect(screen.getByText('Confidence: high')).toBeInTheDocument();
+    expect(screen.getByText('S')).toBeInTheDocument();
+    expect(screen.getByText('Known Interaction Exists')).toBeInTheDocument();
+    expect(screen.getByText(/Alignment:/)).toHaveTextContent('aligned');
+    expect(screen.getByText('E1')).toBeInTheDocument();
+
+    expect(screen.getByText(/10 cases/)).toBeInTheDocument();
+    expect(screen.getByText('increased risk')).toBeInTheDocument();
+    expect(screen.getByText('E2')).toBeInTheDocument();
+
+    expect(screen.getByText(/Concern Level: HIGH/)).toBeInTheDocument();
+    expect(screen.getByText('R1')).toBeInTheDocument();
+    expect(screen.getByText('R2')).toBeInTheDocument();
   });
 
-  it('should display clinical concern section', () => {
-    render(<Alert info={mockAlertInfo} />);
+  test('enriched context: renders top mechanisms and representative cases', () => {
+    render(<Alert info={baseInfo} />);
 
-    expect(screen.getByText('Clinical concern')).toBeInTheDocument();
+    screen.getByText('Cases Found:');
+    screen.getByText('2');
+    screen.getByText(/Top Mechanisms:/);
+    screen.getByText('mA, mB');
+
+    screen.getByText('Case #1');
+    screen.getByText('Case #2');
+
+    const case1 = screen.getByText('Case #1').closest('div');
+    const case2 = screen.getByText('Case #2').closest('div');
+
+    within(case1).getByText(/Severity:/);
+    within(case1).getByText(/Age\/Sex:/);
+    within(case1).getByText(/Confidence:/);
+
+    within(case2).getByText(/Severity:/);
+    within(case2).getByText(/Age\/Sex:/);
+    within(case2).getByText(/Confidence:/);
   });
 
-  it('should apply custom className', () => {
-    const { container } = render(
-      <Alert info={mockAlertInfo} className="custom-class" />
-    );
-
-    const alert = container.firstChild as HTMLElement;
-    expect(alert.className).toContain('custom-class');
+  test('no representative cases → section omitted', () => {
+    const info = buildInfo({
+      enriched_context: {
+        ...buildInfo().enriched_context,
+        representative_cases: [],
+      },
+    });
+    render(<Alert info={info} />);
+    expect(screen.queryByText(/Representative Historical Cases/)).toBeNull();
   });
 
-  it('should apply preview mode styling when isPreview is true', () => {
-    const { container } = render(<Alert info={mockAlertInfo} isPreview />);
+  test('completion invalid JSON → fallback empty object, fallback severity + summary', () => {
+    const info = buildInfo({
+      completion: 'INVALID JSON',
+      severity: 'Moderate',
+    });
+    render(<Alert info={info} />);
 
-    const gridDiv = container.querySelector('.grid');
-    expect(gridDiv?.className).not.toContain('md:grid-cols-3');
+    // fallback predicted severity = info.severity
+    expect(screen.getByText(/Predicted: Moderate/)).toBeInTheDocument();
+
+    // fallback summary text
+    expect(screen.getByText(/No brief summary available/)).toBeInTheDocument();
   });
 
-  it('should apply default grid styling when isPreview is false', () => {
-    const { container } = render(
-      <Alert info={mockAlertInfo} isPreview={false} />
-    );
-
-    const gridDiv = container.querySelector('.grid');
-    expect(gridDiv?.className).toContain('md:grid-cols-3');
+  test('known_severity null → omits known severity badge', () => {
+    const info = buildInfo({ known_severity: null });
+    render(<Alert info={info} />);
+    expect(screen.queryByText(/Known:/)).toBeNull();
   });
 
-  it('should pass through additional props', () => {
-    render(<Alert info={mockAlertInfo} data-testid="custom-alert" />);
-
-    expect(screen.getByTestId('custom-alert')).toBeInTheDocument();
+  test('model_path null → model path omitted', () => {
+    const info = buildInfo({ model_path: null });
+    render(<Alert info={info} />);
+    expect(screen.queryByText(/Model:/)).toBeNull();
   });
 
-  it('should display "Low concern" when should_be_concerned is false', () => {
-    const infoLowConcern = {
-      ...mockAlertInfo,
-      content: {
-        ...mockAlertInfo.content,
+  test('isPreview = true → grid remains single column', () => {
+    render(<Alert info={buildInfo()} isPreview={true} />);
+    const grid = screen
+      .getAllByText(/Knowledge & Context/)[0]
+      .closest('div')!.parentElement;
+    expect(grid?.className).not.toContain('lg:grid-cols-3');
+  });
+
+  test('severity style Major', () => {
+    const info = buildInfo({
+      completion: JSON.stringify({
+        predicted_severity: 'Major',
+      }),
+      enriched_context: null,
+    });
+    render(<Alert info={info} />);
+    const badge = screen.getByText(/Predicted: Major/).closest('span');
+    expect(badge?.className).toContain('bg-red-100');
+    expect(badge?.className).toContain('text-red-800');
+  });
+
+  test('severity style Moderate', () => {
+    const info = buildInfo({
+      completion: JSON.stringify({
+        predicted_severity: 'Moderate',
+      }),
+      enriched_context: null,
+    });
+    render(<Alert info={info} />);
+    const badge = screen.getByText(/Predicted: Moderate/).closest('span');
+    expect(badge?.className).toContain('bg-yellow-100');
+    expect(badge?.className).toContain('text-yellow-800');
+  });
+
+  test('severity style Minor', () => {
+    const info = buildInfo({
+      completion: JSON.stringify({
+        predicted_severity: 'Minor',
+      }),
+      enriched_context: null,
+    });
+    render(<Alert info={info} />);
+    const badge = screen.getByText(/Predicted: Minor/).closest('span');
+    expect(badge?.className).toContain('bg-green-100');
+    expect(badge?.className).toContain('text-green-800');
+  });
+
+  test('severity style Unknown (default branch)', () => {
+    const info = buildInfo({
+      completion: JSON.stringify({
+        predicted_severity: 'Unknown',
+      }),
+      enriched_context: null,
+    });
+    render(<Alert info={info} />);
+    const badge = screen.getByText(/Predicted: Unknown/).closest('span');
+    expect(badge?.className).toContain('bg-gray-100');
+    expect(badge?.className).toContain('text-gray-700');
+  });
+
+  test('no recommendations → fallback message', () => {
+    const info = buildInfo({
+      completion: JSON.stringify({
+        predicted_severity: 'Major',
         clinical_concern_assessment: {
-          ...mockAlertInfo.content.clinical_concern_assessment,
           should_be_concerned: false,
+          concern_level: 'low',
+          primary_reason: 'patient_factors',
+          recommendations: [],
         },
-      },
-    };
-    render(<Alert info={infoLowConcern} />);
+      }),
+      enriched_context: null,
+    });
+    render(<Alert info={info} />);
+    expect(
+      screen.getByText(/No specific recommendations provided/)
+    ).toBeInTheDocument();
+  });
 
-    // This assertion covers the 'Low concern' branch (Line 104)
-    expect(screen.getByText(/Low concern/)).toBeInTheDocument();
-
-    // Check for the combined text to ensure context
-    expect(screen.getByText(/Low concern · critical/)).toBeInTheDocument();
+  test('no enriched_context → no enrichment section', () => {
+    const info = buildInfo({ enriched_context: null });
+    render(<Alert info={info} />);
+    expect(screen.queryByText(/Database Enrichment/)).toBeNull();
   });
 });
