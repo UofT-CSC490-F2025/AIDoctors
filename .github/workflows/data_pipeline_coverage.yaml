@@ -99,7 +99,7 @@ jobs:
             </details>
 
       - name: Generate Badge
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/a6'
         run: |
           pct="${{ steps.covpct.outputs.pct }}"
           color="red"
