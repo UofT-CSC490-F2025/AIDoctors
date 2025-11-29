@@ -13,8 +13,9 @@ def get_db_credentials():
     """Fetch database connection details from SSM and Secrets Manager"""
     
     try:
-        ssm = boto3.client("ssm")
-        secrets = boto3.client("secretsmanager")
+        aws_region = os.getenv("AWS_REGION", "us-east-1")
+        ssm = boto3.client("ssm", region_name=aws_region)
+        secrets = boto3.client("secretsmanager", region_name=aws_region)
         
         # Get connection details from SSM Parameter Store
         host = ssm.get_parameter(Name="/aidoctors/db/host")["Parameter"]["Value"]
