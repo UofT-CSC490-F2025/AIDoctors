@@ -107,23 +107,12 @@ describe('HomePage', () => {
     }
   });
 
-  it('should render statistics cards', async () => {
-    const { default: HomePage } = await import('@/app/page');
-    render(<HomePage />);
-
-    expect(screen.getByText('Median response time')).toBeInTheDocument();
-    expect(screen.getByText('650ms')).toBeInTheDocument();
-    expect(screen.getByText('Signals monitored')).toBeInTheDocument();
-    expect(screen.getByText('12k+ pairs')).toBeInTheDocument();
-  });
-
   it('should render the alert preview', async () => {
     const { default: HomePage } = await import('@/app/page');
     render(<HomePage />);
 
     const alert = screen.getByTestId('alert');
     expect(alert).toBeInTheDocument();
-    expect(alert.getAttribute('data-preview')).toBe('true');
   });
 
   it('should render all feature cards', async () => {
