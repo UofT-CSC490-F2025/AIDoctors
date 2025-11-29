@@ -7,7 +7,7 @@ on:
         paths:
             - "src/application/backend/**"
     push:
-        branches: [main, a6]
+        branches: [main]
         paths:
             - "src/application/backend/**"
 
@@ -88,7 +88,7 @@ jobs:
                       });
 
             - name: Generate Badge
-              if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/a6'
+              if: github.ref == 'refs/heads/main'
               run: |
                   pct="${{ steps.covpct.outputs.pct }}"
                   color="red"
@@ -106,7 +106,7 @@ jobs:
                   EOF
 
             - name: Commit badge
-              if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/a6'
+              if: github.ref == 'refs/heads/main'
               run: |
                   git config user.name "github-actions"
                   git config user.email "github-actions@github.com"
