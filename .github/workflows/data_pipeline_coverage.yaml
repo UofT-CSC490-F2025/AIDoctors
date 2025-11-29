@@ -26,7 +26,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"   # or whatever you're using locally
+          python-version: "3.11"   
 
       - name: Install dependencies
         run: |
@@ -36,7 +36,7 @@ jobs:
             pip install -r requirements.txt
           fi
           # make sure pytest + pytest-cov are installed
-          pip install pytest pytest-cov boto3 requests pandas kagglehub psycopg2-binary
+          pip install pytest pytest-cov boto3 requests pandas kagglehub psycopg2-binary openpyxl
 
       - name: Run data_pipelines tests
         working-directory: src/data_pipelines
