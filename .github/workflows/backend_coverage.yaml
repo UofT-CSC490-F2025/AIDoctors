@@ -6,10 +6,14 @@ on:
         branches: "*"
         paths:
             - "src/application/backend/**"
+    push:
+        branches: [main, test/backend]
+        paths:
+            - "src/application/backend/**"
 
 permissions:
     id-token: write
-    contents: read
+    contents: write
     pull-requests: write
     issues: write
 
@@ -46,6 +50,13 @@ jobs:
                   set -o pipefail
                   uv run -m pytest 2>&1 | tee pytest-output.txt
 
+            - name: Extract Coverage Percentage
+              id: covpct
+              run: |
+                  # Extract total coverage percentage from pytest output
+                  total=$(grep -oP 'TOTAL\s+\d+\s+\d+\s+\K\d+' pytest-output.txt || echo "0")
+                  echo "pct=$total" >> $GITHUB_OUTPUT
+
             - name: Comment pytest results on PR
               if: github.event_name == 'pull_request'
               uses: actions/github-script@v7
@@ -75,3 +86,30 @@ jobs:
                           repo: context.repo.repo,
                           body: output
                       });
+
+            - name: Generate Badge
+              if: github.ref == 'refs/heads/main'
+              run: |
+                  pct="${{ steps.covpct.outputs.pct }}"
+                  color="red"
+                  if [ "$pct" -ge 80 ]; then color="yellow"; fi
+                  if [ "$pct" -ge 90 ]; then color="green"; fi
+
+                  mkdir -p ../../../.github/badges
+                  cat > ../../../.github/badges/backend-coverage.svg <<EOF
+                  <svg xmlns="http://www.w3.org/2000/svg" width="200" height="20">
+                    <rect width="140" height="20" fill="#555"/>
+                    <rect x="140" width="60" height="20" fill="$color"/>
+                    <text x="70" y="14" fill="#fff" font-family="DejaVu Sans" font-size="11" text-anchor="middle">Backend Coverage</text>
+                    <text x="170" y="14" fill="#fff" font-family="DejaVu Sans" font-size="11" text-anchor="middle">${pct}%</text>
+                  </svg>
+                  EOF
+
+            - name: Commit badge
+              if: github.ref == 'refs/heads/main'
+              run: |
+                  git config user.name "github-actions"
+                  git config user.email "github-actions@github.com"
+                  git add ../../../.github/badges/backend-coverage.svg
+                  git commit -m "Update backend coverage badge" || exit 0
+                  git push
