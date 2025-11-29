@@ -6,3 +6,4 @@ Your medical first point of contact
 
 ![Frontend Coverage](.github/badges/frontend-coverage.svg)
 ![Backend Coverage](.github/badges/backend-coverage.svg)
+![Data Pipelines Coverage](.github/badges/data-pipelines-coverage.svg)
