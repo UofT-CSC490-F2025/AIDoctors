@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, ShieldCheck, Activity, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Alert } from '@/components/ui/alert';
-import { DUMMY_ALERTS } from '@/utils/testing';
+import { DUMMY_ALERTS } from '@/utils/constants';
 import { Header } from '@/components/layout/header';
 
 const featureCards = [
@@ -86,7 +86,7 @@ export default function HomePage() {
               </div>
             </div>
             <Alert
-              info={DUMMY_ALERTS[0]}
+              info={DUMMY_ALERTS[1]}
               isPreview={true}
               className="shadow-xl"
             />
