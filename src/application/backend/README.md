@@ -113,30 +113,6 @@ backend/
 
 ## Development
 
-### Quick Reference
-
-Common `uv` commands:
-
-```bash
-# Install dependencies
-uv sync
-
-# Add a new dependency
-uv add <package-name>
-
-# Add a dev dependency
-uv add --dev <package-name>
-
-# Remove a dependency
-uv remove <package-name>
-
-# Update dependencies
-uv sync --upgrade
-
-# Run a command in the virtual environment
-uv run <command>
-```
-
 ### Adding New Routes
 
 Create new route files in a `routers/` directory:

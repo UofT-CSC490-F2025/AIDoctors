@@ -44,7 +44,7 @@ is_testing = os.getenv("TESTING") == "true"
 if is_testing:
     # Use SQLite for testing or local development
     print("Using local SQLite database")
-    DATABASE_URL = "sqlite:///./app.db"
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
     engine = create_engine(
         DATABASE_URL,
         connect_args={"check_same_thread": False}
