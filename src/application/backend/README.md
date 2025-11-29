@@ -29,18 +29,20 @@ cp .env.example .env
 The application uses AWS Bedrock for drug-drug interaction predictions.
 
 **For local testing:**
-- Set your AWS credentials in the `.env` file:
-  ```
-  AWS_ACCESS_KEY_ID=your-access-key
-  AWS_SECRET_ACCESS_KEY=your-secret-key
-  AWS_REGION=us-east-1
-  BEDROCK_MODEL_ID=anthropic.claude-3-haiku-20240307-v1:0
-  ```
+
+-   Set your AWS credentials in the `.env` file:
+    ```
+    AWS_ACCESS_KEY_ID=your-access-key
+    AWS_SECRET_ACCESS_KEY=your-secret-key
+    AWS_REGION=us-east-1
+    BEDROCK_MODEL_ID=anthropic.claude-3-haiku-20240307-v1:0
+    ```
 
 **For ECS deployment:**
-- No credentials needed in `.env`
-- The ECS task will automatically inherit IAM role permissions
-- Ensure the task role has `bedrock:InvokeModel` permission
+
+-   No credentials needed in `.env`
+-   The ECS task will automatically inherit IAM role permissions
+-   Ensure the task role has `bedrock:InvokeModel` permission
 
 ### 4. Run the Server
 
@@ -99,14 +101,7 @@ backend/
 ├── migrations/                     # Alembic migration scripts for schema versioning
 │   └── env.py
 │
-├── tests/                          # Automated tests (unit and integration)
-│   ├── unit/                       # Tests for isolated functions (services, utils)
-│   │   ├── test_services.py
-│   │   └── test_utils.py
-│   ├── integration/                # End-to-end and API-level tests
-│   │   ├── test_repositories.py
-│   │   └── test_api.py
-│   └── conftest.py                 # Pytest fixtures (e.g., test DB, test client)
+├── tests/                          # Automated tests
 │
 ├── .env.example                    # Example environment variables
 ├── alembic.ini                     # Alembic configuration
@@ -117,30 +112,6 @@ backend/
 ```
 
 ## Development
-
-### Quick Reference
-
-Common `uv` commands:
-
-```bash
-# Install dependencies
-uv sync
-
-# Add a new dependency
-uv add <package-name>
-
-# Add a dev dependency
-uv add --dev <package-name>
-
-# Remove a dependency
-uv remove <package-name>
-
-# Update dependencies
-uv sync --upgrade
-
-# Run a command in the virtual environment
-uv run <command>
-```
 
 ### Adding New Routes
 
@@ -174,3 +145,9 @@ uv sync --all-extras
 # Run tests
 uv run pytest
 ```
+
+### GitHub Actions
+
+The repository includes a GitHub Actions workflow for running tests:
+
+-   `backend_test.yaml`: Runs `uv run pytest` and comments the results on the PR.

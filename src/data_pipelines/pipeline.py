@@ -539,14 +539,42 @@ def build_ddi_reference() -> pd.DataFrame:
 
     # unified one-column severity + one-column mechanism
     def choose_severity(row):
-        # priority: Micromedex > DDInter; take first value if list
-        for col in ["micromedex_sev_level","ddinter_level"]:
+        """
+        Choose a single severity string with priority:
+        Micromedex > DDInter
+
+        Handles values that may be:
+        - list
+        - numpy array
+        - scalar / string
+        """
+        for col in ["micromedex_sev_level", "ddinter_level"]:
             val = row.get(col)
-            if isinstance(val, list) and len(val)>0:
+
+            # If it's a numpy array, convert to list for consistent handling
+            if isinstance(val, np.ndarray):
+                if val.size == 0:
+                    continue
+                val = val.tolist()
+
+            # If we have a list-like value, take the first element
+            if isinstance(val, list):
+                if not val:
+                    continue
                 v = val[0]
-                return np.nan if str(v).lower()=="unknown" else v
-            elif pd.notna(val) and val not in [[], "[]", "Unknown"]:
-                return val
+                v_str = str(v).strip()
+                if not v_str or v_str.lower() == "unknown":
+                    continue
+                return v_str
+
+            # Scalar / string-like
+            if pd.isna(val):
+                continue
+            v_str = str(val).strip()
+            if not v_str or v_str in ("[]", "Unknown"):
+                continue
+            return v_str
+
         return np.nan
 
     def choose_mechanism(row):

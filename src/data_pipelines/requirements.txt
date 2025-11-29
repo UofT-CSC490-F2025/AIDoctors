@@ -6,3 +6,7 @@ tqdm==4.66.4
 boto3
 
 psycopg2-binary==2.9.9; python_version < "3.13"
+
+pytest
+pytest-cov
+coverage-badge

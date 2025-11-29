@@ -1,3 +1,4 @@
+# pragma: no cover
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
@@ -10,9 +11,9 @@ load_dotenv()
 
 def get_db_credentials():
     """Fetch database connection details from SSM and Secrets Manager"""
-    aws_region = os.getenv("AWS_REGION", "ca-central-1")
     
     try:
+        aws_region = os.getenv("AWS_REGION", "us-east-1")
         ssm = boto3.client("ssm", region_name=aws_region)
         secrets = boto3.client("secretsmanager", region_name=aws_region)
         
@@ -37,11 +38,20 @@ def get_db_credentials():
         raise
 
 
-# Configure database based on DATABASE_TYPE
-database_type = os.getenv("DATABASE_TYPE", "local")
+# Check if we're in testing mode or should use local database
+is_testing = os.getenv("TESTING") == "true"
 
-if database_type == "aws_rds":
-    print("🔧 Configuring AWS RDS database connection...")
+if is_testing:
+    # Use SQLite for testing or local development
+    print("Using local SQLite database")
+    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False}
+    )
+else:
+    # Try to connect to AWS RDS
+    print("Configuring AWS RDS database connection...")
     try:
         host, port, user, password, dbname, schema = get_db_credentials()
         DATABASE_URL = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}?options=-csearch_path%3D{schema}"
@@ -54,24 +64,10 @@ if database_type == "aws_rds":
             max_overflow=20,
             echo=False  # Set to True for SQL debugging
         )
-        print(f"✅ AWS RDS connection configured: {host}:{port}/{dbname}")
+        print(f"AWS RDS connection configured: {host}:{port}/{dbname}")
+
     except Exception as e:
-        print(f"⚠️  AWS RDS configuration failed: {e}")
-        print("⚠️  Falling back to SQLite")
-        DATABASE_URL = "sqlite:///./app.db"
-        engine = create_engine(
-            DATABASE_URL,
-            connect_args={"check_same_thread": False}
-        )
-else:
-    print("🔧 Using local SQLite database")
-    DATABASE_URL = "sqlite:///./app.db"
-    
-    # SQLite-specific engine configuration
-    engine = create_engine(
-        DATABASE_URL,
-        connect_args={"check_same_thread": False}  # Only for SQLite
-    )
+        raise Exception("Failed to configure AWS RDS database connection")
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

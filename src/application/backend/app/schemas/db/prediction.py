@@ -1,9 +1,11 @@
 import ast
 from typing import Any, Optional
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 
 class DDIPredictRequest(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+    
     # Required core fields
     patient_uuid: Optional[str] = Field(default=None, examples=["patient-12345"])
     drug1: str = Field(examples=["Warfarin"])
@@ -27,7 +29,8 @@ class DDIPredictRequest(BaseModel):
     ddi_confidence: Optional[float] = Field(default=None, examples=[0.95])
     ddi_known: Optional[bool] = Field(default=None, examples=[True])
 
-    @validator("Comorbidities", pre=True)
+    @field_validator("Comorbidities", mode="before")
+    @classmethod
     def coerce_comorbidities(cls, v):
         if v is None:
             return []
@@ -48,7 +51,8 @@ class DDIPredictRequest(BaseModel):
             return [s.strip() for s in v.split(",") if s.strip()]
         return []
 
-    @validator("ddi_known", pre=True)
+    @field_validator("ddi_known", mode="before")
+    @classmethod
     def coerce_bool(cls, v):
         if isinstance(v, bool) or v is None:
             return v
@@ -62,7 +66,8 @@ class DDIPredictRequest(BaseModel):
                 return False
         return None
 
-    @validator("ddi_confidence", pre=True)
+    @field_validator("ddi_confidence", mode="before")
+    @classmethod
     def coerce_float(cls, v):
         if v is None:
             return None
@@ -73,6 +78,8 @@ class DDIPredictRequest(BaseModel):
 
 
 class DDIPredictResponse(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+    
     drug1: str = Field(examples=["Warfarin"])
     drug2: str = Field(examples=["Aspirin"])
     severity: str = Field(examples=["Major"])
