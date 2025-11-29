@@ -33,12 +33,12 @@ export default function HomePage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_20%,rgba(255,159,64,0.12),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(59,130,246,0.08),transparent_28%)]" />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
+          <div className="grid gap-12 items-center">
+            <div className="space-y-6 py-12">
               <p className="inline-flex items-center px-3 py-1 rounded-full bg-white/80 border border-orange-200 text-xs font-semibold text-orange-700 shadow-sm">
                 Clinical safety, ML-first
               </p>
-              <h1 className="text-4xl sm:text-5xl font-semibold text-gray-900 leading-tight">
+              <h1 className="text-4xl sm:text-5xl font-semibold text-gray-900 leading-tight max-w-xl">
                 Catch drug interactions
                 <span className="text-orange-600">
                   {' '}
@@ -66,30 +66,9 @@ export default function HomePage() {
                   <Link href="/login">Log in</Link>
                 </Button>
               </div>
-              <div className="grid grid-cols-2 gap-4 pt-6 max-w-xl">
-                <div className="p-4 rounded-2xl bg-white shadow-sm border border-orange-100">
-                  <p className="text-sm text-gray-500">Median response time</p>
-                  <p className="text-2xl font-semibold text-gray-900">650ms</p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Built for point-of-care workflows.
-                  </p>
-                </div>
-                <div className="p-4 rounded-2xl bg-white shadow-sm border border-orange-100">
-                  <p className="text-sm text-gray-500">Signals monitored</p>
-                  <p className="text-2xl font-semibold text-gray-900">
-                    12k+ pairs
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Updated with patient-level evidence.
-                  </p>
-                </div>
-              </div>
             </div>
-            <Alert
-              info={DUMMY_ALERTS[1]}
-              isPreview={true}
-              className="shadow-xl"
-            />
+
+            <Alert info={DUMMY_ALERTS[1]} className="shadow-xl" />
           </div>
         </div>
       </section>
