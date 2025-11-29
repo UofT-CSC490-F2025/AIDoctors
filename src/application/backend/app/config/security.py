@@ -9,7 +9,7 @@ try:
     if os.getenv("TESTING") != "true":
         aws_region = os.getenv("AWS_REGION", "us-east-1")
         ssm = boto3.client("ssm", region_name=aws_region)
-        secret_token = ssm.get_parameter(Name="/aidoctors/access-token-secret")["Parameter"]["Value"]
+        secret_token = ssm.get_parameter(Name="/aidoctors/app/access-token-secret")["Parameter"]["Value"]
 except Exception as e:
     print(f"Failed to fetch AWS credentials: {e}")
 
