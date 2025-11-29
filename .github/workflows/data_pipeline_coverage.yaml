@@ -36,7 +36,7 @@ jobs:
             pip install -r requirements.txt
           fi
           # make sure pytest + pytest-cov are installed
-          pip install pytest pytest-cov boto3 requests pandas kagglehub psycopg2-binary openpyxl
+          pip install pytest pytest-cov boto3 requests pandas kagglehub psycopg2-binary openpyxl xlsxwriter
 
       - name: Run data_pipelines tests
         working-directory: src/data_pipelines
