@@ -13,7 +13,7 @@ const mockAlertInfo: AlertResult = {
   model_path: 'model-v1.0',
   reasoning: 'Test reasoning for the interaction',
   severity: 'severe',
-  content: {
+  completion: {
     predicted_severity: 'severe',
     comparison_to_known_ddi: {
       known_interaction_exists: true,

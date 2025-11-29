@@ -34,20 +34,23 @@ export type PredictionContent = {
 };
 
 export type AlertResult = {
-  reasoning: string;
-  content: PredictionContent;
-  model_path?: string;
-  known_severity?: string;
   drug1: string;
   drug2: string;
+  severity: string;
+  reasoning: string;
+  completion: PredictionContent;
+  model_path: string;
+  known_severity?: string;
   enriched_context?: {
-    similar_cases: any[];
-    top_mechanisms: any[];
-    representative_cases: any[];
-    severity_distribution: {
-      known_severity_count: number;
-      total_cases: number;
+    similar_cases_count?: number;
+    known_interaction?: boolean;
+    avg_confidence?: number;
+    similar_cases?: any[];
+    top_mechanisms?: any[];
+    representative_cases?: any[];
+    severity_distribution?: {
+      known_severity_count?: number;
+      total_cases?: number;
     };
   };
-  severity: string;
 };

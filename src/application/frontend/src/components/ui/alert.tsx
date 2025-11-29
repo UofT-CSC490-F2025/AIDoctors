@@ -13,14 +13,14 @@ export function Alert({
   className,
   ...props
 }: AlertProps) {
-  const { drug1, drug2, known_severity, model_path, reasoning, content } = info;
+  const { drug1, drug2, known_severity, model_path, completion } = info;
   const {
-    predicted_severity,
+    predicted_severity = 'Unknown',
     comparison_to_known_ddi,
     historical_cases_analysis,
     clinical_concern_assessment,
     summary,
-  } = content;
+  } = completion;
 
   return (
     <div
@@ -57,7 +57,6 @@ export function Alert({
       <div className="space-y-1 text-sm">
         <p className="font-semibold text-gray-900">Summary</p>
         <p className="text-gray-700">{summary}</p>
-        <p className="text-gray-700">{reasoning}</p>
       </div>
 
       <div
@@ -71,28 +70,28 @@ export function Alert({
             Known DDI
           </p>
           <p className="font-medium text-gray-900">
-            {comparison_to_known_ddi.known_interaction_exists
+            {comparison_to_known_ddi?.known_interaction_exists
               ? 'Known interaction'
               : 'No known interaction'}
           </p>
           <p className="text-gray-700">
-            Alignment: {comparison_to_known_ddi.alignment_with_knowledge}
+            Alignment: {comparison_to_known_ddi?.alignment_with_knowledge}
           </p>
-          <p className="text-gray-700">{comparison_to_known_ddi.explanation}</p>
+          <p className="text-gray-700">{comparison_to_known_ddi?.explanation}</p>
         </div>
 
         <div className="space-y-1 rounded-lg border border-gray-100 bg-gray-50 p-3">
           <p className="text-xs font-semibold uppercase text-gray-500">
             Historical cases
           </p>
-          <p className="font-medium text-gray-900">
-            {historical_cases_analysis.cases_reviewed} cases ·{' '}
-            {historical_cases_analysis.risk_assessment}
+          <p className="text-medium text-gray-900">
+            {historical_cases_analysis?.cases_reviewed} cases ·{' '}
+            {historical_cases_analysis?.risk_assessment}
           </p>
           <p className="text-gray-700">
-            Confidence: {historical_cases_analysis.confidence}
+            Confidence: {historical_cases_analysis?.confidence}
           </p>
-          <p className="text-gray-700">{historical_cases_analysis.reasoning}</p>
+          <p className="text-gray-700">{historical_cases_analysis?.reasoning}</p>
         </div>
 
         <div className="space-y-1 rounded-lg border border-gray-100 bg-gray-50 p-3">
@@ -100,16 +99,16 @@ export function Alert({
             Clinical concern
           </p>
           <p className="font-medium text-gray-900">
-            {clinical_concern_assessment.should_be_concerned
+            {clinical_concern_assessment?.should_be_concerned
               ? 'Concern present'
               : 'Low concern'}{' '}
-            · {clinical_concern_assessment.concern_level}
+            · {clinical_concern_assessment?.concern_level}
           </p>
           <p className="text-gray-700">
-            Reason: {clinical_concern_assessment.primary_reason}
+            Reason: {clinical_concern_assessment?.primary_reason}
           </p>
           <ul className="list-disc space-y-1 pl-5 text-gray-700">
-            {clinical_concern_assessment.recommendations.map(
+            {clinical_concern_assessment?.recommendations.map(
               (recommendation, idx) => (
                 <li key={idx}>{recommendation}</li>
               )
