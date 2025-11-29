@@ -117,7 +117,7 @@ jobs:
           EOF
 
       - name: Commit badge
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/a6'
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
