@@ -39,7 +39,7 @@ async def login_for_access_token(
         key=ACCESS_TOKEN_COOKIE_NAME,
         value=access_token,
         httponly=True,
-        secure=True,
+        secure=False,
         max_age=int(access_token_expires.total_seconds()),
         samesite="lax",
         path="/",
