@@ -18,6 +18,16 @@ resource "aws_cloudwatch_log_group" "ecs_datapipeline" {
   }
 }
 
+# CloudWatch Log Group for Data Extraction
+resource "aws_cloudwatch_log_group" "ecs_dataextraction" {
+  name              = "/ecs/${local.name}-dataextraction"
+  retention_in_days = 7
+
+  tags = {
+    Name = "${local.name}-dataextraction-logs"
+  }
+}
+
 # ECS Cluster
 module "ecs_cluster" {
   source  = "terraform-aws-modules/ecs/aws//modules/cluster"
@@ -139,6 +149,46 @@ resource "aws_ecs_task_definition" "pipeline" {
 
   tags = {
     Name = "${local.name}-pipeline-task-definition"
+  }
+}
+
+# ECS Task Definition for Data Extraction
+resource "aws_ecs_task_definition" "extraction" {
+  family                   = "${local.name}-extraction"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "1024" # 1 vCPU
+  memory                   = "2048" # 2 GB
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "${local.name}-extraction-container"
+      image     = "${module.ecr_extraction.repository_url}:${var.extraction_image_tag}"
+      essential = true
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs_dataextraction.name
+          "awslogs-region"        = "us-east-1"
+          "awslogs-stream-prefix" = "extraction"
+        }
+        depends_on = [aws_cloudwatch_log_group.ecs_dataextraction]
+      }
+
+      environment = [
+        {
+          name  = "ENVIRONMENT"
+          value = "production"
+        }
+      ]
+    }
+  ])
+
+  tags = {
+    Name = "${local.name}-extraction-task-definition"
   }
 }
 
