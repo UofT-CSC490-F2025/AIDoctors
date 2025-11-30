@@ -30,6 +30,7 @@ app = FastAPI(
 allowed_origins = [
     "http://localhost",
     "http://localhost:3000",
+    "https://main.d3jxl3jzen5r8m.amplifyapp.com"
 ]
 
 # Configure CORS
