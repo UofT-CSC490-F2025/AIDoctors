@@ -18,12 +18,6 @@ RUN uv sync --frozen
 # Copy application code
 COPY ./app ./app
 
-# Create directory for SQLite database and set permissions
-RUN mkdir -p /app/data && chmod 777 /app/data
-
-# Set environment variable for database path
-ENV DATABASE_URL=sqlite:///./data/test.db
-
 # Expose port 8000
 EXPOSE 8000
 
