@@ -69,6 +69,13 @@ resource "aws_ecs_task_definition" "app" {
         }
       ]
 
+      environment = [
+        {
+          name  = "ENVIRONMENT"
+          value = "production"
+        }
+      ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
