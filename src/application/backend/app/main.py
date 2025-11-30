@@ -30,7 +30,8 @@ app = FastAPI(
 allowed_origins = [
     "http://localhost",
     "http://localhost:3000",
-    "https://main.d3jxl3jzen5r8m.amplifyapp.com"
+    "https://main.d3jxl3jzen5r8m.amplifyapp.com",
+    "http://aidoctors-alb-1329822649.us-east-1.elb.amazonaws.com"
 ]
 
 # Configure CORS

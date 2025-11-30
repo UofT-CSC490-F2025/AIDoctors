@@ -56,7 +56,7 @@ async def clear_access_token_cookie(
     response.delete_cookie(
         key=ACCESS_TOKEN_COOKIE_NAME,
         httponly=True,
-        secure=True,
+        secure=False,
         samesite="lax",
         path="/",
     )
