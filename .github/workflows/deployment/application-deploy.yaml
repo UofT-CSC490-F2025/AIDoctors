@@ -3,7 +3,7 @@ name: Deploy Application to ECR
 on:
     workflow_dispatch:
     push:
-        branches: "feat/deployment_cleanup"
+        branches: ["feat/deployment_cleanup", "main"]
 
 env:
     ENVIRONMENT: "production"
