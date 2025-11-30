@@ -38,10 +38,10 @@ def get_db_credentials():
         raise
 
 
-# Check if we're in testing mode or should use local database
-is_testing = os.getenv("TESTING") == "true"
+# Check if we're in testing/development mode or should use local database
+environment = os.getenv("ENVIRONMENT", "production").lower()
 
-if is_testing:
+if environment == "testing":
     # Use SQLite for testing or local development
     print("Using local SQLite database")
     DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")

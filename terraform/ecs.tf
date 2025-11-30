@@ -140,7 +140,7 @@ resource "aws_ecs_service" "app" {
   name            = "${local.name}-app-service"
   cluster         = module.ecs_cluster.id
   task_definition = aws_ecs_task_definition.app.arn
-  desired_count   = 0
+  desired_count   = 1
 
   launch_type = "FARGATE"
 

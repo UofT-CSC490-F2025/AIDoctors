@@ -24,6 +24,14 @@ Copy `.env.example` to `.env` and update the values:
 cp .env.example .env
 ```
 
+#### Environment Variable: `ENVIRONMENT`
+
+The `ENVIRONMENT` variable controls which database and configuration sources the application uses:
+
+-   **`testing`**: Uses local SQLite database (`sqlite:///./test.db`) and local environment variables. Used in CI/CD testing workflows.
+-   **`development`**: Uses local SQLite database and local environment variables. Recommended for local development.
+-   **`production`**: Uses AWS RDS for the database and fetches secrets from AWS Systems Manager (SSM) and Secrets Manager. Used in deployed environments.
+
 ### 3. Configure AWS Bedrock
 
 The application uses AWS Bedrock for drug-drug interaction predictions.

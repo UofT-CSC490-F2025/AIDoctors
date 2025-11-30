@@ -1,11 +1,12 @@
-name: Deploy to ECR
+name: Deploy Application to ECR
 
 on:
     workflow_dispatch:
     push:
-        branches: main
-        paths:
-            - "src/application/**"
+        branches: ["feat/deployment_cleanup", "main"]
+
+env:
+    ENVIRONMENT: "production"
 
 permissions:
     id-token: write
