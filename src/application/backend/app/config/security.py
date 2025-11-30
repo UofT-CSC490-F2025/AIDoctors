@@ -5,8 +5,9 @@ import os
 
 secret_token = None
 try:
-    # Only attempt AWS fetch if not in test mode
-    if os.getenv("TESTING") != "true":
+    # Only attempt AWS fetch if in production mode
+    environment = os.getenv("ENVIRONMENT", "production").lower()
+    if environment not in ["testing", "development"]:
         aws_region = os.getenv("AWS_REGION", "us-east-1")
         ssm = boto3.client("ssm", region_name=aws_region)
         secret_token = ssm.get_parameter(Name="/aidoctors/app/access-token-secret")["Parameter"]["Value"]

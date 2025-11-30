@@ -3,9 +3,10 @@ name: Deploy to ECR
 on:
     workflow_dispatch:
     push:
-        branches: main
-        paths:
-            - "src/application/**"
+        branches: "feat/deployment_cleanup"
+
+env:
+    ENVIRONMENT: "production"
 
 permissions:
     id-token: write
