@@ -1,42 +1,72 @@
 # AI Doctors Frontend
 
-Next.js 15 app that connects to the FastAPI backend to surface patient-specific drug–drug interaction (DDI) alerts.
+A Next.js 15 application interface for the AI Doctors platform. It connects to a FastAPI backend to predict and display patient-specific drug–drug interaction (DDI) alerts.
 
-## Key pages
+## Key Routes
 
-- `/` – marketing overview of the project
-- `/login` and `/signup` – email/password auth, JWT stored in an HTTP-only `access_token` cookie
-- `/dashboard` – protected overview of the integration
-- `/dashboard/predict` – protected form to send patient context to the backend and render top-k alerts
+| Route                | Description                                                                    |
+| :------------------- | :----------------------------------------------------------------------------- |
+| `/`                  | Marketing and project overview.                                                |
+| `/login`, `/signup`  | User authentication. Uses email/password and stores JWTs in HTTP-only cookies. |
+| `/dashboard`         | Protected view of the integration status.                                      |
+| `/dashboard/predict` | Protected form to submit patient context and render alerts.                    |
 
-## Setup
+## Prerequisites
 
-Install the dependencies:
+- Node.js (v20.9.0 or higher).
+- npm.
 
-```bash
-npm install
-```
+## Installation & Configuration
 
-Set `NEXT_PUBLIC_API_BASE_URL` in `.env` to the running FastAPI backend base URL. For example:
+1.  **Install dependencies:**
 
-```.env
-NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
-```
+    ```bash
+    npm install
+    ```
 
-## Running Locally
+2.  **Configure environment:**
 
-Run the following command to spin up the development server:
+    Create a `.env` file in the root directory. Define the API base URL:
+
+    ```env
+    NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+    ```
+
+## Development
+
+Start the local development server:
 
 ```bash
 npm run dev
 ```
 
+The frontend will be running on `http://localhost:3000`.
+
 ## Production Build
 
-Run the following command to build a static export of the frontend:
+Generate a static export of the application:
 
 ```bash
 npm run build
 ```
 
-This exports raw HTML/CSS/JS files and assets into the folder `out`. This folder can now be deployed on any HTTP server.
+This compiles raw HTML, CSS, and JS assets into the `out` directory. Deploy this folder to any static web server.
+
+## Testing
+
+This project uses Jest for unit testing. Test files are located in `src/__tests__`.
+
+Run tests locally:
+
+```bash
+npm run test
+```
+
+## CI/CD Pipeline
+
+A GitHub Actions workflow (`frontend_coverage.yaml`) automates testing on repository changes that affect the frontend.
+
+**Workflow Behaviors:**
+
+- **Pull Requests:** Runs tests using `npm run test:ci`. Posts a comment on the PR containing the current frontend code coverage.
+- **Push to Main:** Runs tests using `npm run test:ci`. Updates the coverage badge in the root README.
