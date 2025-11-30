@@ -17,13 +17,13 @@ variable "extraction_image_tag" {
 }
 
 variable "extraction_schedule" {
-  description = "Cron expression for extraction schedule (default: daily at 1:00 AM UTC)"
+  description = "Cron expression for extraction schedule "
   type        = string
-  default     = "cron(0 1 * * ? *)"
+  default     = "cron(0 0 1 * ? *)"
 }
 
 variable "pipeline_schedule" {
-  description = "Cron expression for pipeline schedule (default: daily at 1:30 AM UTC, 30 minutes after extraction)"
+  description = "Cron expression for pipeline schedule "
   type        = string
-  default     = "cron(30 1 * * ? *)"
+  default     = "cron(30 0 1 * ? *)"
 }
