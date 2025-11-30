@@ -16,7 +16,6 @@ jobs:
     docker-build:
         name: Build Image
         runs-on: ubuntu-latest
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         outputs:
             image_tag: ${{ steps.tag.outputs.image_tag }}
         env:
@@ -43,19 +42,17 @@ jobs:
               id: login-ecr
               uses: aws-actions/amazon-ecr-login@v1
 
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
             - name: Build, tag, and push image to Amazon ECR
-              working-directory: src/application
+              working-directory: src/application/backend
               env:
                   ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-                  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+                  ECR_REPOSITORY: aidoctors-app
                   IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
               run: |
-                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-                  # Also tag as latest for convenience
-                  docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
-                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+                  docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --push .
 
     update-ecs:
         needs: docker-build
