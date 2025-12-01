@@ -40,13 +40,20 @@ resource "aws_security_group" "ecs_tasks" {
   description = "Security group for ECS tasks"
   vpc_id      = module.vpc.vpc_id
 
-  # Allow all traffic from within VPC (temporary for debugging)
   ingress {
-    description = "Allow all traffic from VPC"
-    from_port   = 0
-    to_port     = 65535
+    description = "Allow traffic from ALB on port 8000"
+    from_port   = 8000
+    to_port     = 8000
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
+    security_groups = [aws_security_group.alb.id]
+  }
+
+  ingress {
+    description = "Allow traffic to RDS"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
   }
 
   egress {

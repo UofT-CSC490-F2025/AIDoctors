@@ -23,9 +23,9 @@ output "ssm_parameters" {
   }
 }
 
-output "api_gateway_url" {
-  description = "API Gateway HTTPS URL"
-  value       = aws_api_gateway_stage.prod.invoke_url
+output "alb_dns_name" {
+  description = "ALB DNS name for accessing the application"
+  value       = module.alb.dns_name
 }
 
 output "app_image_tag" {
