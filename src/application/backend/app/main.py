@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 
@@ -25,7 +25,6 @@ app = FastAPI(
     description="FastAPI backend for CSC490 project",
     version="1.0.0",
     lifespan=lifespan,
-    root_path="/api",
 )
 
 allowed_origins = [
@@ -67,6 +66,10 @@ async def health_check():
     return {"status": "healthy"}
 
 
-app.include_router(auth.router)
-app.include_router(users.router)
-app.include_router(predictions.router)
+# Create API router with /api prefix
+api_router = APIRouter(prefix="/api")
+api_router.include_router(auth.router)
+api_router.include_router(users.router)
+api_router.include_router(predictions.router)
+
+app.include_router(api_router)
