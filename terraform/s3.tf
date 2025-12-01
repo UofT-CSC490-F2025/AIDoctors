@@ -115,3 +115,67 @@ module "s3_raw_datasets" {
     Purpose = "Raw Dataset Storage"
   }
 }
+
+# S3 Bucket for Frontend Static Website Hosting
+module "s3_frontend" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "~> 5.0"
+
+  bucket        = "${local.name}-frontend"
+  force_destroy = true
+
+  # Allow public access for static website hosting
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+
+  # Enable static website hosting
+  website = {
+    index_document = "index.html"
+    error_document = "index.html" # For SPA routing
+  }
+
+  # Bucket policy to allow public read access
+  attach_policy = true
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "PublicReadGetObject"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = "s3:GetObject"
+        Resource  = "arn:aws:s3:::${local.name}-frontend/*"
+      }
+    ]
+  })
+
+  # CORS configuration for API calls
+  cors_rule = [
+    {
+      allowed_headers = ["*"]
+      allowed_methods = ["GET", "HEAD"]
+      allowed_origins = ["*"]
+      expose_headers  = ["ETag"]
+      max_age_seconds = 3000
+    }
+  ]
+
+  # Server-side encryption
+  server_side_encryption_configuration = {
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+
+  control_object_ownership = true
+  object_ownership         = "BucketOwnerPreferred"
+
+  tags = {
+    Name    = "${local.name}-frontend"
+    Purpose = "Frontend Static Website Hosting"
+  }
+}
