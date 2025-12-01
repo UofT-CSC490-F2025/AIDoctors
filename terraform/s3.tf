@@ -116,7 +116,7 @@ module "s3_raw_datasets" {
   }
 }
 
-# S3 Bucket for Frontend Static Website Hosting
+# S3 Bucket for Frontend (served via CloudFront)
 module "s3_frontend" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 5.0"
@@ -124,43 +124,11 @@ module "s3_frontend" {
   bucket        = "${local.name}-frontend"
   force_destroy = true
 
-  # Allow public access for static website hosting
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-
-  # Enable static website hosting
-  website = {
-    index_document = "index.html"
-    error_document = "index.html" # For SPA routing
-  }
-
-  # Bucket policy to allow public read access
-  attach_policy = true
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "PublicReadGetObject"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource  = "arn:aws:s3:::${local.name}-frontend/*"
-      }
-    ]
-  })
-
-  # CORS configuration for API calls
-  cors_rule = [
-    {
-      allowed_headers = ["*"]
-      allowed_methods = ["GET", "HEAD"]
-      allowed_origins = ["*"]
-      expose_headers  = ["ETag"]
-      max_age_seconds = 3000
-    }
-  ]
+  # Block public access - CloudFront will access via OAC
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 
   # Server-side encryption
   server_side_encryption_configuration = {
@@ -176,6 +144,6 @@ module "s3_frontend" {
 
   tags = {
     Name    = "${local.name}-frontend"
-    Purpose = "Frontend Static Website Hosting"
+    Purpose = "Frontend Static Website Hosting (via CloudFront)"
   }
 }

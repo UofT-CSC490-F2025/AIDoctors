@@ -32,3 +32,23 @@ output "app_image_tag" {
   description = "Current application image tag deployed"
   value       = var.app_image_tag
 }
+
+output "frontend_bucket_name" {
+  description = "S3 bucket name for frontend static website"
+  value       = module.s3_frontend.s3_bucket_id
+}
+
+output "cloudfront_distribution_id" {
+  description = "CloudFront distribution ID for cache invalidation"
+  value       = aws_cloudfront_distribution.frontend.id
+}
+
+output "cloudfront_domain_name" {
+  description = "CloudFront distribution domain name"
+  value       = aws_cloudfront_distribution.frontend.domain_name
+}
+
+output "frontend_url" {
+  description = "Full HTTPS URL for frontend (via CloudFront)"
+  value       = "https://${aws_cloudfront_distribution.frontend.domain_name}"
+}
