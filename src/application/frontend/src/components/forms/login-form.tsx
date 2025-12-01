@@ -57,7 +57,7 @@ export function LoginForm() {
       const responseUser = await fetch(`${getApiBaseUrl()}/users/me`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 

@@ -5,7 +5,8 @@ on:
     push:
         branches: ["main"]
         paths:
-            - "src/application/**"
+            - "src/application/backend/**"
+            - ".github/workflows/application-deploy.yaml"
 
 env:
     ENVIRONMENT: "production"
