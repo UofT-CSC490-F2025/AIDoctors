@@ -14,10 +14,24 @@ resource "aws_cloudfront_distribution" "frontend" {
   default_root_object = "index.html"
   price_class         = "PriceClass_100" # Use only North America and Europe edge locations
 
+  # Origin #1: S3 bucket for frontend static files
   origin {
     domain_name              = module.s3_frontend.s3_bucket_bucket_regional_domain_name
     origin_id                = "S3-${module.s3_frontend.s3_bucket_id}"
     origin_access_control_id = aws_cloudfront_origin_access_control.frontend.id
+  }
+
+  # Origin #2: ALB for backend API
+  origin {
+    domain_name = module.alb.dns_name
+    origin_id   = "ALB-${local.name}"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
   }
 
   default_cache_behavior {
@@ -36,6 +50,28 @@ resource "aws_cloudfront_distribution" "frontend" {
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
+    compress               = true
+  }
+
+  # Cache behavior for API requests - route to ALB
+  ordered_cache_behavior {
+    path_pattern     = "/api/*"
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "ALB-${local.name}"
+
+    forwarded_values {
+      query_string = true
+      headers      = ["Authorization", "Accept", "Content-Type"]
+      cookies {
+        forward = "all"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
     compress               = true
   }
 
