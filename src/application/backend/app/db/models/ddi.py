@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Text, Integer, Float, Boolean, DateTime
-from app.db.session import Base
+from app.db.session import Base, SCHEMA_NAME
 
 
 class PatientDDI(Base):
@@ -15,7 +15,8 @@ class PatientDDI(Base):
     __tablename__ = "patient_ddi_collapsed_from_topk"
     
     # Tell SQLAlchemy this table already exists - DON'T create/modify it
-    __table_args__ = {'extend_existing': True}
+    # Specify the schema conditionally (only for PostgreSQL, not SQLite)
+    __table_args__ = {'schema': SCHEMA_NAME, 'extend_existing': True} if SCHEMA_NAME else {'extend_existing': True}
     
     # SQLAlchemy requires a primary key for ORM operations
     # Since the table doesn't have one, we'll use patient_uuid

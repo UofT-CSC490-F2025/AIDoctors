@@ -51,8 +51,9 @@ def build_user_prompt(payload: DDIPredictRequest, enriched_context: dict) -> str
     drug2 = payload.drug2_norm or payload.drug2 or ""
     enriched_similar_cases = enriched_context.get("representative_cases", [])
     mech_list = enriched_context.get("top_mechanisms", [])
+    mech = ""
     if mech_list:
-        mech += "\n".join(f"- {m}" for m in mech_list)
+        mech = "\n".join(f"- {m}" for m in mech_list)
     enriched_mechanisms = "\n".join(f"- {case['mechanism']}" for case in enriched_similar_cases if case.get('mechanism')) or ""
     avg_confidence = enriched_context.get("avg_confidence") or ""
     known = enriched_context.get("known_interaction")
@@ -102,8 +103,6 @@ def get_output_template() -> str:
 {
     "predicted_severity": "<Minor|Moderate|Major>",
     "comparison_to_known_ddi": {
-        "known_interaction_exists": "<true|false>",
-        "alignment_with_knowledge": "<aligned|contradicted|insufficient_data>",
         "explanation": "<detailed comparison explanation>"
     },
     "historical_cases_analysis": {

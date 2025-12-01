@@ -72,6 +72,10 @@ else:
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+# Export schema name for conditional use in models
+# SQLite doesn't support schemas, so we only use it for PostgreSQL
+SCHEMA_NAME = "production" if environment != "testing" else None
+
 
 def get_db():
     """Dependency for FastAPI endpoints"""

@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
+import os
 
 from app.dependencies import get_db
 from app.services.auth_service import authenticate_user, create_access_token
@@ -32,11 +33,13 @@ async def login_for_access_token(
     )
 
     # Set HttpOnly secure cookie
+    # Use secure=False for local development (HTTP), secure=True for production (HTTPS)
+    is_production = os.getenv("ENVIRONMENT", "production").lower() not in ["development", "testing"]
     response.set_cookie(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=True,
+        secure=is_production,
         samesite="lax",
         max_age=int(access_token_expires.total_seconds()),
         path="/",
