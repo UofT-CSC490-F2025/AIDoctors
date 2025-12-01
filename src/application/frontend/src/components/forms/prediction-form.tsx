@@ -66,8 +66,6 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
       });
       const responseData = await response.json();
 
-      console.log(responseData);
-
       if (response.status === 401) {
         setError('Unauthenticated request. Please log in again.');
         setUser(null);
