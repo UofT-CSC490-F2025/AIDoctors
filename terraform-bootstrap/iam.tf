@@ -77,7 +77,8 @@ resource "aws_iam_role_policy" "github_actions_terraform" {
           "application-autoscaling:*",
           "cloudfront:*",
           "ssm:*",
-          "scheduler:*"
+          "scheduler:*",
+          "apigateway:*",
         ]
         Resource = "*"
       }
