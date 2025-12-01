@@ -7,7 +7,7 @@ A Next.js 15 application interface for the AI Doctors platform. It connects to a
 | Route                | Description                                                                    |
 | :------------------- | :----------------------------------------------------------------------------- |
 | `/`                  | Marketing and project overview.                                                |
-| `/login`, `/signup`  | User authentication. Uses email/password and stores JWTs in HTTP-only cookies. |
+| `/login`, `/signup`  | User authentication. Uses email/password and stores auth JWTs. |
 | `/dashboard`         | Protected view of the integration status.                                      |
 | `/dashboard/predict` | Protected form to submit patient context and render alerts.                    |
 
@@ -29,7 +29,7 @@ A Next.js 15 application interface for the AI Doctors platform. It connects to a
     Create a `.env` file in the root directory. Define the API base URL:
 
     ```env
-    NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+    NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api
     ```
 
 ## Development
