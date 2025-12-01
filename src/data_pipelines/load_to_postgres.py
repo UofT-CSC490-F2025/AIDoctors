@@ -15,10 +15,27 @@ def coerce_intlike(df, cols):
     return df
 
 def df_to_csv_buffer(df) -> io.StringIO:
-    # ensure int-like columns won’t print as x.0
+    # ensure int-like columns won't print as x.0
     return io.StringIO(
         df.to_csv(index=False, header=False, na_rep="", float_format="%.0f")
     )
+
+def convert_list_to_pg_array(val):
+    """Convert Python list to PostgreSQL array literal format"""
+    if pd.isna(val) or val is None:
+        return None
+    if isinstance(val, str):
+        # Try to parse string representation of list
+        import ast
+        try:
+            val = ast.literal_eval(val)
+        except (ValueError, SyntaxError):
+            return None
+    if isinstance(val, list):
+        # Escape quotes and wrap in PostgreSQL array format
+        escaped = [str(item).replace('"', '\\"') for item in val]
+        return '{' + ','.join(f'"{item}"' for item in escaped) + '}'
+    return None
 
 
 OUT = Path("data/datasets_output")
@@ -75,7 +92,7 @@ CREATE TABLE IF NOT EXISTS ae_risk_enriched (
   patient_uuid       TEXT,
   Age                INTEGER,
   Sex                TEXT,
-  Comorbidities      TEXT,            -- JSON-like string list
+  Comorbidities      TEXT[],           -- PostgreSQL array of text
   START              TIMESTAMPTZ,
   STOP               TIMESTAMPTZ,
   synthea_drug_desc  TEXT,
@@ -94,7 +111,7 @@ CREATE TABLE IF NOT EXISTS ae_risk_topk_per_patient_drug (
   patient_uuid       TEXT,
   Age                INTEGER,
   Sex                TEXT,
-  Comorbidities      TEXT,
+  Comorbidities      TEXT[],           -- PostgreSQL array of text
   START              TIMESTAMPTZ,
   STOP               TIMESTAMPTZ,
   synthea_drug_desc  TEXT,
@@ -131,7 +148,7 @@ CREATE TABLE IF NOT EXISTS patient_ddi_collapsed_from_topk (
   overlap_stop           TIMESTAMPTZ,
   Age                    INTEGER,
   Sex                    TEXT,
-  Comorbidities          TEXT,
+  Comorbidities          TEXT[],           -- PostgreSQL array of text
   pair_key               TEXT,
   unified_severity       TEXT,
   unified_mechanism_text TEXT,
@@ -218,6 +235,11 @@ def main():
                 buf = df_to_csv_buffer(df)
                 cur.copy_expert(f"COPY {schema}.{tbl} FROM STDIN WITH (FORMAT csv, NULL '')", buf)
                 continue
+
+            # Convert Comorbidities column to PostgreSQL array format if present
+            if "Comorbidities" in df.columns:
+                print(f"[loader] Converting Comorbidities to PostgreSQL array format...")
+                df["Comorbidities"] = df["Comorbidities"].apply(convert_list_to_pg_array)
 
             copy_df(cur, df, f"{schema}.{tbl}")
 
