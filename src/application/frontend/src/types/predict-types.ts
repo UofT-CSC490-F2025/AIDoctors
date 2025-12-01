@@ -93,7 +93,8 @@ export type RepresentativeCase = {
  */
 export type EnrichedContext = {
   similar_cases_count: number;
-  known_interaction: boolean;
+  static_severity: string | null;
+  known_interaction_from_patients: boolean;
   avg_confidence: number | null;
   top_mechanisms: string[];
   representative_cases: RepresentativeCase[];

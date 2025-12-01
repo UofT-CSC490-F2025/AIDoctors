@@ -1,10 +1,10 @@
 import pytest
 from unittest.mock import MagicMock
-from app.repositories.ddi_repository import (
+from app.repositories.patientddi_repository import (
     find_similar_interactions,
     get_interaction_statistics
 )
-from app.db.models.ddi import PatientDDI
+from app.db.models.patientddi import PatientDDI
 
 
 @pytest.fixture
@@ -155,7 +155,7 @@ class TestDDIRepository:
         mock_stats.total_cases = 10
         mock_stats.known_severity_count = 8
         mock_stats.avg_confidence = 0.85
-        mock_stats.is_known_interaction = 1
+        mock_stats.is_known_interaction_from_patients = 1
 
         mock_query = MagicMock()
         mock_db.query.return_value = mock_query
@@ -175,7 +175,7 @@ class TestDDIRepository:
         assert result["total_cases"] == 10
         assert result["known_severity_count"] == 8
         assert result["avg_confidence"] == 0.85
-        assert result["is_known_interaction"] is True
+        assert result["is_known_interaction_from_patients"] is True
         assert result["severity_distribution"]["Major"] == 6
         assert result["severity_distribution"]["Moderate"] == 2
 
@@ -186,7 +186,7 @@ class TestDDIRepository:
         mock_stats.total_cases = None
         mock_stats.known_severity_count = None
         mock_stats.avg_confidence = None
-        mock_stats.is_known_interaction = None
+        mock_stats.is_known_interaction_from_patients = None
 
         mock_query = MagicMock()
         mock_db.query.return_value = mock_query
@@ -204,5 +204,5 @@ class TestDDIRepository:
         assert result["total_cases"] == 0
         assert result["known_severity_count"] == 0
         assert result["avg_confidence"] == 0.0
-        assert result["is_known_interaction"] is False
+        assert result["is_known_interaction_from_patients"] is False
         assert result["severity_distribution"] == {}

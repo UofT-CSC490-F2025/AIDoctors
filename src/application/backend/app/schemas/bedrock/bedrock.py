@@ -50,14 +50,11 @@ def build_user_prompt(payload: DDIPredictRequest, enriched_context: dict) -> str
     drug1 = payload.drug1_norm or payload.drug1 or ""
     drug2 = payload.drug2_norm or payload.drug2 or ""
     enriched_similar_cases = enriched_context.get("representative_cases", [])
-    mech_list = enriched_context.get("top_mechanisms", [])
-    mech = ""
-    if mech_list:
-        mech = "\n".join(f"- {m}" for m in mech_list)
     enriched_mechanisms = "\n".join(f"- {case['mechanism']}" for case in enriched_similar_cases if case.get('mechanism')) or ""
     avg_confidence = enriched_context.get("avg_confidence") or ""
-    known = enriched_context.get("known_interaction")
-    known_str = "Unknown" if known is None else ("True" if known else "False")
+    known_from_patients = enriched_context.get("known_interaction_from_patients")
+    known_from_patients_str = "Unknown" if known_from_patients is None else ("True" if known_from_patients else "False")
+    static_severity = enriched_context.get('static_severity', 'Unknown')
     
     user_prompt = (
         "A patient is concurrently prescribed two medications.\n\n"
@@ -72,8 +69,9 @@ def build_user_prompt(payload: DDIPredictRequest, enriched_context: dict) -> str
         "Drugs:\n"
         f"- Drug 1: {drug1}\n"
         f"- Drug 2: {drug2}\n"
-        f"- Known interaction in clinical sources: {known_str}\n"
-        f"- Number of data sources supporting this: {avg_confidence}\n\n"
+        f"- Known interaction severity from static DDI tables: {static_severity}\n"
+        f"- Known interaction from real-world patient cases?: {known_from_patients_str}\n"
+        f"- Confidence of interaction: {avg_confidence}\n\n"
         "Mechanistic context:\n"
         f"{enriched_mechanisms}\n\n"
         "Please analyze this drug-drug interaction according to the format specified in the system instructions."
