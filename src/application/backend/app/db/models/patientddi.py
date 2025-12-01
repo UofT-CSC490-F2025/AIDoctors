@@ -33,7 +33,7 @@ class PatientDDI(Base):
     age = Column(Integer, nullable=True)
     sex = Column(Text, nullable=True)
     
-    # ⚠️ KEY CHANGE: Comorbidities is TEXT, not ARRAY
+    # Comorbidities is TEXT, not ARRAY
     # The loader script stores it as a JSON-like string: "['Hypertension', 'Diabetes']"
     comorbidities = Column(Text, nullable=True)
     
