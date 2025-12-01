@@ -208,13 +208,13 @@ resource "aws_ecs_service" "app" {
   }
 
   load_balancer {
-    target_group_arn = module.alb.target_groups["aidoctors-application"].arn
+    target_group_arn = module.nlb.target_groups["aidoctors-application"].arn
     container_name   = "${local.name}-app-container"
     container_port   = 8000
   }
 
   depends_on = [
-    module.alb
+    module.nlb
   ]
 
   tags = {

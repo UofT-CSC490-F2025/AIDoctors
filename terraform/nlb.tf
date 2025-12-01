@@ -1,35 +1,15 @@
-module "alb" {
+module "nlb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 10.0"
 
-  name    = "${local.name}-alb"
-  vpc_id  = module.vpc.vpc_id
-  subnets = module.vpc.public_subnets
+  name               = "${local.name}-nlb"
+  load_balancer_type = "network"
+  vpc_id             = module.vpc.vpc_id
+  subnets            = module.vpc.private_subnets
   enable_deletion_protection = false
 
-  # Security Group
-  security_group_ingress_rules = {
-    all_http = {
-      from_port   = 80
-      to_port     = 80
-      ip_protocol = "tcp"
-      description = "HTTP web traffic"
-      cidr_ipv4   = "0.0.0.0/0"
-    }
-    all_https = {
-      from_port   = 443
-      to_port     = 443
-      ip_protocol = "tcp"
-      description = "HTTPS web traffic"
-      cidr_ipv4   = "0.0.0.0/0"
-    }
-  }
-  security_group_egress_rules = {
-    all = {
-      ip_protocol = "-1"
-      cidr_ipv4   = "10.0.0.0/16"
-    }
-  }
+  # NLB doesn't use security groups, uses target security groups instead
+  enable_cross_zone_load_balancing = true
 
   access_logs = {
     bucket = module.s3_alb_logs.s3_bucket_id
@@ -38,7 +18,7 @@ module "alb" {
   listeners = {
     ex-http = {
       port     = 80
-      protocol = "HTTP"
+      protocol = "TCP"
 
       forward = {
         target_group_key = "aidoctors-application"
@@ -49,22 +29,19 @@ module "alb" {
   target_groups = {
     aidoctors-application = {
       name_prefix                       = "aid"
-      protocol                          = "HTTP"
+      protocol                          = "TCP"
       port                              = 8000
       target_type                       = "ip" # Use 'ip' for Fargate tasks
       vpc_id                            = module.vpc.vpc_id
       deregistration_delay              = 30
-      load_balancing_cross_zone_enabled = true
 
       health_check = {
         enabled             = true
         healthy_threshold   = 2
         interval            = 30
-        matcher             = "200"
-        path                = "/"
         port                = "traffic-port"
-        protocol            = "HTTP"
-        timeout             = 5
+        protocol            = "TCP"
+        timeout             = 10
         unhealthy_threshold = 3
       }
 
@@ -75,6 +52,6 @@ module "alb" {
   depends_on = [module.vpc]
 
   tags = {
-    Name = "${local.name}-alb"
+    Name = "${local.name}-nlb"
   }
 }

@@ -12,11 +12,11 @@ resource "aws_api_gateway_rest_api" "main" {
   }
 }
 
-# API Gateway VPC Link to connect to ALB
+# API Gateway VPC Link to connect to NLB
 resource "aws_api_gateway_vpc_link" "main" {
   name        = "${local.name}-vpc-link"
-  description = "VPC Link to ALB"
-  target_arns = [module.alb.arn]
+  description = "VPC Link to NLB"
+  target_arns = [module.nlb.arn]
 
   tags = {
     Name = "${local.name}-vpc-link"
@@ -42,15 +42,15 @@ resource "aws_api_gateway_method" "proxy" {
   }
 }
 
-# API Gateway Integration with ALB
-resource "aws_api_gateway_integration" "alb" {
+# API Gateway Integration with NLB
+resource "aws_api_gateway_integration" "nlb" {
   rest_api_id = aws_api_gateway_rest_api.main.id
   resource_id = aws_api_gateway_resource.proxy.id
   http_method = aws_api_gateway_method.proxy.http_method
 
   type                    = "HTTP_PROXY"
   integration_http_method = "ANY"
-  uri                     = "http://${module.alb.dns_name}/{proxy}"
+  uri                     = "http://${module.nlb.dns_name}/{proxy}"
   connection_type         = "VPC_LINK"
   connection_id           = aws_api_gateway_vpc_link.main.id
 
@@ -77,7 +77,7 @@ resource "aws_api_gateway_integration" "root" {
 
   type                    = "HTTP_PROXY"
   integration_http_method = "ANY"
-  uri                     = "http://${module.alb.dns_name}/"
+  uri                     = "http://${module.nlb.dns_name}/"
   connection_type         = "VPC_LINK"
   connection_id           = aws_api_gateway_vpc_link.main.id
 
@@ -92,7 +92,7 @@ resource "aws_api_gateway_deployment" "main" {
     redeployment = sha1(jsonencode([
       aws_api_gateway_resource.proxy.id,
       aws_api_gateway_method.proxy.id,
-      aws_api_gateway_integration.alb.id,
+      aws_api_gateway_integration.nlb.id,
       aws_api_gateway_method.root.id,
       aws_api_gateway_integration.root.id,
     ]))
@@ -103,7 +103,7 @@ resource "aws_api_gateway_deployment" "main" {
   }
 
   depends_on = [
-    aws_api_gateway_integration.alb,
+    aws_api_gateway_integration.nlb,
     aws_api_gateway_integration.root
   ]
 }

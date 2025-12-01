@@ -41,19 +41,19 @@ resource "aws_security_group" "ecs_tasks" {
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    description     = "Allow traffic from ALB"
-    from_port       = 8000
-    to_port         = 8000
-    protocol        = "tcp"
-    security_groups = [module.alb.security_group_id]
+    description = "Allow traffic from NLB on port 8000"
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
   }
 
   ingress {
-    description     = "Allow traffic from RDS"
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [module.rds_security_group.security_group_id]
+    description = "Allow traffic to RDS"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = [module.vpc.vpc_cidr_block]
   }
 
   egress {
