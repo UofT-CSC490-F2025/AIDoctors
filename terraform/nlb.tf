@@ -34,17 +34,16 @@ module "nlb" {
       target_type                       = "ip" # Use 'ip' for Fargate tasks
       vpc_id                            = module.vpc.vpc_id
       deregistration_delay              = 30
+      preserve_client_ip                = false
 
       health_check = {
         enabled             = true
         healthy_threshold   = 2
-        interval            = 30
-        port                = "traffic-port"
-        protocol            = "HTTP"
-        path                = "/"
-        timeout             = 10
-        unhealthy_threshold = 3
-        matcher             = "200-299"
+        interval            = 10
+        port                = 8000
+        protocol            = "TCP"
+        timeout             = 6
+        unhealthy_threshold = 2
       }
 
       create_attachment = false
