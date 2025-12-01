@@ -42,13 +42,9 @@ def build_user_prompt(payload: DDIPredictRequest, enriched_context: dict) -> str
     age = payload.Age if payload.Age is not None else ""
     sex = payload.Sex or ""
     comorbidities = payload.Comorbidities or []
-    start = payload.overlap_start or ""
-    end = payload.overlap_stop or ""
-    overlap_days = compute_overlap_days(payload.overlap_start, payload.overlap_stop)
-    ol_days_str = str(overlap_days) if overlap_days is not None else ""
 
-    drug1 = payload.drug1_norm or payload.drug1 or ""
-    drug2 = payload.drug2_norm or payload.drug2 or ""
+    drug1 = payload.drug1 or ""
+    drug2 = payload.drug2 or ""
     enriched_similar_cases = enriched_context.get("representative_cases", [])
     enriched_mechanisms = "\n".join(f"- {case['mechanism']}" for case in enriched_similar_cases if case.get('mechanism')) or ""
     avg_confidence = enriched_context.get("avg_confidence") or ""
@@ -62,10 +58,6 @@ def build_user_prompt(payload: DDIPredictRequest, enriched_context: dict) -> str
         f"- Age: {age}\n"
         f"- Sex: {sex}\n"
         f"- Comorbidities: {comorbidities}\n\n"
-        "Medication exposure:\n"
-        f"- Start: {start}\n"
-        f"- End: {end}\n"
-        f"- Overlap days: {ol_days_str}\n\n"
         "Drugs:\n"
         f"- Drug 1: {drug1}\n"
         f"- Drug 2: {drug2}\n"
