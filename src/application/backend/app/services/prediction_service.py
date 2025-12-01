@@ -183,7 +183,6 @@ def enrich_from_database(
             'patient_uuid': case.patient_uuid,
             'age': case.age,
             'sex': case.sex,
-            'severity': case.unified_severity,
             'confidence': case.ddi_confidence,
             'comorbidities': case.comorbidities or [],
             'similarity_score': getattr(case, 'similarity_score', 0)  # Include custom similarity score

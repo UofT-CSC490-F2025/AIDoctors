@@ -62,11 +62,10 @@ def quick_test():
         try:
             # Create a prediction request with patient characteristics
             request = DDIPredictRequest(
-                drug1="amLODIPine",
+                drug1="hydrochlorothiazide",
                 drug2="lisinopril",
                 Age=65,
                 Sex="M",
-                Comorbidities=["Hypertension", "Diabetes"]
             )
             
             print(f"   Request: {request.drug1} + {request.drug2}")
