@@ -40,7 +40,7 @@ module "alb" {
         enabled             = true
         healthy_threshold   = 2
         interval            = 30
-        path                = "/api/health"
+        path                = "/health"
         port                = "traffic-port"
         protocol            = "HTTP"
         timeout             = 5
