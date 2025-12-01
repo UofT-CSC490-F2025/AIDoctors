@@ -41,9 +41,11 @@ module "nlb" {
         healthy_threshold   = 2
         interval            = 10
         port                = 8000
-        protocol            = "TCP"
+        protocol            = "HTTP"
+        path                = "/"
         timeout             = 6
         unhealthy_threshold = 2
+        matcher             = "200-299"
       }
 
       create_attachment = false
