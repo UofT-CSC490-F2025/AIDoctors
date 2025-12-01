@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/hooks/useUser';
 import { getApiBaseUrl } from '@/utils/api';
-import { removeAccessToken } from '@/utils/auth';
 import { usePathname } from 'next/navigation';
 import { pathname_equal } from '@/utils/general';
 
@@ -19,8 +18,11 @@ export function DashboardHeader() {
 
   const handleLogout = async () => {
     try {
-      // Clear token from localStorage
-      removeAccessToken();
+      // Call logout endpoint to clear cookie
+      await fetch(`${getApiBaseUrl()}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
       setUser(null);
     } catch (error) {
       console.error('Logout error:', error);

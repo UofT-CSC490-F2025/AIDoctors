@@ -2,7 +2,6 @@
 import { useUser } from '@/hooks/useUser';
 import { User } from '@/types/user-types';
 import { getApiBaseUrl } from '@/utils/api';
-import { setAccessToken } from '@/utils/auth';
 import { Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
@@ -35,6 +34,7 @@ export function LoginForm() {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
+        credentials: 'include', // Send and receive cookies
         body,
       });
 
@@ -48,17 +48,12 @@ export function LoginForm() {
         return;
       }
 
-      const tokenData = await responseToken.json();
-      const accessToken = tokenData.access_token;
-
-      // Store token in localStorage
-      setAccessToken(accessToken);
+      // Cookie is set automatically by the server
+      // No need to store token in localStorage anymore
 
       const responseUser = await fetch(`${getApiBaseUrl()}/users/me`, {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        credentials: 'include', // Send cookies
       });
 
       if (!responseUser.ok) {
