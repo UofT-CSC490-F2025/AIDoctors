@@ -144,7 +144,7 @@ def enrich_from_database(
     """
     Query database to enrich the prediction context (RAG approach)
     """
-    # Find similar cases
+    # Find similar cases (top 5 most similar for RAG context)
     similar_cases = find_similar_interactions(
         db=db,
         drug1=request.drug1,
@@ -169,25 +169,26 @@ def enrich_from_database(
         if case.unified_mechanism_text
     ]))
     
-    # Format representative cases
+    # Format representative cases (include similarity score)
     representative_cases = [
         {
             'patient_uuid': case.patient_uuid,
             'age': case.age,
             'sex': case.sex,
             'severity': case.unified_severity,
-            'mechanism': case.unified_mechanism_text,
             'confidence': case.ddi_confidence,
-            'comorbidities': case.comorbidities or []
+            'comorbidities': case.comorbidities or [],
+            'similarity_score': getattr(case, 'similarity_score', 0)  # Include custom similarity score
         }
         for case in similar_cases[:5]
     ]
+
     enriched_context = {
         "similar_cases_count": len(similar_cases),
         "known_interaction": stats['is_known_interaction'] if stats else False,
         "avg_confidence": stats['avg_confidence'] if stats else None,
         "severity_distribution": {},
-        "top_mechanisms": mechanisms,
+        "mechanisms": mechanisms,
         "representative_cases": representative_cases
     }
     if stats and stats['known_severity_count'] and stats['total_cases']:

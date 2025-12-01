@@ -3,6 +3,11 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, or_, case
 from app.db.models.ddi import PatientDDI
 
+# Similarity scoring weights
+WEIGHT_SEX_MATCH = 50      # Points for exact sex match
+WEIGHT_AGE_MAX = 50         # Maximum points for age similarity (exact match)
+WEIGHT_COMORBIDITY = 50     # Points per matching comorbidity
+
 
 def find_similar_interactions(
     db: Session,
@@ -15,63 +20,116 @@ def find_similar_interactions(
 ) -> List[PatientDDI]:
     """
     Find similar DDI cases from the database.
-    Handles Comorbidities as TEXT (not PostgreSQL ARRAY).
-    """
-    query = db.query(PatientDDI)
     
-    # Drug pair matching (bidirectional, case-insensitive)
+    Strategy:
+    1. First fetch all drug-drug interaction cases (drug1 + drug2)
+    2. Then reorder by patient similarity (age, sex, comorbidities)
+    
+    Handles Comorbidities as TEXT (not PostgreSQL ARRAY).
+    Input sanitization: case-insensitive, whitespace-trimmed comparisons.
+    """
+    # Sanitize drug inputs: strip whitespace
+    drug1_clean = drug1.strip() if drug1 else drug1
+    drug2_clean = drug2.strip() if drug2 else drug2
+    
+    # Step 1: Fetch all cases for this drug pair (bidirectional, case-insensitive)
     drug_condition = or_(
         and_(
-            func.lower(PatientDDI.drug1_norm) == func.lower(drug1),
-            func.lower(PatientDDI.drug2_norm) == func.lower(drug2)
+            func.lower(PatientDDI.drug1_norm) == func.lower(drug1_clean),
+            func.lower(PatientDDI.drug2_norm) == func.lower(drug2_clean)
         ),
         and_(
-            func.lower(PatientDDI.drug1_norm) == func.lower(drug2),
-            func.lower(PatientDDI.drug2_norm) == func.lower(drug1)
+            func.lower(PatientDDI.drug1_norm) == func.lower(drug2_clean),
+            func.lower(PatientDDI.drug2_norm) == func.lower(drug1_clean)
         ),
         # Also try original drug names
         and_(
-            func.lower(PatientDDI.drug1) == func.lower(drug1),
-            func.lower(PatientDDI.drug2) == func.lower(drug2)
+            func.lower(PatientDDI.drug1) == func.lower(drug1_clean),
+            func.lower(PatientDDI.drug2) == func.lower(drug2_clean)
         ),
         and_(
-            func.lower(PatientDDI.drug1) == func.lower(drug2),
-            func.lower(PatientDDI.drug2) == func.lower(drug1)
+            func.lower(PatientDDI.drug1) == func.lower(drug2_clean),
+            func.lower(PatientDDI.drug2) == func.lower(drug1_clean)
         )
     )
-    query = query.filter(drug_condition)
     
-    # Age range filtering (±10 years)
-    if age is not None:
-        query = query.filter(
-            PatientDDI.age.between(age - 10, age + 10)
-        )
+    all_cases = db.query(PatientDDI).filter(drug_condition).all()
     
-    # Sex matching
-    if sex:
-        query = query.filter(func.lower(PatientDDI.sex) == func.lower(sex))
-    
-    # Comorbidity overlap using TEXT LIKE matching
-    # Since Comorbidities is stored as "['Hypertension', 'Diabetes']"
-    if comorbidities:
-        comorbidity_conditions = []
-        for comorbidity in comorbidities:
-            # Match within the TEXT field (case-insensitive)
-            # This will match 'Hypertension' in "['Hypertension', 'Diabetes']"
-            comorbidity_conditions.append(
-                func.lower(PatientDDI.comorbidities).like(f"%{comorbidity.lower()}%")
-            )
+    # Step 2: Score and sort by patient similarity
+    def calculate_similarity_score(case: PatientDDI) -> tuple:
+        """
+        Calculate similarity score for sorting.
+        Returns tuple for multi-level sorting (higher is better match).
+        Handles case-insensitive comparisons with input sanitization.
+        """
+        score = 0
         
-        if comorbidity_conditions:
-            query = query.filter(or_(*comorbidity_conditions))
+        # Sex match (exact match = +WEIGHT_SEX_MATCH) - case-insensitive with sanitization
+        sex_match = 0
+        if sex and case.sex:
+            # Sanitize: strip whitespace and convert to lowercase
+            user_sex = sex.strip().lower()
+            case_sex = case.sex.strip().lower()
+            if case_sex == user_sex:
+                sex_match = WEIGHT_SEX_MATCH
+        
+        # Age similarity (closer age = higher score, max +WEIGHT_AGE_MAX)
+        age_score = 0
+        if age is not None and case.age is not None:
+            age_diff = abs(case.age - age)
+            # Score decreases with age difference: WEIGHT_AGE_MAX points at exact match, 0 at WEIGHT_AGE_MAX+ years diff
+            age_score = max(0, WEIGHT_AGE_MAX - age_diff)
+        
+        # Comorbidity overlap (each matching comorbidity = +WEIGHT_COMORBIDITY) - case-insensitive
+        comorbidity_score = 0
+        if comorbidities and case.comorbidities:
+            # Sanitize case comorbidities: strip and lowercase
+            case_comorbidities_lower = case.comorbidities.strip().lower()
+            for comorbidity in comorbidities:
+                # Sanitize user comorbidity: strip and lowercase
+                if comorbidity and isinstance(comorbidity, str):
+                    comorbidity_clean = comorbidity.strip().lower()
+                    if comorbidity_clean and comorbidity_clean in case_comorbidities_lower:
+                        comorbidity_score += WEIGHT_COMORBIDITY
+        
+        score = sex_match + age_score + comorbidity_score
+        
+        # Return tuple for sorting: (similarity_score, ddi_known, ddi_confidence)
+        # Sort by similarity first, then known interactions, then confidence
+        return (
+            score,
+            1 if case.ddi_known else 0,
+            case.ddi_confidence if case.ddi_confidence is not None else 0.0
+        )
     
-    # Order by relevance: known interactions first, then by confidence
-    query = query.order_by(
-        PatientDDI.ddi_known.desc().nullslast(),
-        PatientDDI.ddi_confidence.desc().nullslast()
-    )
+    # Calculate maximum possible score for normalization
+    # Max score = sex match + age match + comorbidity matches
+    max_possible_score = WEIGHT_SEX_MATCH + WEIGHT_AGE_MAX
+    if comorbidities:
+        max_possible_score += WEIGHT_COMORBIDITY * len(comorbidities)
     
-    return query.limit(limit).all()
+    # Sort cases by similarity score (descending) and attach normalized scores
+    cases_with_scores = []
+    for case in all_cases:
+        score_tuple = calculate_similarity_score(case)
+        raw_score = score_tuple[0]
+        
+        # Normalize score to 0-1 range
+        normalized_score = raw_score / max_possible_score if max_possible_score > 0 else 0.0
+        
+        # Attach both raw and normalized scores to the case object
+        case.similarity_score = normalized_score
+        case.similarity_score_raw = raw_score
+        
+        cases_with_scores.append((case, score_tuple))
+    
+    # Sort by the full tuple (similarity, ddi_known, confidence)
+    cases_with_scores.sort(key=lambda x: x[1], reverse=True)
+    
+    # Return just the cases (now with similarity_score attached)
+    sorted_cases = [case for case, _ in cases_with_scores]
+    
+    return sorted_cases[:limit]
 
 
 def get_interaction_statistics(
@@ -81,15 +139,20 @@ def get_interaction_statistics(
 ) -> dict:
     """
     Get aggregate statistics for a drug pair.
+    Input sanitization: case-insensitive, whitespace-trimmed comparisons.
     """
+    # Sanitize drug inputs: strip whitespace
+    drug1_clean = drug1.strip() if drug1 else drug1
+    drug2_clean = drug2.strip() if drug2 else drug2
+    
     drug_condition = or_(
         and_(
-            func.lower(PatientDDI.drug1_norm) == func.lower(drug1),
-            func.lower(PatientDDI.drug2_norm) == func.lower(drug2)
+            func.lower(PatientDDI.drug1_norm) == func.lower(drug1_clean),
+            func.lower(PatientDDI.drug2_norm) == func.lower(drug2_clean)
         ),
         and_(
-            func.lower(PatientDDI.drug1_norm) == func.lower(drug2),
-            func.lower(PatientDDI.drug2_norm) == func.lower(drug1)
+            func.lower(PatientDDI.drug1_norm) == func.lower(drug2_clean),
+            func.lower(PatientDDI.drug2_norm) == func.lower(drug1_clean)
         )
     )
     # Get aggregate stats

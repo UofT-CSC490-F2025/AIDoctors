@@ -8,23 +8,19 @@ class DDIPredictRequest(BaseModel):
     
     # Required core fields
     patient_uuid: Optional[str] = Field(default=None, examples=["patient-12345"])
-    drug1: str = Field(examples=["Warfarin"])
-    drug2: str = Field(examples=["Aspirin"])
-    drug1_norm: Optional[str] = Field(default=None, examples=["warfarin"])
-    drug2_norm: Optional[str] = Field(default=None, examples=["aspirin"])
-    overlap_start: Optional[str] = Field(default=None, examples=["2024-01-15"])
-    overlap_stop: Optional[str] = Field(default=None, examples=["2024-02-15"])
+    drug1: str = Field(examples=["amlodipine"])
+    drug2: str = Field(examples=["lisinopril"])
     Age: Optional[int] = Field(default=None, examples=[65])
     Sex: Optional[str] = Field(default=None, examples=["M"])
     Comorbidities: Optional[Any] = Field(
         default=None, examples=[["Hypertension", "Diabetes"]]
     )
-    pair_key: Optional[str] = Field(default=None, examples=["warfarin_aspirin"])
+    pair_key: Optional[str] = Field(default=None, examples=["amlodipine_lisinopril"])
 
     # Optional labels/context
-    unified_severity: Optional[str] = Field(default=None, examples=["Major"])
+    unified_severity: Optional[str] = Field(default=None, examples=["Moderate"])
     unified_mechanism_text: Optional[str] = Field(
-        default=None, examples=["Both drugs affect blood clotting mechanisms"]
+        default=None, examples=["Both drugs lower blood pressure and may cause hypotension"]
     )
     ddi_confidence: Optional[float] = Field(default=None, examples=[0.95])
     ddi_known: Optional[bool] = Field(default=None, examples=[True])
@@ -66,34 +62,24 @@ class DDIPredictRequest(BaseModel):
                 return False
         return None
 
-    @field_validator("ddi_confidence", mode="before")
-    @classmethod
-    def coerce_float(cls, v):
-        if v is None:
-            return None
-        try:
-            return float(v)
-        except Exception:
-            return None
-
 
 class DDIPredictResponse(BaseModel):
     model_config = ConfigDict(protected_namespaces=())
     
-    drug1: str = Field(examples=["Warfarin"])
-    drug2: str = Field(examples=["Aspirin"])
-    severity: str = Field(examples=["Major"])
+    drug1: str = Field(examples=["amlodipine"])
+    drug2: str = Field(examples=["lisinopril"])
+    severity: str = Field(examples=["Moderate"])
     reasoning: str = Field(examples=[
-        "The combination of warfarin and aspirin significantly increases bleeding risk due to their synergistic anticoagulant effects."
+        "The combination of amLODIPine and lisinopril may cause additive hypotensive effects, requiring blood pressure monitoring."
     ])
     completion: str = Field(
         examples=[
-            '{"severity": "Major"} The combination of warfarin and aspirin significantly increases bleeding risk due to their synergistic anticoagulant effects.'
+            '{"severity": "Moderate"} The combination of amLODIPine and lisinopril may cause additive hypotensive effects, requiring blood pressure monitoring.'
         ]
     )
     model_path: str = Field(examples=["Qwen/Qwen2.5-0.5B"])
     # Optional echo of known label if provided
-    known_severity: Optional[str] = Field(default=None, examples=["Major"])
+    known_severity: Optional[str] = Field(default=None, examples=["Moderate"])
     enriched_context: Optional[dict] = Field(default=None, examples=[{
         "similar_cases": [],
         "top_mechanisms": [],
