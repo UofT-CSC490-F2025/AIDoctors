@@ -31,16 +31,17 @@ allowed_origins = [
     "http://localhost",
     "http://localhost:3000",
     "https://main.d3jxl3jzen5r8m.amplifyapp.com",
-    "http://aidoctors-alb-1329822649.us-east-1.elb.amazonaws.com"
 ]
 
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,  # Update this in production
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    # Allow API Gateway execute-api domain
+    allow_origin_regex=r"https://.*\.execute-api\.us-east-1\.amazonaws\.com",
 )
 
 

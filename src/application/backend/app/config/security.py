@@ -21,6 +21,7 @@ if not secret_token:
 ACCESS_TOKEN_SECRET_KEY = secret_token
 ACCESS_TOKEN_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_COOKIE_NAME = "access_token"
 
 # Allow missing Authorization header so we can fall back to cookies
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token", auto_error=False)

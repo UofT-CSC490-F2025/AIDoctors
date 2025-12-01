@@ -1,10 +1,11 @@
-from fastapi import HTTPException, status, Depends
+from fastapi import HTTPException, status, Depends, Request
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 from app.config.security import (
     ACCESS_TOKEN_SECRET_KEY,
     ACCESS_TOKEN_ALGORITHM,
+    ACCESS_TOKEN_COOKIE_NAME,
     oauth2_scheme,
 )
 from app.db.session import SessionLocal
@@ -23,6 +24,7 @@ def get_db():
 
 
 async def get_current_user_from_access_token(
+    request: Request,
     token: str | None = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
 ):
@@ -32,6 +34,10 @@ async def get_current_user_from_access_token(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
+    # Prefer Authorization header token, otherwise fall back to cookie
+    if not token:
+        token = request.cookies.get(ACCESS_TOKEN_COOKIE_NAME)
 
     if not token:
         raise credentials_exception
