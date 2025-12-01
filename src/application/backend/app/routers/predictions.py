@@ -50,9 +50,7 @@ async def predict(request: DDIPredictRequest, db: Session = Depends(get_db)) -> 
 
         # Parse the response to extract reasoning and content
         parsed_response = parse_bedrock_response(completion)
-        severity = parsed_response['content'].get('severity', 'Unknown')
-        if 'predicted_severity' in parsed_response['content']:
-            severity = parsed_response['content']['predicted_severity']
+        severity = parsed_response['content'].get('predicted_severity', 'Unknown')
         return DDIPredictResponse(
             drug1=request.drug1,
             drug2=request.drug2,
@@ -60,7 +58,8 @@ async def predict(request: DDIPredictRequest, db: Session = Depends(get_db)) -> 
             reasoning=parsed_response['reasoning'],
             completion=json.dumps(parsed_response['content']),
             model_path=model_id,
-            enriched_context=enriched_context
+            enriched_context=enriched_context,
+            known_severity=enriched_context.get('static_severity', 'Unknown')
         )
     except Exception as e:
         print("Error during Bedrock inference:", str(e))

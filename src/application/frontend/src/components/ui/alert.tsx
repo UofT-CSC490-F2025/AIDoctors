@@ -131,15 +131,15 @@ export function Alert({
             Knowledge & Context
           </h3>
           <p className="font-extrabold text-lg text-gray-900">
-            {comparison_to_known_ddi?.known_interaction_exists
+            {known_severity && known_severity !== 'Unknown'
               ? 'Known Interaction Exists'
               : 'No Known Interaction Found'}
           </p>
           <div className="space-y-2 text-gray-700">
             <p className="font-medium">
-              Alignment:{' '}
+              Static Severity:{' '}
               <span className="capitalize font-semibold">
-                {comparison_to_known_ddi?.alignment_with_knowledge}
+                {enriched_context?.static_severity || 'Unknown'}
               </span>
             </p>
             <p className="text-sm">{comparison_to_known_ddi?.explanation}</p>

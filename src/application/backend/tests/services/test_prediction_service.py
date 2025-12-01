@@ -8,7 +8,7 @@ from app.services.prediction_service import (
     get_bedrock_client
 )
 from app.schemas.db.prediction import DDIPredictRequest
-from app.db.models.ddi import PatientDDI
+from app.db.models.patientddi import PatientDDI
 
 
 @pytest.fixture
@@ -105,14 +105,14 @@ class TestPredictionService:
             "total_cases": 10,
             "known_severity_count": 8,
             "avg_confidence": 0.85,
-            "is_known_interaction": True,
+            "is_known_interaction_from_patients": True,
             "severity_distribution": {"Major": 6, "Moderate": 2}
         })
 
         result = enrich_from_database(mock_db, mock_predict_request)
 
         assert result["similar_cases_count"] == 2
-        assert result["known_interaction"] is True
+        assert result["known_interaction_from_patients"] is True
         assert result["avg_confidence"] == 0.85
         assert len(result["top_mechanisms"]) > 0
         assert len(result["representative_cases"]) > 0
@@ -127,14 +127,14 @@ class TestPredictionService:
             "total_cases": 0,
             "known_severity_count": 0,
             "avg_confidence": 0.0,
-            "is_known_interaction": False,
+            "is_known_interaction_from_patients": False,
             "severity_distribution": {}
         })
 
         result = enrich_from_database(mock_db, mock_predict_request)
 
         assert result["similar_cases_count"] == 0
-        assert result["known_interaction"] is False
+        assert result["known_interaction_from_patients"] is False
         assert result["avg_confidence"] == 0.0
         assert len(result["top_mechanisms"]) == 0
         assert len(result["representative_cases"]) == 0
@@ -172,7 +172,7 @@ class TestPredictionService:
             "total_cases": 2,
             "known_severity_count": 2,
             "avg_confidence": 0.925,
-            "is_known_interaction": True,
+            "is_known_interaction_from_patients": True,
             "severity_distribution": {"Major": 2}
         })
 
@@ -206,7 +206,7 @@ class TestPredictionService:
             "total_cases": 10,
             "known_severity_count": 10,
             "avg_confidence": 0.95,
-            "is_known_interaction": True,
+            "is_known_interaction_from_patients": True,
             "severity_distribution": {"Major": 10}
         })
 
@@ -352,7 +352,7 @@ class TestPredictionService:
         result = enrich_from_database(mock_db, mock_predict_request)
         
         # Should handle None gracefully with defaults
-        assert result["known_interaction"] is False
+        assert result["known_interaction_from_patients"] is False
         assert result["avg_confidence"] is None
         assert result["severity_distribution"] == {}
     
@@ -392,7 +392,7 @@ class TestPredictionService:
             "total_cases": 2,
             "known_severity_count": 2,
             "avg_confidence": 0.925,
-            "is_known_interaction": True,
+            "is_known_interaction_from_patients": True,
             "severity_distribution": {"Major": 2}
         })
         
@@ -421,7 +421,7 @@ class TestPredictionService:
             "total_cases": 0,
             "known_severity_count": 0,
             "avg_confidence": 0.0,
-            "is_known_interaction": False,
+            "is_known_interaction_from_patients": False,
             "severity_distribution": {}
         })
         
@@ -568,7 +568,7 @@ class TestPredictionService:
             "total_cases": 5,
             "known_severity_count": 0,  # No known severities
             "avg_confidence": 0.5,
-            "is_known_interaction": False,
+            "is_known_interaction_from_patients": False,
             "severity_distribution": {}
         })
         
@@ -605,7 +605,7 @@ class TestPredictionService:
             "total_cases": 5,
             "known_severity_count": 5,
             "avg_confidence": 0.95,
-            "is_known_interaction": True,
+            "is_known_interaction_from_patients": True,
             "severity_distribution": {"Major": 5}
         })
         

@@ -5,8 +5,9 @@ from dotenv import load_dotenv
 import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
 from sqlalchemy.orm import Session
+from app.repositories.ddiref_repository import find_static_ddi_severity
 from app.schemas.db.prediction import DDIPredictRequest
-from app.repositories.ddi_repository import find_similar_interactions, get_interaction_statistics
+from app.repositories.patientddi_repository import find_similar_interactions, get_interaction_statistics
 load_dotenv()
 
 def parse_bedrock_response(response_text: str) -> dict:
@@ -144,6 +145,13 @@ def enrich_from_database(
     """
     Query database to enrich the prediction context (RAG approach)
     """
+    # Find static severity if exists
+    static_severity = find_static_ddi_severity(
+        db=db,
+        drug1=request.drug1,
+        drug2=request.drug2
+    )
+
     # Find similar cases (top 5 most similar for RAG context)
     similar_cases = find_similar_interactions(
         db=db,
@@ -185,7 +193,8 @@ def enrich_from_database(
 
     enriched_context = {
         "similar_cases_count": len(similar_cases),
-        "known_interaction": stats['is_known_interaction'] if stats else False,
+        "static_severity": static_severity if static_severity else 'Unknown',
+        "known_interaction_from_patients": stats['is_known_interaction_from_patients'] if stats else False,
         "avg_confidence": stats['avg_confidence'] if stats else None,
         "severity_distribution": {},
         "mechanisms": mechanisms,
