@@ -44,10 +44,8 @@ jobs:
 
             - name: Build Next.js application
               working-directory: src/application/frontend
-              env:
-                  NEXT_PUBLIC_API_BASE_URL: ${{ secrets.API_BASE_URL }}
               run: |
-                  echo "Building with API endpoint: $NEXT_PUBLIC_API_BASE_URL"
+                  echo "Building frontend (API will be served via CloudFront /api path)"
                   npm run build
 
             - name: Deploy to S3
@@ -72,3 +70,13 @@ jobs:
                     --include "*.html" \
                     --include "*.json" \
                     --include "*.txt"
+
+            - name: Invalidate CloudFront Cache
+              env:
+                  DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+              run: |
+                  echo "Invalidating CloudFront cache for distribution: $DISTRIBUTION_ID"
+                  aws cloudfront create-invalidation \
+                    --distribution-id $DISTRIBUTION_ID \
+                    --paths "/*"
+                  echo "✅ Cache invalidation complete!"
