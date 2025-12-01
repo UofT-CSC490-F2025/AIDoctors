@@ -33,11 +33,11 @@ allowed_origins = [
     "https://main.d3jxl3jzen5r8m.amplifyapp.com",
 ]
 
-# Configure CORS for token-based authentication (no credentials needed)
+# Configure CORS for cookie-based authentication
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_credentials=False,  # Changed to False for token-based auth
+    allow_credentials=True,  # Enable credentials for cookies
     allow_methods=["*"],
     allow_headers=["*"],
     # Allow CloudFront distribution

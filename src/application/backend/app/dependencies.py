@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status, Depends
+from fastapi import HTTPException, status, Depends, Request
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
@@ -23,16 +23,21 @@ def get_db():
 
 
 async def get_current_user_from_access_token(
-    token: str = Depends(oauth2_scheme),
+    request: Request,
+    token: str | None = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
 ):
-    """Get the current user from the JWT token in Authorization header."""
+    """Get the current user from the JWT token (Authorization header or cookie)."""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
 
+    # Try Authorization header first, then cookie
+    if not token:
+        token = request.cookies.get("access_token")
+    
     if not token:
         raise credentials_exception
 
