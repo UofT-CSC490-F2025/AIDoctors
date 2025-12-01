@@ -31,7 +31,8 @@ allowed_origins = [
     "http://localhost",
     "http://localhost:3000",
     "https://main.d3jxl3jzen5r8m.amplifyapp.com",
-    "https://aidoctors-frontend.s3.us-east-1.amazonaws.com",
+    "http://aidoctors-frontend.s3.us-east-1.amazonaws.com",
+    "http://aidoctors-frontend.s3-website-us-east-1.amazonaws.com"
 ]
 
 # Configure CORS for token-based authentication (no credentials needed)
@@ -41,8 +42,8 @@ app.add_middleware(
     allow_credentials=False,  # Changed to False for token-based auth
     allow_methods=["*"],
     allow_headers=["*"],
-    # Allow API Gateway execute-api domain and S3 static hosting
-    allow_origin_regex=r"https://.*\.(execute-api\.us-east-1\.amazonaws\.com|s3.*\.amazonaws\.com)",
+    # Allow API Gateway, S3, and CloudFront domains
+    allow_origin_regex=r"https://.*\.(execute-api\.us-east-1\.amazonaws\.com|s3.*\.amazonaws\.com|cloudfront\.net)",
 )
 
 
