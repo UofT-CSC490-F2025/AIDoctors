@@ -5,8 +5,9 @@ module "nlb" {
   name               = "${local.name}-nlb"
   load_balancer_type = "network"
   vpc_id             = module.vpc.vpc_id
-  subnets            = module.vpc.private_subnets
+  subnets            = module.vpc.public_subnets
   enable_deletion_protection = false
+  internal           = false
 
   # NLB doesn't use security groups, uses target security groups instead
   enable_cross_zone_load_balancing = true
