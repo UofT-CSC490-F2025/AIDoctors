@@ -144,6 +144,6 @@ module "s3_frontend" {
 
   tags = {
     Name    = "${local.name}-frontend"
-    Purpose = "Frontend Static Website Hosting (via CloudFront)"
+    Purpose = "Frontend Static Website Hosting via CloudFront"
   }
 }
