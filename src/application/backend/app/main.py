@@ -25,14 +25,13 @@ app = FastAPI(
     description="FastAPI backend for CSC490 project",
     version="1.0.0",
     lifespan=lifespan,
+    root_path="/api",
 )
 
 allowed_origins = [
     "http://localhost",
     "http://localhost:3000",
     "https://main.d3jxl3jzen5r8m.amplifyapp.com",
-    "http://aidoctors-frontend.s3.us-east-1.amazonaws.com",
-    "http://aidoctors-frontend.s3-website-us-east-1.amazonaws.com"
 ]
 
 # Configure CORS for token-based authentication (no credentials needed)
@@ -42,8 +41,8 @@ app.add_middleware(
     allow_credentials=False,  # Changed to False for token-based auth
     allow_methods=["*"],
     allow_headers=["*"],
-    # Allow API Gateway, S3, and CloudFront domains
-    allow_origin_regex=r"https://.*\.(execute-api\.us-east-1\.amazonaws\.com|s3.*\.amazonaws\.com|cloudfront\.net)",
+    # Allow CloudFront distribution
+    allow_origin_regex=r"https://.*\.cloudfront\.net",
 )
 
 
