@@ -8,7 +8,7 @@ Your medical first point of contact
 
 ## 🌐 Live Application
 
-**Access the application:** [https://main.d3jxl3jzen5r8m.amplifyapp.com](https://main.d3jxl3jzen5r8m.amplifyapp.com)
+**Access the application:** [https://dsoko2ogrj808.cloudfront.net](https://dsoko2ogrj808.cloudfront.net)
 
 ## 📋 Overview
 

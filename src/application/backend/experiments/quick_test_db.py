@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'app'))
 os.environ["ENVIRONMENT"] = "production"
 
 from app.db.session import SessionLocal
-from app.repositories.ddi_repository import find_similar_interactions, get_interaction_statistics
+from app.repositories.patientddi_repository import find_similar_interactions, get_interaction_statistics
 from app.services.prediction_service import enrich_from_database
 from app.schemas.db.prediction import DDIPredictRequest
 from sqlalchemy import text
@@ -79,7 +79,8 @@ def quick_test():
             print(f"     • Similar cases found: {enriched.get('similar_cases_count', 0)}")
             print(f"     • Known interaction: {enriched.get('known_interaction', False)}")
             print(f"     • Average confidence: {enriched.get('avg_confidence', 0.0):.2f}")
-            
+            print(f"     • Static severity: {enriched.get('static_severity', 'Unknown')}")
+
             if enriched.get('severity_distribution'):
                 print(f"     • Severity distribution:")
                 for key, value in enriched['severity_distribution'].items():
