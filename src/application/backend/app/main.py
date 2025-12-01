@@ -33,15 +33,15 @@ allowed_origins = [
     "https://main.d3jxl3jzen5r8m.amplifyapp.com",
 ]
 
-# Configure CORS
+# Configure CORS for token-based authentication (no credentials needed)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_credentials=False,  # Changed to False for token-based auth
     allow_methods=["*"],
     allow_headers=["*"],
-    # Allow API Gateway execute-api domain
-    allow_origin_regex=r"https://.*\.execute-api\.us-east-1\.amazonaws\.com",
+    # Allow API Gateway execute-api domain and S3 static hosting
+    allow_origin_regex=r"https://.*\.(execute-api\.us-east-1\.amazonaws\.com|s3-website.*\.amazonaws\.com)",
 )
 
 

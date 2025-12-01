@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from fastapi import HTTPException, Request
+from fastapi import HTTPException
 from jose import jwt
 from app.dependencies import (
     get_db,
@@ -61,12 +61,6 @@ class TestGetDb:
 class TestGetCurrentUserFromAccessToken:
     """Test the get_current_user_from_access_token dependency function."""
 
-    @pytest.fixture
-    def mock_request(self):
-        """Create a mock request object."""
-        request = MagicMock(spec=Request)
-        request.cookies = {}
-        return request
 
     @pytest.fixture
     def mock_db(self):
@@ -87,7 +81,7 @@ class TestGetCurrentUserFromAccessToken:
     @patch("app.dependencies.get_user_by_username")
     @patch("app.dependencies.convert_db_user_to_user")
     async def test_get_current_user_with_bearer_token(
-        self, mock_convert, mock_get_user, mock_jwt_decode, mock_request, mock_db, valid_token
+        self, mock_convert, mock_get_user, mock_jwt_decode, mock_db, valid_token
     ):
         """Test getting current user with valid bearer token."""
         from app.db.models.user import DBUser
@@ -118,7 +112,6 @@ class TestGetCurrentUserFromAccessToken:
         mock_convert.return_value = mock_user
 
         result = await get_current_user_from_access_token(
-            request=mock_request,
             token=valid_token,
             db=mock_db
         )
@@ -127,59 +120,12 @@ class TestGetCurrentUserFromAccessToken:
         mock_get_user.assert_called_once_with(mock_db, username="testuser")
         mock_convert.assert_called_once_with(mock_db_user)
 
-    @pytest.mark.asyncio
-    @patch("app.dependencies.jwt.decode")
-    @patch("app.dependencies.get_user_by_username")
-    @patch("app.dependencies.convert_db_user_to_user")
-    async def test_get_current_user_with_cookie_token(
-        self, mock_convert, mock_get_user, mock_jwt_decode, mock_request, mock_db, valid_token
-    ):
-        """Test getting current user with valid cookie token."""
-        from app.db.models.user import DBUser
-        from app.config.security import ACCESS_TOKEN_COOKIE_NAME
-        
-        mock_jwt_decode.return_value = {"sub": "testuser"}
-        
-        mock_request.cookies = {ACCESS_TOKEN_COOKIE_NAME: valid_token}
-        
-        mock_db_user = DBUser(
-            id=1,
-            username="testuser",
-            email="test@example.com",
-            first_name="Test",
-            last_name="User",
-            hashed_password="hashed",
-            is_active=True
-        )
-        mock_db_user.roles = []
-        
-        mock_user = User(
-            username="testuser",
-            email="test@example.com",
-            first_name="Test",
-            last_name="User",
-            disabled=False,
-            roles=[]
-        )
-        
-        mock_get_user.return_value = mock_db_user
-        mock_convert.return_value = mock_user
-
-        result = await get_current_user_from_access_token(
-            request=mock_request,
-            token=None,
-            db=mock_db
-        )
-
-        assert result == mock_user
-        mock_get_user.assert_called_once_with(mock_db, username="testuser")
 
     @pytest.mark.asyncio
-    async def test_get_current_user_no_token(self, mock_request, mock_db):
+    async def test_get_current_user_no_token(self, mock_db):
         """Test getting current user with no token raises exception."""
         with pytest.raises(HTTPException) as exc_info:
             await get_current_user_from_access_token(
-                request=mock_request,
                 token=None,
                 db=mock_db
             )
@@ -188,13 +134,12 @@ class TestGetCurrentUserFromAccessToken:
         assert exc_info.value.detail == "Could not validate credentials"
 
     @pytest.mark.asyncio
-    async def test_get_current_user_invalid_token(self, mock_request, mock_db):
+    async def test_get_current_user_invalid_token(self, mock_db):
         """Test getting current user with invalid token raises exception."""
         invalid_token = "invalid.token.here"
 
         with pytest.raises(HTTPException) as exc_info:
             await get_current_user_from_access_token(
-                request=mock_request,
                 token=invalid_token,
                 db=mock_db
             )
@@ -205,7 +150,7 @@ class TestGetCurrentUserFromAccessToken:
     @pytest.mark.asyncio
     @patch("app.dependencies.jwt.decode")
     async def test_get_current_user_token_missing_sub(
-        self, mock_jwt_decode, mock_request, mock_db
+        self, mock_jwt_decode, mock_db
     ):
         """Test getting current user with token missing 'sub' claim."""
         mock_jwt_decode.return_value = {"other": "data"}
@@ -213,7 +158,6 @@ class TestGetCurrentUserFromAccessToken:
 
         with pytest.raises(HTTPException) as exc_info:
             await get_current_user_from_access_token(
-                request=mock_request,
                 token=token,
                 db=mock_db
             )
@@ -225,7 +169,7 @@ class TestGetCurrentUserFromAccessToken:
     @patch("app.dependencies.jwt.decode")
     @patch("app.dependencies.get_user_by_username")
     async def test_get_current_user_user_not_found(
-        self, mock_get_user, mock_jwt_decode, mock_request, mock_db, valid_token
+        self, mock_get_user, mock_jwt_decode, mock_db, valid_token
     ):
         """Test getting current user when user doesn't exist in database."""
         mock_jwt_decode.return_value = {"sub": "testuser"}
@@ -233,7 +177,6 @@ class TestGetCurrentUserFromAccessToken:
 
         with pytest.raises(HTTPException) as exc_info:
             await get_current_user_from_access_token(
-                request=mock_request,
                 token=valid_token,
                 db=mock_db
             )
@@ -245,7 +188,7 @@ class TestGetCurrentUserFromAccessToken:
     @pytest.mark.asyncio
     @patch("app.dependencies.jwt.decode")
     async def test_get_current_user_expired_token(
-        self, mock_jwt_decode, mock_request, mock_db
+        self, mock_jwt_decode, mock_db
     ):
         """Test getting current user with expired token."""
         from jose import JWTError
@@ -255,7 +198,6 @@ class TestGetCurrentUserFromAccessToken:
 
         with pytest.raises(HTTPException) as exc_info:
             await get_current_user_from_access_token(
-                request=mock_request,
                 token=expired_token,
                 db=mock_db
             )
