@@ -1,7 +1,7 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_, or_, case
-from app.db.models.ddi import PatientDDI
+from app.db.models.patientddi import PatientDDI
 
 # Similarity scoring weights
 WEIGHT_SEX_MATCH = 50      # Points for exact sex match
@@ -165,7 +165,7 @@ def get_interaction_statistics(
                 (PatientDDI.ddi_known == True, 1),
                 else_=0
             )
-        ).label('is_known_interaction')  # Database-agnostic boolean OR
+        ).label('is_known_interaction_from_patients')  # Database-agnostic boolean OR
     ).filter(drug_condition).first()
     
     # Get severity distribution
@@ -181,6 +181,6 @@ def get_interaction_statistics(
         'total_cases': results.total_cases or 0,
         'known_severity_count': results.known_severity_count or 0,
         'avg_confidence': float(results.avg_confidence or 0.0),
-        'is_known_interaction': bool(results.is_known_interaction) or False,
+        'is_known_interaction_from_patients': bool(results.is_known_interaction_from_patients) or False,
         'severity_distribution': {sev: count for sev, count in severity_dist}
     }

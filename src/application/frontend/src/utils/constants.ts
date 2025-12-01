@@ -74,7 +74,8 @@ export const DUMMY_ALERTS: AlertResult[] = [
     known_severity: 'Moderate',
     enriched_context: {
       similar_cases_count: 28,
-      known_interaction: true,
+      static_severity: 'Moderate',
+      known_interaction_from_patients: true,
       avg_confidence: 0.92,
       top_mechanisms: [
         'Anti-hemostatic synergism',
@@ -126,8 +127,9 @@ export const DUMMY_ALERTS: AlertResult[] = [
     model_path: 'openai.gpt-oss-120b-1:0',
     known_severity: null,
     enriched_context: {
+      static_severity: '',
       similar_cases_count: 0,
-      known_interaction: false,
+      known_interaction_from_patients: false,
       avg_confidence: 0.0,
       severity_distribution: {},
       top_mechanisms: [],
