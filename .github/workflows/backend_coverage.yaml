@@ -92,7 +92,7 @@ jobs:
               run: |
                   pct="${{ steps.covpct.outputs.pct }}"
                   color="red"
-                  if [ "$pct" -ge 80 ]; then color="yellow"; fi
+                  if [ "$pct" -ge 80 ]; then color="orange"; fi
                   if [ "$pct" -ge 90 ]; then color="green"; fi
 
                   mkdir -p ../../../.github/badges
