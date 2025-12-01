@@ -83,8 +83,9 @@ def find_similar_interactions(
         # Comorbidity overlap (each matching comorbidity = +WEIGHT_COMORBIDITY) - case-insensitive
         comorbidity_score = 0
         if comorbidities and case.comorbidities:
-            # Sanitize case comorbidities: strip and lowercase
-            case_comorbidities_lower = case.comorbidities.strip().lower()
+            # Now comorbidities is a PostgreSQL array, not a string
+            # Normalize both user input and case comorbidities to lowercase for comparison
+            case_comorbidities_lower = [c.strip().lower() for c in case.comorbidities if c]
             for comorbidity in comorbidities:
                 # Sanitize user comorbidity: strip and lowercase
                 if comorbidity and isinstance(comorbidity, str):

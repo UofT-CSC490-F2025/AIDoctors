@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Text, Integer, Float, Boolean, DateTime
+from sqlalchemy import Column, Integer, Float, Text, Boolean, DateTime, ARRAY
 from app.db.session import Base, SCHEMA_NAME
 
 
@@ -33,9 +33,8 @@ class PatientDDI(Base):
     age = Column(Integer, nullable=True)
     sex = Column(Text, nullable=True)
     
-    # Comorbidities is TEXT, not ARRAY
-    # The loader script stores it as a JSON-like string: "['Hypertension', 'Diabetes']"
-    comorbidities = Column(Text, nullable=True)
+    # Comorbidities is now a PostgreSQL ARRAY of TEXT
+    comorbidities = Column(ARRAY(Text), nullable=True)
     
     pair_key = Column(Text, nullable=True)
     unified_severity = Column(Text, nullable=True)
