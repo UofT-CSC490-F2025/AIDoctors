@@ -316,19 +316,23 @@ def build_patient_ae_tables(
     )
 
     # ----------------------------
-    # 3) Demographics (already cheap & vectorized)
+    # 3) Demographics: attach Sex + Age per risk row
     # ----------------------------
-    if risk_ann["START"].notna().any():
-        idx_date = risk_ann["START"].dropna().min()
-    else:
-        idx_date = pd.Timestamp.now(tz="UTC")
+    patients_demo = patients.rename(
+        columns={"Id": "patient_uuid", "GENDER": "Sex"}
+    )[["patient_uuid", "BIRTHDATE", "Sex"]]
 
-    age_years = ((idx_date - patients["BIRTHDATE"]).dt.days // 365).astype("Int64")
+    # merge onto each risk record
+    risk_ann = risk_ann.merge(patients_demo, on="patient_uuid", how="left")
 
-    demo = patients.rename(columns={"Id": "patient_uuid", "GENDER": "Sex"})[
-        ["patient_uuid", "Sex"]
-    ].copy()
-    demo["Age"] = age_years
+    # age at time of the AE-risk exposure (START)
+    risk_ann["Age"] = (
+        (risk_ann["START"] - risk_ann["BIRTHDATE"]).dt.days // 365
+    ).astype("Int64")
+
+    # (optional) drop BIRTHDATE if you don't want it in downstream tables
+    risk_ann = risk_ann.drop(columns=["BIRTHDATE"])
+
 
     # ----------------------------
     # 4) Comorbidities – optimized groupby
@@ -372,7 +376,7 @@ def build_patient_ae_tables(
     # 5) Enriched table (risk + demo + comorb)
     # ----------------------------
     enriched = (
-        risk_ann.merge(demo, on="patient_uuid", how="left")
+        risk_ann
         .merge(comorb, on="patient_uuid", how="left")
     )
 
