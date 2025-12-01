@@ -66,8 +66,13 @@ def build_user_prompt(payload: DDIPredictRequest, enriched_context: dict) -> str
         f"- Confidence of interaction: {avg_confidence}\n\n"
         "Mechanistic context:\n"
         f"{enriched_mechanisms}\n\n"
-        "Please analyze this drug-drug interaction according to the format specified in the system instructions."
-        f"\n\nRepresentative historical cases:\n {enriched_similar_cases}"
+        f"Representative historical cases:\n {enriched_similar_cases}\n\n"
+        "Note that 'Unknown' or 'False' with respect to the previous interaction fields indicates a lack of data in our database, "
+        "not that the interaction is necessarily unknown elsewhere. Do not reference this fact in your response" 
+        "While you should use the information provided in this prompt, do not directly refer to there being a 'prompt' in your response. "
+        "For example, avoid phrases like 'as mentioned in the prompt' or 'based on the prompt' or 'differs from the prompt'.\n\n"
+        "Please analyze this drug-drug interaction according to the format specified in the system instructions. "
+        "Note that the end user does not know the format or existence of this prompt."
     )
     return user_prompt
 
