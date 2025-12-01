@@ -1,0 +1,88 @@
+name: Deploy Frontend to S3
+
+on:
+    workflow_dispatch:
+    push:
+        branches: ["main"]
+        paths:
+            - "src/application/frontend/**"
+            - ".github/workflows/frontend-deploy.yaml"
+
+env:
+    AWS_REGION: "us-east-1"
+
+permissions:
+    id-token: write
+    contents: read
+
+jobs:
+    build-and-deploy:
+        name: Build and Deploy Frontend
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20"
+                  cache: "npm"
+                  cache-dependency-path: src/application/frontend/package-lock.json
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v3
+              with:
+                  role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+                  role-session-name: ${{ github.run_id }}
+                  aws-region: ${{ env.AWS_REGION }}
+
+            - name: Install dependencies
+              working-directory: src/application/frontend
+              run: npm ci
+
+            - name: Build Next.js application
+              working-directory: src/application/frontend
+              env:
+                  NEXT_PUBLIC_API_BASE_URL: ${{ secrets.API_BASE_URL }}
+              run: |
+                  echo "Building with API endpoint: $NEXT_PUBLIC_API_BASE_URL"
+                  npm run build
+
+            - name: Deploy to S3
+              working-directory: src/application/frontend
+              env:
+                  BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+              run: |
+                  echo "Syncing build to S3 bucket: $BUCKET_NAME"
+
+                  # Sync static assets with long cache
+                  aws s3 sync out/ s3://$BUCKET_NAME/ \
+                    --delete \
+                    --cache-control "public, max-age=31536000, immutable" \
+                    --exclude "*.html" \
+                    --exclude "*.json" \
+                    --exclude "*.txt"
+
+                  # Sync HTML, JSON, and text files with short cache for SPA routing
+                  aws s3 sync out/ s3://$BUCKET_NAME/ \
+                    --cache-control "public, max-age=0, must-revalidate" \
+                    --exclude "*" \
+                    --include "*.html" \
+                    --include "*.json" \
+                    --include "*.txt"
+
+            - name: Get website URL
+              working-directory: terraform
+              run: |
+                  WEBSITE_URL=$(terraform output -raw frontend_website_url)
+                  echo "✅ Deployment complete!"
+                  echo "🌐 Website URL: $WEBSITE_URL"
+                  echo "website_url=$WEBSITE_URL" >> $GITHUB_OUTPUT
+
+            - name: Invalidate CloudFront cache (if applicable)
+              continue-on-error: true
+              run: |
+                  # This step is optional and will only run if you add CloudFront later
+                  echo "No CloudFront distribution configured - skipping cache invalidation"
