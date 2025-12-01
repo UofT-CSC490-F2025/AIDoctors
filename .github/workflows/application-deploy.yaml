@@ -82,9 +82,10 @@ jobs:
               working-directory: terraform
               run: terraform init
 
-            - name: Update ECS Service with New Image
+            - name: Deploy new image via Terraform
               working-directory: terraform
               run: |
+                  echo "Deploying new image tag: ${{ needs.docker-build.outputs.image_tag }}"
                   terraform apply -auto-approve \
-                    -var="app_image_tag=${{ needs.docker-build.outputs.image_tag }}" \
-                    -var="pipeline_image_tag=latest"
+                    -var="app_image_tag=${{ needs.docker-build.outputs.image_tag }}"
+                  echo "Deployment complete!"

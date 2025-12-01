@@ -13,7 +13,6 @@ variable "pipeline_image_tag" {
 variable "extraction_image_tag" {
   description = "Docker image tag for data extraction"
   type        = string
-  default     = "latest"
 }
 
 variable "extraction_schedule" {

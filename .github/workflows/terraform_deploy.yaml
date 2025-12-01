@@ -29,6 +29,7 @@ jobs:
               uses: hashicorp/setup-terraform@v2
               with:
                   terraform_version: ${{ env.TF_VERSION }}
+                  terraform_wrapper: false
 
             - name: "Configure AWS credentials"
               uses: aws-actions/configure-aws-credentials@v3
@@ -41,6 +42,17 @@ jobs:
               working-directory: terraform
               run: terraform init
 
+            - name: "Get current image tag from Terraform output"
+              id: get-image-tag
+              working-directory: terraform
+              run: |
+                  CURRENT_TAG=$(terraform output -raw app_image_tag 2>/dev/null || echo "latest")
+                  echo "current_tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
+                  echo "Current app_image_tag: $CURRENT_TAG"
+
             - name: "Terraform Apply"
               working-directory: terraform
-              run: terraform apply -auto-approve
+              run: |
+                  echo "Applying Terraform with current image tag: ${{ steps.get-image-tag.outputs.current_tag }}"
+                  terraform apply -auto-approve \
+                    -var="app_image_tag=${{ steps.get-image-tag.outputs.current_tag }}"

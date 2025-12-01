@@ -27,3 +27,8 @@ output "api_gateway_url" {
   description = "API Gateway HTTPS URL"
   value       = aws_api_gateway_stage.prod.invoke_url
 }
+
+output "app_image_tag" {
+  description = "Current application image tag deployed"
+  value       = var.app_image_tag
+}
