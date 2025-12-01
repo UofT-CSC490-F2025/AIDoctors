@@ -22,3 +22,8 @@ output "ssm_parameters" {
     access_token_secret    = aws_ssm_parameter.access_token_secret.name
   }
 }
+
+output "api_gateway_url" {
+  description = "API Gateway HTTPS URL"
+  value       = aws_api_gateway_stage.prod.invoke_url
+}
