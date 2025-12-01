@@ -34,7 +34,6 @@ export function SignupForm() {
       };
       const response = await fetch(`${getApiBaseUrl()}/users/register`, {
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },

@@ -1,6 +1,7 @@
 'use client';
 import { User } from '@/types/user-types';
 import { getApiBaseUrl } from '@/utils/api';
+import { getAuthHeaders } from '@/utils/auth';
 import { createContext, useEffect, useState } from 'react';
 
 type UserContext = {
@@ -22,7 +23,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       try {
         const response = await fetch(`${getApiBaseUrl()}/users/me`, {
           method: 'GET',
-          credentials: 'include',
+          headers: getAuthHeaders(),
         });
 
         if (!response.ok) {

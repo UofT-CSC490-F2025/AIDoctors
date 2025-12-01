@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { AlertTriangle, Loader2, Calendar } from 'lucide-react';
 import { Select } from '@/components/ui/select';
 import { getApiBaseUrl } from '@/utils/api';
+import { getAuthHeaders } from '@/utils/auth';
 import { useForm } from 'react-hook-form';
 import { useUser } from '@/hooks/useUser';
 import { AlertResult } from '@/types/predict-types';
@@ -58,10 +59,9 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
       };
       const response = await fetch(`${getApiBaseUrl()}/predict`, {
         method: 'POST',
-        credentials: 'include',
-        headers: {
+        headers: getAuthHeaders({
           'Content-Type': 'application/json',
-        },
+        }),
         body: JSON.stringify(bodyData),
       });
       const responseData = await response.json();

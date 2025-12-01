@@ -2,6 +2,7 @@
 import { useUser } from '@/hooks/useUser';
 import { User } from '@/types/user-types';
 import { getApiBaseUrl } from '@/utils/api';
+import { setAccessToken } from '@/utils/auth';
 import { Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
@@ -31,7 +32,6 @@ export function LoginForm() {
 
       const responseToken = await fetch(`${getApiBaseUrl()}/auth/token`, {
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
@@ -48,9 +48,17 @@ export function LoginForm() {
         return;
       }
 
+      const tokenData = await responseToken.json();
+      const accessToken = tokenData.access_token;
+
+      // Store token in localStorage
+      setAccessToken(accessToken);
+
       const responseUser = await fetch(`${getApiBaseUrl()}/users/me`, {
         method: 'GET',
-        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
       });
 
       if (!responseUser.ok) {
