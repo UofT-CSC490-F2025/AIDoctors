@@ -187,6 +187,11 @@ describe('Alert', () => {
   });
 
   test('completion invalid JSON → fallback empty object, fallback severity + summary', () => {
+    // Suppress console.error
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
     const info = buildInfo({
       completion: 'INVALID JSON',
       severity: 'Moderate',
@@ -198,6 +203,8 @@ describe('Alert', () => {
 
     // fallback summary text
     expect(screen.getByText(/No brief summary available/)).toBeInTheDocument();
+
+    consoleSpy.mockRestore();
   });
 
   test('known_severity null → omits known severity badge', () => {
