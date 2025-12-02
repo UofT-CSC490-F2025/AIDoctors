@@ -76,8 +76,10 @@ type PredictionFormProps = {
 };
 
 export function PredictionForm({ setResults }: PredictionFormProps) {
-  const { control, register, handleSubmit, formState } =
-    useForm<PredictFormValues>();
+  const { control, register, handleSubmit, formState: { isValid , isSubmitting} } =
+    useForm<PredictFormValues>({
+      mode: 'onChange'
+    });
   const [error, setError] = useState<string | null>(null);
   const { setUser } = useUser();
 
@@ -145,6 +147,7 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
               id="age"
               type="number"
               placeholder="65"
+              min={0}
               {...register('age', { min: 0 })}
             />
           </div>
@@ -244,10 +247,10 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
 
         <Button
           type="submit"
-          disabled={formState.isSubmitting}
+          disabled={!isValid || isSubmitting}
           className="rounded-full w-full sm:w-auto"
         >
-          {formState.isSubmitting ? (
+          {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Generating alerts...
