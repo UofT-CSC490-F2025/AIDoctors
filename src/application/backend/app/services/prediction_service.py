@@ -113,8 +113,8 @@ def invoke_bedrock_model(system_prompt: str, user_prompt: str) -> str:
     # https://platform.openai.com/docs/api-reference/chat/create
     if "openai.gpt-oss" in model_id:
         request_body = {
-            "max_completion_tokens": 2048,  # Reduced from 4096 for faster response
-            "temperature": 0.2,
+            "max_completion_tokens": 4096,  # Reduced from 4096 for faster response
+            "temperature": 0.15,
             "response_format": {"type": "json_object"},  # Force JSON output
             "messages": [
                 {
