@@ -1,4 +1,28 @@
 # CloudFront Distribution for Frontend
+resource "aws_cloudfront_function" "dir_index_rewrite" {
+  name    = "${local.name}-dir-index-rewrite"
+  runtime = "cloudfront-js-1.0"
+  comment = "Rewrite directory requests to index.html for Next.js"
+  publish = true
+  code    = <<EOF
+function handler(event) {
+    var request = event.request;
+    var uri = request.uri;
+
+    // Case 1: URI ends with / (e.g., /login/) -> append index.html
+    if (uri.endsWith('/')) {
+        request.uri += 'index.html';
+    } 
+    // Case 2: URI is missing extension (e.g., /login) -> append /index.html
+    else if (!uri.includes('.')) {
+        request.uri += '/index.html';
+    }
+
+    return request;
+}
+EOF
+}
+
 resource "aws_cloudfront_origin_access_control" "frontend" {
   name                              = "${local.name}-frontend-oac"
   description                       = "Origin Access Control for S3 Frontend"
@@ -51,6 +75,11 @@ resource "aws_cloudfront_distribution" "frontend" {
     default_ttl            = 0
     max_ttl                = 0
     compress               = true
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.dir_index_rewrite.arn
+    }
   }
 
   # Cache behavior for API requests - route to ALB
@@ -97,18 +126,11 @@ resource "aws_cloudfront_distribution" "frontend" {
   }
 
   # Custom error response for SPA routing
-  # For Next.js static export, redirect 404s to root index.html for client-side routing
+  # For Next.js static export, redirect 404s to 404.html for client-side routing
   custom_error_response {
     error_code            = 404
-    response_code         = 200
-    response_page_path    = "/index.html"
-    error_caching_min_ttl = 0
-  }
-
-  custom_error_response {
-    error_code            = 403
-    response_code         = 200
-    response_page_path    = "/index.html"
+    response_code         = 404
+    response_page_path    = "/404.html"
     error_caching_min_ttl = 0
   }
 
