@@ -1,10 +1,12 @@
 import json
-from fastapi import APIRouter, Depends, HTTPException
+from typing import List
+from fastapi import APIRouter, Depends, HTTPException, Query
 import os
 import asyncio
 from functools import partial
 from sqlalchemy.orm import Session
 from app.dependencies import get_current_active_user, get_db
+from app.repositories.ddiref_repository import search_matching_drug_names
 from app.schemas.db.prediction import DDIPredictRequest, DDIPredictResponse
 from app.schemas.bedrock.bedrock import build_system_prompt, build_user_prompt
 from app.services.prediction_service import (
@@ -22,7 +24,9 @@ router = APIRouter(
 
 
 @router.post("")
-async def predict(request: DDIPredictRequest, db: Session = Depends(get_db)) -> DDIPredictResponse:
+async def predict(
+    request: DDIPredictRequest, db: Session = Depends(get_db)
+) -> DDIPredictResponse:
     """
     Predict drug-drug interaction severity using AWS Bedrock.
 
@@ -50,19 +54,32 @@ async def predict(request: DDIPredictRequest, db: Session = Depends(get_db)) -> 
 
         # Parse the response to extract reasoning and content
         parsed_response = parse_bedrock_response(completion)
-        severity = parsed_response['content'].get('predicted_severity', 'Unknown')
+        severity = parsed_response["content"].get("predicted_severity", "Unknown")
         return DDIPredictResponse(
             drug1=request.drug1,
             drug2=request.drug2,
             severity=severity,
-            reasoning=parsed_response['reasoning'],
-            completion=json.dumps(parsed_response['content']),
+            reasoning=parsed_response["reasoning"],
+            completion=json.dumps(parsed_response["content"]),
             model_path=model_id,
             enriched_context=enriched_context,
-            known_severity=enriched_context.get('static_severity', 'Unknown')
+            known_severity=enriched_context.get("static_severity", "Unknown"),
         )
     except Exception as e:
         print("Error during Bedrock inference:", str(e))
         raise HTTPException(
             status_code=500, detail=f"Error during Bedrock inference: {str(e)}"
         )
+
+
+@router.get("/matching_drugs", response_model=List[str])
+def search_matching_drugs(
+    drug_name: str = Query(
+        ..., min_length=1, description="Name of the drug to search for"
+    ),
+    db: Session = Depends(get_db),
+):
+    """
+    Route to search for drug names using the search_matching_drug_names utility.
+    """
+    return search_matching_drug_names(db, drug_name, limit=5)
