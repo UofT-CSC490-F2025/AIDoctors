@@ -25,7 +25,7 @@ def find_similar_interactions(
     1. First fetch all drug-drug interaction cases (drug1 + drug2)
     2. Then reorder by patient similarity (age, sex, comorbidities)
     
-    Handles Comorbidities as TEXT (not PostgreSQL ARRAY).
+    Handles Comorbidities as JSON type (works with both PostgreSQL and SQLite).
     Input sanitization: case-insensitive, whitespace-trimmed comparisons.
     """
     # Sanitize drug inputs: strip whitespace
@@ -93,7 +93,7 @@ def find_similar_interactions(
         # Comorbidity overlap (each matching comorbidity = +WEIGHT_COMORBIDITY) - case-insensitive
         comorbidity_score = 0
         if comorbidities and case.comorbidities:
-            # Now comorbidities is a PostgreSQL array, not a string
+            # JSON type automatically deserializes to list
             # Normalize both user input and case comorbidities to lowercase for comparison
             case_comorbidities_lower = [c.strip().lower() for c in case.comorbidities if c]
             for comorbidity in comorbidities:
@@ -200,36 +200,27 @@ def get_interaction_statistics(
 def search_comorbidities(db: Session, comorbidity_name: str, limit: int) -> List[str]:
     """
     Searches for unique comorbidity names in PatientDDI.comorbidities 
-    matching the input string. Requires PostgreSQL for ARRAY and UNNEST support.
+    matching the input string. Works with both PostgreSQL and SQLite via JSON type.
     Returns the top N closest matches (shortest strings first).
     """
     if not comorbidity_name:
         return []
 
-    search_pattern = f"%{comorbidity_name}%"
-
-    # Create a subquery to perform the UNNEST operation first.
-    unnest_subquery = select(
-        func.unnest(PatientDDI.comorbidities).label("name")
-    ).subquery().alias("unnested_comorbidities")
+    search_pattern = comorbidity_name.lower()
     
-    # Column reference from the subquery
-    name_col = unnest_subquery.c.name
+    # Fetch all records with non-null comorbidities
+    cases = db.query(PatientDDI).filter(PatientDDI.comorbidities.isnot(None)).all()
     
-    # Fix: Include the ORDER BY expression (length) in the SELECT list for DISTINCT compatibility.
-    length_col = func.length(name_col).label("len")
-
-    # Select both the name and its length, filter, apply DISTINCT, order by length, and limit.
-    final_stmt = (
-        select(name_col, length_col) # Select both name and length
-        .where(name_col.ilike(search_pattern))
-        .distinct()
-        .order_by(length_col) # Order by the aliased length column
-        .limit(limit)
-    )
-
-    # We only want the drug names (the first element of the tuple)
-    results = [row[0] for row in db.execute(final_stmt).all()]
+    # Extract and flatten all comorbidities, then filter by search pattern
+    all_comorbidities = set()
+    for case in cases:
+        if isinstance(case.comorbidities, list):
+            for comorbidity in case.comorbidities:
+                if comorbidity and search_pattern in comorbidity.lower():
+                    all_comorbidities.add(comorbidity)
+    
+    # Sort by length (shortest first) and limit
+    results = sorted(all_comorbidities, key=len)[:limit]
     
     # Filter out None/empty strings if present in the data
     return [r for r in results if r]

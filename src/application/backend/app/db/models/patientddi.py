@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, Text, Boolean, DateTime, ARRAY
+from sqlalchemy import Column, Integer, Float, Text, Boolean, DateTime, JSON
 from app.db.session import Base, SCHEMA_NAME
 
 
@@ -9,7 +9,7 @@ class PatientDDI(Base):
     
     IMPORTANT: 
     - This table has NO primary key in the original schema
-    - Comorbidities is TEXT (JSON-like string), NOT a PostgreSQL ARRAY
+    - Comorbidities uses JSON type (PostgreSQL: JSON/JSONB, SQLite: TEXT with auto serialization)
     - We use patient_uuid as primary_key for SQLAlchemy ORM requirements only
     """
     __tablename__ = "patient_ddi_collapsed_from_topk"
@@ -33,8 +33,9 @@ class PatientDDI(Base):
     age = Column(Integer, nullable=True)
     sex = Column(Text, nullable=True)
     
-    # Comorbidities is now a PostgreSQL ARRAY of TEXT
-    comorbidities = Column(ARRAY(Text), nullable=True)
+    # Comorbidities stored as JSON (works with both PostgreSQL and SQLite)
+    # PostgreSQL: native JSON/JSONB, SQLite: TEXT with automatic serialization
+    comorbidities = Column(JSON, nullable=True)
     
     pair_key = Column(Text, nullable=True)
     unified_severity = Column(Text, nullable=True)
@@ -44,47 +45,6 @@ class PatientDDI(Base):
     
     def __repr__(self):
         return f"<PatientDDI(uuid={self.patient_uuid}, {self.drug1}+{self.drug2}, severity={self.unified_severity})>"
-    
-    @property
-    def comorbidities_list(self):
-        """
-        Parse Comorbidities from TEXT to list.
-        The loader stores it as a string representation of a Python list.
-        Example: "['Hypertension', 'Diabetes']"
-        """
-        if not self.Comorbidities:
-            return []
-        
-        import json
-        import ast
-        
-        comorbidities_str = self.Comorbidities.strip()
-        
-        # Handle empty strings or "[]"
-        if not comorbidities_str or comorbidities_str == "[]":
-            return []
-        
-        # Try JSON parsing first (if it's valid JSON)
-        if comorbidities_str.startswith('['):
-            try:
-                return json.loads(comorbidities_str)
-            except json.JSONDecodeError:
-                pass
-        
-        # Try Python literal eval (most common from your pipeline)
-        try:
-            result = ast.literal_eval(comorbidities_str)
-            if isinstance(result, list):
-                return [str(item) for item in result]  # Ensure all items are strings
-        except (ValueError, SyntaxError):
-            pass
-        
-        # Fallback: split by comma (if it's a comma-separated string)
-        if ',' in comorbidities_str:
-            return [c.strip() for c in comorbidities_str.split(',') if c.strip()]
-        
-        # Last resort: return as single-item list
-        return [comorbidities_str]
     
     class Config:
         orm_mode = True
