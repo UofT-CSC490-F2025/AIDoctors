@@ -251,12 +251,6 @@ export function Alert({
                   </span>
                 </p>
                 <p>
-                  Mechanism:{' '}
-                  <span className="font-medium">
-                    {caseInfo.mechanism?.substring(0, 30)}...
-                  </span>
-                </p>
-                <p>
                   Age/Sex: {caseInfo.age}/{caseInfo.sex}
                 </p>
                 <p>Confidence: {caseInfo.confidence.toFixed(2)}</p>

@@ -80,8 +80,6 @@ export type RepresentativeCase = {
   sex: string;
   /** The similarity score indicating how closely this case matches the current context. */
   similarity_score: number;
-  /** The unified proposed mechanism of the interaction. */
-  mechanism: string | null;
   /** The confidence score assigned to the DDI in this case. */
   confidence: number;
   /** A list of pre-existing conditions (comorbidities) for the patient. */
