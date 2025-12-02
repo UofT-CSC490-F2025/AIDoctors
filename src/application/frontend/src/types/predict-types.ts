@@ -113,8 +113,8 @@ export type AlertResult = {
   drug2: string;
   /** The final predicted severity (derived from the model's completion). */
   severity: 'Minor' | 'Moderate' | 'Major' | 'Unknown';
-  /** The step-by-step reasoning from the model (extracted from the <reasoning> tags). */
-  reasoning: string;
+  /** Deprecated: Previously contained step-by-step reasoning. Now always empty. */
+  reasoning?: string;
   /** The raw JSON string output from the model, conforming to the PredictionDetails structure. */
   completion: string;
   /** The identifier for the underlying AI model used. */
