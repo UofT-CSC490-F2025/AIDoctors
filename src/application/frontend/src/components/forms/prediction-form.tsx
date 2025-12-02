@@ -15,7 +15,7 @@ import { AlertResult } from '@/types/predict-types';
 const loadOptions = (baseUrl: string) => async (input: string) => {
   if (!input) return [];
   const response = await fetch(
-    `${baseUrl}/predict/matching_drugs?drug_name=${encodeURIComponent(input)}`,
+    `${baseUrl}/predict/matching_drugs?name=${encodeURIComponent(input)}`,
     {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },

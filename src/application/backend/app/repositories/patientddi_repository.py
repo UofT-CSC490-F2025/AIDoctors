@@ -1,6 +1,6 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from sqlalchemy import func, and_, or_, case
+from sqlalchemy import func, and_, or_, case, select
 from app.db.models.patientddi import PatientDDI
 
 # Similarity scoring weights
@@ -195,3 +195,41 @@ def get_interaction_statistics(
         'is_known_interaction_from_patients': bool(results.is_known_interaction_from_patients) or False,
         'severity_distribution': {sev: count for sev, count in severity_dist}
     }
+
+
+def search_comorbidities(db: Session, comorbidity_name: str, limit: int) -> List[str]:
+    """
+    Searches for unique comorbidity names in PatientDDI.comorbidities 
+    matching the input string. Requires PostgreSQL for ARRAY and UNNEST support.
+    Returns the top N closest matches (shortest strings first).
+    """
+    if not comorbidity_name:
+        return []
+
+    search_pattern = f"%{comorbidity_name}%"
+
+    # Create a subquery to perform the UNNEST operation first.
+    unnest_subquery = select(
+        func.unnest(PatientDDI.comorbidities).label("name")
+    ).subquery().alias("unnested_comorbidities")
+    
+    # Column reference from the subquery
+    name_col = unnest_subquery.c.name
+    
+    # Fix: Include the ORDER BY expression (length) in the SELECT list for DISTINCT compatibility.
+    length_col = func.length(name_col).label("len")
+
+    # Select both the name and its length, filter, apply DISTINCT, order by length, and limit.
+    final_stmt = (
+        select(name_col, length_col) # Select both name and length
+        .where(name_col.ilike(search_pattern))
+        .distinct()
+        .order_by(length_col) # Order by the aliased length column
+        .limit(limit)
+    )
+
+    # We only want the drug names (the first element of the tuple)
+    results = [row[0] for row in db.execute(final_stmt).all()]
+    
+    # Filter out None/empty strings if present in the data
+    return [r for r in results if r]
