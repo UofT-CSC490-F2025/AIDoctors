@@ -21,7 +21,7 @@ class TestExceptionHandlers:
         mocker.patch("app.routers.users.create_user")
 
         # Missing 'username' field
-        response = client.post("/users/register", json={
+        response = client.post("/api/users/register", json={
             "email": "test@example.com",
             "first_name": "Test",
             "last_name": "User",
@@ -47,7 +47,7 @@ class TestExceptionHandlers:
         mocker.patch("app.routers.users.create_user")
 
         # Missing multiple required fields
-        response = client.post("/users/register", json={
+        response = client.post("/api/users/register", json={
             "first_name": "Test"
         })
 
@@ -63,7 +63,7 @@ class TestExceptionHandlers:
         mocker.patch("app.routers.users.create_user")
 
         # Pass integer instead of string for username
-        response = client.post("/users/register", json={
+        response = client.post("/api/users/register", json={
             "username": 12345,  # Should be string
             "email": "test@example.com",
             "first_name": "Test",
@@ -101,7 +101,7 @@ class TestExceptionHandlers:
         mocker.patch("app.routers.users.create_user", return_value=mock_user)
 
         # Invalid email format
-        response = client.post("/users/register", json={
+        response = client.post("/api/users/register", json={
             "username": "testuser",
             "email": "not-an-email",  # Invalid email
             "first_name": "Test",
@@ -134,7 +134,7 @@ class TestExceptionHandlers:
         mocker.patch("app.routers.users.create_user", return_value=mock_user)
 
         # Empty strings for required fields
-        response = client.post("/users/register", json={
+        response = client.post("/api/users/register", json={
             "username": "",
             "email": "",
             "first_name": "",
@@ -153,7 +153,7 @@ class TestExceptionHandlers:
         mocker.patch("app.routers.users.create_user")
 
         # Null values for required fields
-        response = client.post("/users/register", json={
+        response = client.post("/api/users/register", json={
             "username": None,
             "email": None,
             "first_name": None,
@@ -185,7 +185,7 @@ class TestExceptionHandlers:
         mocker.patch("app.routers.users.create_user", return_value=mock_user)
 
         # Include extra fields that aren't in the schema
-        response = client.post("/users/register", json={
+        response = client.post("/api/users/register", json={
             "username": "testuser",
             "email": "test@example.com",
             "first_name": "Test",
@@ -200,7 +200,7 @@ class TestExceptionHandlers:
     def test_validation_error_malformed_json(self, client):
         """Test exception handler with malformed JSON."""
         response = client.post(
-            "/users/register",
+            "/api/users/register",
             content="not valid json",
             headers={"Content-Type": "application/json"}
         )
@@ -227,7 +227,7 @@ class TestExceptionHandlers:
         mocker.patch("app.routers.users.get_user_by_username", return_value=existing_user)
         mocker.patch("app.routers.users.get_user_by_email", return_value=None)
 
-        response = client.post("/users/register", json={
+        response = client.post("/api/users/register", json={
             "username": "existinguser",
             "email": "new@example.com",
             "first_name": "New",
@@ -259,7 +259,7 @@ class TestExceptionHandlers:
         mocker.patch("app.routers.users.get_user_by_username", return_value=None)
         mocker.patch("app.routers.users.get_user_by_email", return_value=existing_user)
 
-        response = client.post("/users/register", json={
+        response = client.post("/api/users/register", json={
             "username": "newuser",
             "email": "existing@example.com",
             "first_name": "New",
@@ -292,7 +292,7 @@ class TestExceptionHandlers:
         mock_user.roles = []
         mocker.patch("app.routers.users.create_user", return_value=mock_user)
 
-        response = client.post("/users/register", json={
+        response = client.post("/api/users/register", json={
             "username": "newuser",
             "email": "new@example.com",
             "first_name": "New",

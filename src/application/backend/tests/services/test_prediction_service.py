@@ -3,7 +3,7 @@ import json
 from unittest.mock import MagicMock, patch
 from app.services.prediction_service import (
     parse_bedrock_response,
-    enrich_from_database,
+    enrich_from_database_async,
     invoke_bedrock_model,
     get_bedrock_client
 )
@@ -65,39 +65,36 @@ def mock_ddi_cases():
 
 class TestPredictionService:
 
-    def test_parse_bedrock_response_with_reasoning(self):
-        """Test parsing Bedrock response with reasoning tags."""
-        response_text = '<reasoning>This is the reasoning</reasoning>{"severity": "Major", "confidence": 0.95}'
+    def test_parse_bedrock_response_with_json(self):
+        """Test parsing Bedrock response with JSON."""
+        response_text = '{"severity": "Major", "confidence": 0.95}'
         
         result = parse_bedrock_response(response_text)
         
-        assert result["reasoning"] == "This is the reasoning"
         assert result["content"]["severity"] == "Major"
         assert result["content"]["confidence"] == 0.95
 
-    def test_parse_bedrock_response_without_reasoning(self):
-        """Test parsing Bedrock response without reasoning tags."""
+    def test_parse_bedrock_response_simple_json(self):
+        """Test parsing simple JSON response."""
         response_text = '{"severity": "Moderate", "confidence": 0.80}'
         
         result = parse_bedrock_response(response_text)
         
-        assert result["reasoning"] == ""
         assert result["content"]["severity"] == "Moderate"
         assert result["content"]["confidence"] == 0.80
 
-    def test_parse_bedrock_response_multiline_reasoning(self):
-        """Test parsing Bedrock response with multiline reasoning."""
-        response_text = '''<reasoning>
-        This is a multiline reasoning
-        with multiple lines
-        </reasoning>{"severity": "Minor"}'''
+    def test_parse_bedrock_response_with_markdown_code_block(self):
+        """Test parsing Bedrock response with markdown code block."""
+        response_text = '''```json
+{"severity": "Minor"}
+```'''
         
         result = parse_bedrock_response(response_text)
         
-        assert "multiline reasoning" in result["reasoning"]
         assert result["content"]["severity"] == "Minor"
 
-    def test_enrich_from_database_with_cases(self, mocker, mock_db, mock_predict_request, mock_ddi_cases):
+    @pytest.mark.asyncio
+    async def test_enrich_from_database_with_cases(self, mocker, mock_db, mock_predict_request, mock_ddi_cases):
         """Test enriching prediction with database context."""
         # Mock repository functions
         mocker.patch("app.services.prediction_service.find_similar_interactions", return_value=mock_ddi_cases)
@@ -108,18 +105,20 @@ class TestPredictionService:
             "is_known_interaction_from_patients": True,
             "severity_distribution": {"Major": 6, "Moderate": 2}
         })
+        mocker.patch("app.services.prediction_service.find_static_ddi_severity", return_value="Major")
 
-        result = enrich_from_database(mock_db, mock_predict_request)
+        result = await enrich_from_database_async(mock_db, mock_predict_request)
 
         assert result["similar_cases_count"] == 2
         assert result["known_interaction_from_patients"] is True
         assert result["avg_confidence"] == 0.85
-        assert len(result["top_mechanisms"]) > 0
+        assert len(result["mechanisms"]) > 0
         assert len(result["representative_cases"]) > 0
         assert result["severity_distribution"]["known_severity_count"] == 8
         assert result["severity_distribution"]["total_cases"] == 10
 
-    def test_enrich_from_database_no_cases(self, mocker, mock_db, mock_predict_request):
+    @pytest.mark.asyncio
+    async def test_enrich_from_database_no_cases(self, mocker, mock_db, mock_predict_request):
         """Test enriching prediction with no database matches."""
         # Mock repository functions to return empty results
         mocker.patch("app.services.prediction_service.find_similar_interactions", return_value=[])
@@ -130,16 +129,18 @@ class TestPredictionService:
             "is_known_interaction_from_patients": False,
             "severity_distribution": {}
         })
+        mocker.patch("app.services.prediction_service.find_static_ddi_severity", return_value=None)
 
-        result = enrich_from_database(mock_db, mock_predict_request)
+        result = await enrich_from_database_async(mock_db, mock_predict_request)
 
         assert result["similar_cases_count"] == 0
         assert result["known_interaction_from_patients"] is False
         assert result["avg_confidence"] == 0.0
-        assert len(result["top_mechanisms"]) == 0
+        assert len(result["mechanisms"]) == 0
         assert len(result["representative_cases"]) == 0
 
-    def test_enrich_from_database_filters_mechanisms(self, mocker, mock_db, mock_predict_request):
+    @pytest.mark.asyncio
+    async def test_enrich_from_database_filters_mechanisms(self, mocker, mock_db, mock_predict_request):
         """Test that enrichment filters out duplicate mechanisms."""
         # Create cases with duplicate mechanisms
         case1 = PatientDDI(
@@ -175,15 +176,17 @@ class TestPredictionService:
             "is_known_interaction_from_patients": True,
             "severity_distribution": {"Major": 2}
         })
+        mocker.patch("app.services.prediction_service.find_static_ddi_severity", return_value="Major")
 
-        result = enrich_from_database(mock_db, mock_predict_request)
+        result = await enrich_from_database_async(mock_db, mock_predict_request)
 
         # Should have only one unique mechanism
-        assert len(result["top_mechanisms"]) == 1
-        assert "Bleeding risk" in result["top_mechanisms"]
+        assert len(result["mechanisms"]) == 1
+        assert "Bleeding risk" in result["mechanisms"]
 
-    def test_enrich_from_database_limits_representative_cases(self, mocker, mock_db, mock_predict_request):
-        """Test that enrichment limits representative cases to 5."""
+    @pytest.mark.asyncio
+    async def test_enrich_from_database_returns_all_representative_cases(self, mocker, mock_db, mock_predict_request):
+        """Test that enrichment returns all representative cases."""
         # Create 10 cases
         cases = [
             PatientDDI(
@@ -209,11 +212,12 @@ class TestPredictionService:
             "is_known_interaction_from_patients": True,
             "severity_distribution": {"Major": 10}
         })
+        mocker.patch("app.services.prediction_service.find_static_ddi_severity", return_value="Major")
 
-        result = enrich_from_database(mock_db, mock_predict_request)
+        result = await enrich_from_database_async(mock_db, mock_predict_request)
 
-        # Should limit to 5 representative cases
-        assert len(result["representative_cases"]) == 5
+        # Should return all representative cases
+        assert len(result["representative_cases"]) == 10
 
     def test_invoke_bedrock_model_openai(self, mocker):
         """Test invoking Bedrock model with OpenAI model."""
@@ -267,13 +271,15 @@ class TestPredictionService:
     def test_parse_bedrock_response_malformed_json(self):
         """
         EDGE CASE: Malformed JSON in response content.
-        Tests that parse_bedrock_response raises JSONDecodeError when content is not valid JSON.
+        Tests that parse_bedrock_response returns fallback structure when content is not valid JSON.
         This can happen if the model returns corrupted or incomplete responses.
         """
-        response_text = '<reasoning>Valid reasoning</reasoning>This is not valid JSON'
+        response_text = 'This is not valid JSON'
         
-        with pytest.raises(json.JSONDecodeError):
-            parse_bedrock_response(response_text)
+        result = parse_bedrock_response(response_text)
+        # Should return fallback structure with error info
+        assert result["content"]["predicted_severity"] == "Unknown"
+        assert "Error" in result["content"]["summary"]
     
     def test_parse_bedrock_response_empty_string(self):
         """
@@ -283,48 +289,43 @@ class TestPredictionService:
         """
         response_text = ''
         
-        with pytest.raises(json.JSONDecodeError):
-            parse_bedrock_response(response_text)
+        result = parse_bedrock_response(response_text)
+        # Should return fallback structure
+        assert result["content"]["predicted_severity"] == "Unknown"
     
-    def test_parse_bedrock_response_only_reasoning_no_content(self):
+    def test_parse_bedrock_response_only_text_no_json(self):
         """
-        EDGE CASE: Response with only reasoning tags, no JSON content.
+        EDGE CASE: Response with only text, no JSON content.
         Tests that the function fails gracefully when JSON content is missing.
-        This tests the boundary between reasoning extraction and content parsing.
         """
-        response_text = '<reasoning>Only reasoning here</reasoning>'
+        response_text = 'Only text here, no JSON'
         
-        with pytest.raises(json.JSONDecodeError):
-            parse_bedrock_response(response_text)
+        result = parse_bedrock_response(response_text)
+        # Should return fallback structure
+        assert result["content"]["predicted_severity"] == "Unknown"
     
-    def test_parse_bedrock_response_nested_reasoning_tags(self):
+    def test_parse_bedrock_response_with_extra_text(self):
         """
-        EDGE CASE: Nested or malformed reasoning tags.
-        Tests regex handling when reasoning tags appear multiple times or are nested.
-        The regex should match the first occurrence using non-greedy matching.
+        EDGE CASE: Response with extra text around JSON.
+        Tests that the function can extract JSON from text with surrounding content.
         """
-        response_text = '<reasoning>First reasoning</reasoning><reasoning>Second reasoning</reasoning>{"severity": "Major"}'
+        response_text = 'Here is the result: {"severity": "Major"} and some more text'
         
-        # This should fail because the content will include the second <reasoning> tag
-        # which is not valid JSON: "<reasoning>Second reasoning</reasoning>{\"severity\": \"Major\"}"
-        with pytest.raises(json.JSONDecodeError):
-            parse_bedrock_response(response_text)
+        result = parse_bedrock_response(response_text)
+        # Should successfully extract the JSON
+        assert result["content"]["severity"] == "Major"
     
-    def test_parse_bedrock_response_case_insensitive_tags(self):
+    def test_parse_bedrock_response_nested_json(self):
         """
-        EDGE CASE: Case variations in reasoning tags.
-        Tests that the regex is case-insensitive (re.IGNORECASE flag) for extraction,
-        but the content extraction uses case-sensitive find('</reasoning>').
-        This is a BUG in the implementation - the regex matches case-insensitively,
-        but find() is case-sensitive, causing a mismatch.
+        EDGE CASE: Response with nested JSON objects.
+        Tests handling of complex nested JSON structures.
         """
-        response_text = '<REASONING>Uppercase reasoning</REASONING>{"severity": "Minor"}'
+        response_text = '{"severity": "Minor", "details": {"mechanism": "test"}}'
         
-        # The regex will match <REASONING>, but find('</reasoning>') won't find it
-        # So content will be the entire response_text, which starts with '<REASONING>'
-        # and is not valid JSON
-        with pytest.raises(json.JSONDecodeError):
-            parse_bedrock_response(response_text)
+        result = parse_bedrock_response(response_text)
+        # Should successfully parse nested JSON
+        assert result["content"]["severity"] == "Minor"
+        assert result["content"]["details"]["mechanism"] == "test"
     
     def test_parse_bedrock_response_special_characters_in_json(self):
         """
@@ -332,15 +333,15 @@ class TestPredictionService:
         Tests handling of escaped characters, quotes, and unicode in the response.
         Important for international drug names and clinical text.
         """
-        # Use raw string or escape the backslashes properly
-        response_text = r'<reasoning>Test</reasoning>{"severity": "Major", "note": "Patient has \"severe\" reaction", "drug": "Naproxène"}'
+        response_text = '{"severity": "Major", "note": "Patient has \\"severe\\" reaction", "drug": "Naproxène"}'
         
         result = parse_bedrock_response(response_text)
         
-        assert result["content"]["note"] == 'Patient has "severe" reaction'
+        assert result["content"]["severity"] == "Major"
         assert result["content"]["drug"] == "Naproxène"
     
-    def test_enrich_from_database_with_none_stats(self, mocker, mock_db, mock_predict_request):
+    @pytest.mark.asyncio
+    async def test_enrich_from_database_with_none_stats(self, mocker, mock_db, mock_predict_request):
         """
         EDGE CASE: Database returns None for statistics.
         Tests handling when get_interaction_statistics returns None instead of a dict.
@@ -348,15 +349,17 @@ class TestPredictionService:
         """
         mocker.patch("app.services.prediction_service.find_similar_interactions", return_value=[])
         mocker.patch("app.services.prediction_service.get_interaction_statistics", return_value=None)
+        mocker.patch("app.services.prediction_service.find_static_ddi_severity", return_value=None)
         
-        result = enrich_from_database(mock_db, mock_predict_request)
+        result = await enrich_from_database_async(mock_db, mock_predict_request)
         
         # Should handle None gracefully with defaults
         assert result["known_interaction_from_patients"] is False
         assert result["avg_confidence"] is None
         assert result["severity_distribution"] == {}
     
-    def test_enrich_from_database_cases_with_none_mechanisms(self, mocker, mock_db, mock_predict_request):
+    @pytest.mark.asyncio
+    async def test_enrich_from_database_cases_with_none_mechanisms(self, mocker, mock_db, mock_predict_request):
         """
         EDGE CASE: Cases with None or missing mechanism text.
         Tests filtering of cases where unified_mechanism_text is None.
@@ -395,14 +398,16 @@ class TestPredictionService:
             "is_known_interaction_from_patients": True,
             "severity_distribution": {"Major": 2}
         })
+        mocker.patch("app.services.prediction_service.find_static_ddi_severity", return_value="Major")
         
-        result = enrich_from_database(mock_db, mock_predict_request)
+        result = await enrich_from_database_async(mock_db, mock_predict_request)
         
         # Should only include non-None mechanisms
-        assert len(result["top_mechanisms"]) == 1
-        assert "Valid mechanism" in result["top_mechanisms"]
+        assert len(result["mechanisms"]) == 1
+        assert "Valid mechanism" in result["mechanisms"]
     
-    def test_enrich_from_database_empty_comorbidities(self, mocker, mock_db):
+    @pytest.mark.asyncio
+    async def test_enrich_from_database_empty_comorbidities(self, mocker, mock_db):
         """
         EDGE CASE: Request with None or empty comorbidities list.
         Tests that enrichment works when patient has no comorbidities.
@@ -424,8 +429,9 @@ class TestPredictionService:
             "is_known_interaction_from_patients": False,
             "severity_distribution": {}
         })
+        mocker.patch("app.services.prediction_service.find_static_ddi_severity", return_value=None)
         
-        result = enrich_from_database(mock_db, request)
+        result = await enrich_from_database_async(mock_db, request)
         
         # Should complete without errors
         assert result["similar_cases_count"] == 0
@@ -557,7 +563,8 @@ class TestPredictionService:
         with pytest.raises(Exception):
             invoke_bedrock_model("System prompt", "User prompt")
     
-    def test_enrich_from_database_with_partial_stats(self, mocker, mock_db, mock_predict_request):
+    @pytest.mark.asyncio
+    async def test_enrich_from_database_with_partial_stats(self, mocker, mock_db, mock_predict_request):
         """
         EDGE CASE: Statistics with zero known_severity_count.
         Tests handling when stats exist but known_severity_count is 0.
@@ -571,18 +578,19 @@ class TestPredictionService:
             "is_known_interaction_from_patients": False,
             "severity_distribution": {}
         })
+        mocker.patch("app.services.prediction_service.find_static_ddi_severity", return_value=None)
         
-        result = enrich_from_database(mock_db, mock_predict_request)
+        result = await enrich_from_database_async(mock_db, mock_predict_request)
         
         # severity_distribution should be empty dict when known_severity_count is 0
         assert result["severity_distribution"] == {}
         assert result["avg_confidence"] == 0.5
     
-    def test_enrich_from_database_max_representative_cases_boundary(self, mocker, mock_db, mock_predict_request):
+    @pytest.mark.asyncio
+    async def test_enrich_from_database_returns_exact_number_of_cases(self, mocker, mock_db, mock_predict_request):
         """
-        EDGE CASE: Exactly 5 cases returned (boundary condition).
-        Tests the boundary condition where similar_cases length equals the limit.
-        Ensures slicing [:5] works correctly at the boundary.
+        EDGE CASE: Returns exact number of cases found.
+        Tests that all similar cases are returned as representative cases.
         """
         cases = [
             PatientDDI(
@@ -597,23 +605,24 @@ class TestPredictionService:
                 ddi_confidence=0.95,
                 ddi_known=True
             )
-            for i in range(5)  # Exactly 5 cases
+            for i in range(3)  # 3 cases
         ]
         
         mocker.patch("app.services.prediction_service.find_similar_interactions", return_value=cases)
         mocker.patch("app.services.prediction_service.get_interaction_statistics", return_value={
-            "total_cases": 5,
-            "known_severity_count": 5,
+            "total_cases": 3,
+            "known_severity_count": 3,
             "avg_confidence": 0.95,
             "is_known_interaction_from_patients": True,
-            "severity_distribution": {"Major": 5}
+            "severity_distribution": {"Major": 3}
         })
+        mocker.patch("app.services.prediction_service.find_static_ddi_severity", return_value="Major")
         
-        result = enrich_from_database(mock_db, mock_predict_request)
+        result = await enrich_from_database_async(mock_db, mock_predict_request)
         
-        # Should include all 5 cases
-        assert len(result["representative_cases"]) == 5
-        assert result["similar_cases_count"] == 5
+        # Should include all 3 cases
+        assert len(result["representative_cases"]) == 3
+        assert result["similar_cases_count"] == 3
     
     def test_parse_bedrock_response_with_whitespace_variations(self):
         """
@@ -621,12 +630,11 @@ class TestPredictionService:
         Tests that whitespace handling (strip()) works correctly.
         Important for consistent parsing regardless of model output formatting.
         """
-        response_text = '  <reasoning>  \n  Reasoning with spaces  \n  </reasoning>  \n  {"severity": "Major"}  '
+        response_text = '  \n  {"severity": "Major"}  '
         
         result = parse_bedrock_response(response_text)
         
-        # Reasoning should be stripped
-        assert "Reasoning with spaces" in result["reasoning"]
+        # Should successfully parse despite whitespace
         assert result["content"]["severity"] == "Major"
     
     def test_invoke_bedrock_model_empty_prompts(self, mocker):

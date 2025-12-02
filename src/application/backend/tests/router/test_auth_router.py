@@ -36,7 +36,7 @@ class TestAuthRouter:
         mocker.patch("app.routers.auth.authenticate_user", return_value=mock_db_user)
         mocker.patch("app.routers.auth.create_access_token", return_value="mock_token")
 
-        response = client.post("/auth/token", data={"username": "testuser", "password": "testpassword"})
+        response = client.post("/api/auth/token", data={"username": "testuser", "password": "testpassword"})
         assert response.status_code == 200
         assert response.json()["access_token"] == "mock_token"
         assert response.json()["token_type"] == "bearer"
@@ -46,12 +46,12 @@ class TestAuthRouter:
         # Mock at the router level where it's imported
         mocker.patch("app.routers.auth.authenticate_user", return_value=None)
         
-        response = client.post("/auth/token", data={"username": "testuser", "password": "wrongpassword"})
+        response = client.post("/api/auth/token", data={"username": "testuser", "password": "wrongpassword"})
         assert response.status_code == 401
         assert response.json()["detail"] == "Incorrect username or password"
 
     def test_logout_success(self, client):
         """Test logout endpoint success"""
-        response = client.post("/auth/logout")
+        response = client.post("/api/auth/logout")
         assert response.status_code == 200
         assert response.json()["detail"] == "Successfully logged out."

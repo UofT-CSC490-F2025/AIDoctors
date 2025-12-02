@@ -46,26 +46,29 @@ class TestPredictionsRouter:
 
     def test_get_predictions_success(self, mocker, authenticated_client, predict_request):
         # Mock at the router level where functions are imported
-        mocker.patch("app.routers.predictions.enrich_from_database", return_value={
-            "similar_cases": [],
-            "top_mechanisms": [],
-            "representative_cases": [],
-            "severity_distribution": {
-                "known_severity_count": 10,
-                "total_cases": 20
+        async def mock_enrich(db, request):
+            return {
+                "similar_cases_count": 0,
+                "static_severity": "Major",
+                "mechanisms": [],
+                "representative_cases": [],
+                "severity_distribution": {
+                    "known_severity_count": 10,
+                    "total_cases": 20
+                }
             }
-        })
+        
+        mocker.patch("app.routers.predictions.enrich_from_database_async", side_effect=mock_enrich)
         mocker.patch("app.routers.predictions.build_system_prompt", return_value="System prompt")
         mocker.patch("app.routers.predictions.build_user_prompt", return_value="User prompt")
         mocker.patch("app.routers.predictions.invoke_bedrock_model", return_value="mock_completion")
         mocker.patch("app.routers.predictions.parse_bedrock_response", return_value={
-            "reasoning": "Both drugs affect blood clotting mechanisms",
             "content": {
-                "severity": "Major"
+                "predicted_severity": "Major"
             }
         })
         
-        response = authenticated_client.post("/predict", json=predict_request.model_dump())
+        response = authenticated_client.post("/api/predict", json=predict_request.model_dump())
 
         assert response.status_code == 200
         assert response.json()["severity"] == "Major"

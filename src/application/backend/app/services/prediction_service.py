@@ -234,7 +234,7 @@ async def enrich_from_database_async(
             'comorbidities': case.comorbidities or [],
             'similarity_score': getattr(case, 'similarity_score', 0)  # Include custom similarity score
         }
-        for case in similar_cases[:3]
+        for case in similar_cases
     ]
 
     enriched_context = {

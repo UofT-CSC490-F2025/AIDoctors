@@ -76,7 +76,7 @@ class TestAuth:
         mocker.patch("app.routers.users.get_user_by_email", return_value=None)
         mocker.patch("app.routers.users.create_user", return_value=mock_db_user)
 
-        response = client.post("/users/register", json=mock_user_create)
+        response = client.post("/api/users/register", json=mock_user_create)
         assert response.status_code == 200
         assert response.json()["username"] == "testuser"
         assert response.json()["email"] == "test@example.com"
@@ -87,7 +87,7 @@ class TestAuth:
         mocker.patch("app.routers.users.get_user_by_email", return_value=mock_db_user)
         mocker.patch("app.routers.users.create_user", return_value=mock_db_user)
 
-        response = client.post("/users/register", json=mock_user_create)
+        response = client.post("/api/users/register", json=mock_user_create)
         assert response.status_code == 400
         assert response.json()["detail"] == "Email already registered"
     
@@ -97,20 +97,20 @@ class TestAuth:
         mocker.patch("app.routers.users.get_user_by_email", return_value=None)
         mocker.patch("app.routers.users.create_user", return_value=mock_db_user)
 
-        response = client.post("/users/register", json=mock_user_create)
+        response = client.post("/api/users/register", json=mock_user_create)
         assert response.status_code == 400
         assert response.json()["detail"] == "Username already registered"
 
     def test_get_current_user_success(self, client_with_auth, mock_user):
         """Test get current user endpoint success"""
-        response = client_with_auth.get("/users/me")
+        response = client_with_auth.get("/api/users/me")
         assert response.status_code == 200
         assert response.json()["username"] == mock_user.username
         assert response.json()["email"] == mock_user.email
     
     def test_get_current_user_unauthorized(self, client):
         """Test get current user endpoint without authentication"""
-        response = client.get("/users/me")
+        response = client.get("/api/users/me")
         assert response.status_code == 401
         assert response.json()["detail"] == "Could not validate credentials"
 
