@@ -38,47 +38,91 @@ jobs:
                   role-session-name: ${{ github.run_id }}
                   aws-region: ${{ env.AWS_REGION }}
 
+            - name: Clean previous builds
+              working-directory: src/application/frontend
+              run: |
+                  echo "Cleaning previous build artifacts..."
+                  rm -rf .next out node_modules/.cache
+                  echo "Clean complete"
+
             - name: Install dependencies
               working-directory: src/application/frontend
-              run: npm ci
+              run: |
+                  echo "Installing dependencies with clean install..."
+                  npm ci
+                  echo "Dependencies installed"
 
             - name: Build Next.js application
               working-directory: src/application/frontend
               env:
                   NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+                  NODE_ENV: production
               run: |
-                  echo "Building frontend with API base URL from secrets"
+                  echo "Building frontend with API base URL: $NEXT_PUBLIC_API_BASE_URL"
+                  echo "Node environment: $NODE_ENV"
                   npm run build
+                  echo "Build complete"
+
+                  # Verify build output
+                  if [ ! -d "out" ]; then
+                    echo "Error: 'out' directory not found after build"
+                    exit 1
+                  fi
+
+                  echo "Build output contents:"
+                  ls -la out/
+
+                  # Check for critical files
+                  if [ ! -f "out/index.html" ]; then
+                    echo "Error: index.html not found in build output"
+                    exit 1
+                  fi
+
+                  echo "Build verification complete"
 
             - name: Deploy to S3
               working-directory: src/application/frontend
               env:
                   BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
               run: |
-                  echo "Syncing build to S3 bucket: $BUCKET_NAME"
+                  echo "Deploying to S3 bucket: $BUCKET_NAME"
 
-                  # Sync static assets with long cache
+                  echo "Step 1: Syncing static assets with long cache..."
+                  # Sync static assets (_next/static/*) with long cache
                   aws s3 sync out/ s3://$BUCKET_NAME/ \
                     --delete \
                     --cache-control "public, max-age=31536000, immutable" \
                     --exclude "*.html" \
                     --exclude "*.json" \
-                    --exclude "*.txt"
+                    --exclude "*.txt" \
+                    --exclude "*.xml"
+                  echo "Static assets synced"
 
+                  echo "Step 2: Syncing HTML and metadata files with short cache..."
                   # Sync HTML, JSON, and text files with short cache for SPA routing
                   aws s3 sync out/ s3://$BUCKET_NAME/ \
                     --cache-control "public, max-age=0, must-revalidate" \
                     --exclude "*" \
                     --include "*.html" \
                     --include "*.json" \
-                    --include "*.txt"
+                    --include "*.txt" \
+                    --include "*.xml"
+                  echo "HTML and metadata files synced"
+
+                  echo "Deployment to S3 complete!"
 
             - name: Invalidate CloudFront Cache
               env:
                   DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
               run: |
                   echo "Invalidating CloudFront cache for distribution: $DISTRIBUTION_ID"
-                  aws cloudfront create-invalidation \
+
+                  INVALIDATION_OUTPUT=$(aws cloudfront create-invalidation \
                     --distribution-id $DISTRIBUTION_ID \
-                    --paths "/*"
-                  echo "✅ Cache invalidation complete!"
+                    --paths "/*" \
+                    --output json)
+
+                  INVALIDATION_ID=$(echo $INVALIDATION_OUTPUT | jq -r '.Invalidation.Id')
+                  echo "Invalidation ID: $INVALIDATION_ID"
+                  echo " Cache invalidation initiated!"
+                  echo "Note: Invalidation typically takes 1-5 minutes to complete"
