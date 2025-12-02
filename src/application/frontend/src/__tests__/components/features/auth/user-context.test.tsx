@@ -5,7 +5,7 @@ import '@testing-library/jest-dom';
 import React, { useContext } from 'react';
 
 const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
-const mockGetApiBaseUrl = jest.fn(() => 'http://localhost:8000');
+const mockGetApiBaseUrl = jest.fn(() => 'http://localhost:8000/api');
 
 // Setup global fetch mock
 global.fetch = mockFetch as any;
@@ -93,7 +93,7 @@ describe('UserProvider Component', () => {
 
     expect(screen.getByTestId('user')).toHaveTextContent('testuser');
     expect(mockFetch).toHaveBeenCalledWith(
-      'http://localhost:8000/users/me',
+      'http://localhost:8000/api/users/me',
       expect.objectContaining({
         method: 'GET',
         credentials: 'include',
@@ -371,7 +371,7 @@ describe('UserProvider Component', () => {
 
     expect(mockGetApiBaseUrl).toHaveBeenCalled();
     expect(mockFetch).toHaveBeenCalledWith(
-      'http://localhost:8000/users/me',
+      'http://localhost:8000/api/users/me',
       expect.objectContaining({
         method: 'GET',
         credentials: 'include',

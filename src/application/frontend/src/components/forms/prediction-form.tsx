@@ -156,13 +156,17 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <Label className="mb-2">Current medication*</Label>
+            <Label htmlFor="drugCurrent" className="mb-2">
+              Current medication
+              <span className="text-red-500">*</span>
+            </Label>
             <Controller
               name="drugCurrent"
               control={control}
               rules={{ required: true }}
               render={({ field }) => (
                 <AsyncSelect
+                  inputId="drugCurrent"
                   cacheOptions
                   defaultOptions={false}
                   loadOptions={loadDrugOptions}
@@ -179,13 +183,17 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
           </div>
 
           <div>
-            <Label className="mb-2">New medication being considered*</Label>
+            <Label htmlFor="drugNew" className="mb-2">
+              New medication being considered
+              <span className="text-red-500">*</span>
+            </Label>
             <Controller
               name="drugNew"
               control={control}
               rules={{ required: true }}
               render={({ field }) => (
                 <AsyncSelect
+                  inputId="drugNew"
                   cacheOptions
                   defaultOptions={false}
                   loadOptions={loadDrugOptions}
@@ -203,12 +211,15 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
         </div>
 
         <div>
-          <Label className="mb-2">Comorbidities</Label>
+          <Label htmlFor="comorbidities" className="mb-2">
+            Comorbidities
+          </Label>
           <Controller
             name="comorbidities"
             control={control}
             render={({ field }) => (
               <AsyncSelect
+                inputId="comorbidities"
                 isMulti
                 cacheOptions
                 defaultOptions={false}
