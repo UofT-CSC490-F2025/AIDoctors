@@ -41,7 +41,7 @@ def get_db_credentials():
 # Check if we're in testing/development mode or should use local database
 environment = os.getenv("ENVIRONMENT", "production").lower()
 
-if environment == "testing":
+if environment in ["development", "testing"]:
     # Use SQLite for testing or local development
     print("Using local SQLite database")
     DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
@@ -74,7 +74,7 @@ Base = declarative_base()
 
 # Export schema name for conditional use in models
 # SQLite doesn't support schemas, so we only use it for PostgreSQL
-SCHEMA_NAME = "production" if environment != "testing" else None
+SCHEMA_NAME = "production" if environment not in ["development", "testing"] else None
 
 
 def get_db():
