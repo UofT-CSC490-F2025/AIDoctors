@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { AlertResult } from '@/types/predict-types';
+import { AlertResult, RepresentativeCase } from '@/types/predict-types';
 import { cn } from '@/utils/general';
 
 const getSeverityStyle = (
@@ -66,7 +66,7 @@ export function Alert({
   const hasEnrichedContext =
     enriched_context && enriched_context.similar_cases_count > 0;
   const topMechanisms = enriched_context?.top_mechanisms || [];
-  const repCases = enriched_context?.representative_cases || [];
+  const repCases: RepresentativeCase[] = enriched_context?.representative_cases || [];
 
   return (
     <div
@@ -147,7 +147,7 @@ export function Alert({
             {/* Enrichment Details */}
             {hasEnrichedContext && (
               <div className="pt-2 border-t border-blue-200 mt-2 space-y-1">
-                <p className="text-xs font-bold uppercase text-blue-600">
+                <p className="text-xs font-bold uppercase text-gray-600">
                   Database Enrichment
                 </p>
                 <p>
@@ -238,16 +238,16 @@ export function Alert({
             Representative Historical Cases
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {repCases.map((caseInfo: any, idx: number) => (
+            {repCases.map((caseInfo: RepresentativeCase, idx: number) => (
               <div
                 key={caseInfo.patient_uuid || idx}
                 className="rounded-lg border border-orange-200 bg-orange-50 p-3 text-xs shadow-sm"
               >
                 <p className="font-bold text-orange-800">Case #{idx + 1}</p>
                 <p>
-                  Severity:{' '}
+                  Similarity Score:{' '}
                   <span className="font-semibold">
-                    {caseInfo.severity || 'N/A'}
+                    {caseInfo.similarity_score?.toFixed(2) || 'N/A'}
                   </span>
                 </p>
                 <p>
