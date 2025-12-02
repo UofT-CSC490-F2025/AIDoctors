@@ -1,15 +1,30 @@
 'use client';
+import AsyncSelect from 'react-select/async';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { AlertTriangle, Loader2, Calendar } from 'lucide-react';
+import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Select } from '@/components/ui/select';
 import { getApiBaseUrl } from '@/utils/api';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useUser } from '@/hooks/useUser';
 import { AlertResult } from '@/types/predict-types';
+
+const loadOptions = (baseUrl: string) => async (input: string) => {
+  if (!input) return [];
+  const response = await fetch(
+    `${baseUrl}/predict/matching_drugs?drug_name=${encodeURIComponent(input)}`,
+    {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    }
+  );
+  if (!response.ok) return [];
+  const data = await response.json();
+  return data.map((d: string) => ({ label: d, value: d }));
+};
 
 type PredictFormValues = {
   age: number;
@@ -17,8 +32,6 @@ type PredictFormValues = {
   drugCurrent: string;
   drugNew: string;
   comorbidities: string;
-  overlapStart: string;
-  overlapStop: string;
 };
 
 type PredictionFormProps = {
@@ -26,9 +39,12 @@ type PredictionFormProps = {
 };
 
 export function PredictionForm({ setResults }: PredictionFormProps) {
-  const { register, handleSubmit, formState } = useForm<PredictFormValues>();
+  const { control, register, handleSubmit, formState } =
+    useForm<PredictFormValues>();
   const [error, setError] = useState<string | null>(null);
   const { setUser } = useUser();
+
+  const baseUrl = getApiBaseUrl();
 
   const errorRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -53,20 +69,15 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
         drug1: data.drugCurrent,
         drug2: data.drugNew,
         Comorbidities: comorbiditiesArr,
-        overlap_start: data.overlapStart,
-        overlap_stop: data.overlapStop,
       };
-      const response = await fetch(`${getApiBaseUrl()}/predict`, {
+
+      const response = await fetch(`${baseUrl}/predict`, {
         method: 'POST',
-        credentials: 'include', // Send cookies
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bodyData),
       });
       const responseData = await response.json();
-
-      console.log(responseData);
 
       if (response.status === 401) {
         setError('Unauthenticated request. Please log in again.');
@@ -85,8 +96,7 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
       }
 
       setResults(responseData);
-    } catch (error) {
-      console.error('Prediction error:', error);
+    } catch {
       setError('An unexpected error occurred. Please try again later.');
     }
   };
@@ -106,6 +116,7 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
               {...register('age', { min: 0 })}
             />
           </div>
+
           <div>
             <Label htmlFor="sex" className="mb-2">
               Sex
@@ -125,24 +136,48 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="drugCurrent" className="mb-2">
-              Current medication<span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="drugCurrent"
-              placeholder="Warfarin"
-              {...register('drugCurrent', { required: true })}
+            <Label className="mb-2">Current medication*</Label>
+            <Controller
+              name="drugCurrent"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <AsyncSelect
+                  cacheOptions
+                  defaultOptions={false}
+                  loadOptions={loadOptions(baseUrl)}
+                  onChange={(opt) => field.onChange(opt?.value ?? '')}
+                  value={
+                    field.value
+                      ? { label: field.value, value: field.value }
+                      : null
+                  }
+                  placeholder="Search drug..."
+                />
+              )}
             />
           </div>
+
           <div>
-            <Label htmlFor="drugNew" className="mb-2">
-              New medication being considered
-              <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="drugNew"
-              placeholder="Aspirin"
-              {...register('drugNew', { required: true })}
+            <Label className="mb-2">New medication being considered*</Label>
+            <Controller
+              name="drugNew"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <AsyncSelect
+                  cacheOptions
+                  defaultOptions={false}
+                  loadOptions={loadOptions(baseUrl)}
+                  onChange={(opt) => field.onChange(opt?.value ?? '')}
+                  value={
+                    field.value
+                      ? { label: field.value, value: field.value }
+                      : null
+                  }
+                  placeholder="Search drug..."
+                />
+              )}
             />
           </div>
         </div>
@@ -176,6 +211,7 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
           )}
         </Button>
       </form>
+
       {error ? (
         <div
           ref={errorRef}
