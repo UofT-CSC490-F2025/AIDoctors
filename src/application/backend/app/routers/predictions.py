@@ -23,7 +23,7 @@ router = APIRouter(
 )
 
 
-@router.post("/")
+@router.post("")
 async def predict(
     request: DDIPredictRequest, db: Session = Depends(get_db)
 ) -> DDIPredictResponse:

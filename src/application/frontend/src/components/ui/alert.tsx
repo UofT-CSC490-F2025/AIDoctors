@@ -147,7 +147,7 @@ export function Alert({
             {/* Enrichment Details */}
             {hasEnrichedContext && (
               <div className="pt-2 border-t border-blue-200 mt-2 space-y-1">
-                <p className="text-xs font-bold uppercase text-blue-600">
+                <p className="text-xs font-bold uppercase text-gray-600">
                   Database Enrichment
                 </p>
                 <p>
