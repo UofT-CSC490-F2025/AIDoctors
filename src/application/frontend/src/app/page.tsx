@@ -68,7 +68,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <Alert info={DUMMY_ALERTS[1]} className="shadow-xl" />
+            <Alert info={DUMMY_ALERTS[0]} className="shadow-xl" />
           </div>
         </div>
       </section>

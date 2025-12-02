@@ -7,6 +7,7 @@ from functools import partial
 from sqlalchemy.orm import Session
 from app.dependencies import get_current_active_user, get_db
 from app.repositories.ddiref_repository import search_matching_drug_names
+from app.repositories.patientddi_repository import search_comorbidities
 from app.schemas.db.prediction import DDIPredictRequest, DDIPredictResponse
 from app.schemas.bedrock.bedrock import build_system_prompt, build_user_prompt
 from app.services.prediction_service import (
@@ -75,7 +76,7 @@ async def predict(
 
 @router.get("/matching_drugs", response_model=List[str])
 def search_matching_drugs(
-    drug_name: str = Query(
+    name: str = Query(
         ..., min_length=1, description="Name of the drug to search for"
     ),
     db: Session = Depends(get_db),
@@ -83,4 +84,15 @@ def search_matching_drugs(
     """
     Route to search for drug names using the search_matching_drug_names utility.
     """
-    return search_matching_drug_names(db, drug_name, limit=5)
+    return search_matching_drug_names(db, name, limit=5)
+
+
+@router.get("/matching_comorbidities", response_model=List[str])
+def search_comorbidities_route(
+    name: str = Query(..., min_length=1, description="Name of the comorbidity to search for"),
+    db: Session = Depends(get_db)
+):
+    """
+    Route to search for comorbidity names.
+    """
+    return search_comorbidities(db, name, limit=5)
