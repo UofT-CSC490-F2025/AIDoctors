@@ -190,6 +190,6 @@ For issues, questions, or contributions:
 
 - [Frontend Documentation](src/application/frontend/README.md)
 - [Backend Documentation](src/application/backend/README.md)
-- [Data Pipeline Documentation](src/data_pipelines/)
+- [Data Pipeline Documentation](src/data_pipelines/README.md)
 - [ML Training Guide](src/rl_judge/README_LOGGING.md)
 - [Terraform Infrastructure](terraform/README.md)
