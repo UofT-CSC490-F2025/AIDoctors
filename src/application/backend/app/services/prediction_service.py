@@ -12,11 +12,28 @@ from app.schemas.db.prediction import DDIPredictRequest
 from app.repositories.patientddi_repository import find_similar_interactions, get_interaction_statistics
 load_dotenv()
 
+
+def clean_reasoning_tag(input_str: str) -> str:
+    """
+    Removes <reasoning> tags and all content between them.
+    """
+    # pattern: <reasoning> + non-greedy match of any char (incl newlines) + </reasoning>
+    pattern = r"<reasoning>.*?</reasoning>"
+
+    # re.DOTALL makes '.' match newlines
+    cleaned_text = re.sub(pattern, "", input_str, flags=re.DOTALL)
+
+    # Return stripped string to remove leftover whitespace
+    return cleaned_text.strip()
+
+
 def parse_bedrock_response(response_text: str) -> dict:
     """
     Parse the Bedrock model response to extract JSON content.
     Uses multiple fallback strategies for robust parsing.
     """
+    # First, clean out any <reasoning> tags to avoid parsing issues
+    response_text = clean_reasoning_tag(response_text)
     
     # Strategy 1: Try to extract JSON from markdown code blocks
     json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', response_text, re.DOTALL)
