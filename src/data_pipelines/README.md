@@ -63,8 +63,7 @@ This script:
 Run the ETL pipeline:
 
 ```bash
-python3 rebuild_synthea_aeolus_ddi_pipeline.py
-# (use your actual filename if different)
+python pipeline.py
 ```
 
 This script expects the following under `data/raw_datasets/`:
@@ -100,15 +99,10 @@ This script expects the following under `data/raw_datasets/`:
 To create and populate the DB tables:
 
 ```bash
-python3 load_pipeline_outputs_to_postgres.py
+python3 load_to_postgres.py
 ```
 
-This script fetches:
-
-- DB host, port, user, dbname, schema from SSM
-- DB password from Secrets Manager (via `/aidoctors/db/password-secret-arn`)
-
-Then it:
+This script:
 
 - Creates or replaces all pipeline tables
 - Loads every output CSV from `data/datasets_output/`
@@ -120,13 +114,13 @@ Then it:
 
 ```bash
 # 1. Sync raw data
-python3 sync_raw_from_s3.py
+python sync_raw_from_s3.py
 
 # 2. Rebuild derived pipeline outputs
-python3 rebuild_synthea_aeolus_ddi_pipeline.py
+python pipeline.py
 
 # 3. Load results into PostgreSQL
-python3 load_pipeline_outputs_to_postgres.py
+python3 load_to_postgres.py
 ```
 
 After this, all datasets exist locally as CSVs and remotely as Postgres tables in the configured schema.
