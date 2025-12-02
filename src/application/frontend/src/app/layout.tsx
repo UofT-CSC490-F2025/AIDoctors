@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: 'AI Doctors',
   description:
     'Surface medication interaction risks with ML-powered, patient-specific alerts.',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export const viewport: Viewport = {
