@@ -12,24 +12,24 @@ import { useUser } from '@/hooks/useUser';
 import { AlertResult } from '@/types/predict-types';
 
 function makeDebouncedLoader(fn: (q: string) => Promise<any[]>, delay: number) {
-  let timer: NodeJS.Timeout | null = null
-  let pending: (value: any[]) => void
+  let timer: NodeJS.Timeout | null = null;
+  let pending: (value: any[]) => void;
 
   return (input: string) =>
     new Promise<any[]>((resolve) => {
-      pending = resolve
-      if (timer) clearTimeout(timer)
+      pending = resolve;
+      if (timer) clearTimeout(timer);
       timer = setTimeout(async () => {
-        const out = await fn(input)
-        pending(out)
-      }, delay)
-    })
+        const out = await fn(input);
+        pending(out);
+      }, delay);
+    });
 }
 
 const fetchDrugs = async (input: string) => {
   if (!input) return [];
 
-  const baseUrl = getApiBaseUrl()
+  const baseUrl = getApiBaseUrl();
 
   const response = await fetch(
     `${baseUrl}/predict/matching_drugs?name=${encodeURIComponent(input)}`,
@@ -43,25 +43,24 @@ const fetchDrugs = async (input: string) => {
   return data.map((d: string) => ({ label: d, value: d }));
 };
 
-const loadOptions = makeDebouncedLoader(fetchDrugs, 300)
+const loadOptions = makeDebouncedLoader(fetchDrugs, 300);
 
 const fetchComorbidities = async (input: string) => {
-  if (!input) return []
+  if (!input) return [];
 
-  const baseUrl = getApiBaseUrl()
+  const baseUrl = getApiBaseUrl();
 
   const r = await fetch(
     `${baseUrl}/predict/matching_comorbidities?name=${encodeURIComponent(input)}`,
     { credentials: 'include', headers: { 'Content-Type': 'application/json' } }
-  )
-  if (!r.ok) return []
+  );
+  if (!r.ok) return [];
 
-  const data = await r.json()
-  return data.map((d: string) => ({ label: d, value: d }))
-}
+  const data = await r.json();
+  return data.map((d: string) => ({ label: d, value: d }));
+};
 
-const loadComorbidityOptions = makeDebouncedLoader(fetchComorbidities, 300)
-
+const loadComorbidityOptions = makeDebouncedLoader(fetchComorbidities, 300);
 
 type PredictFormValues = {
   age: number;
@@ -76,10 +75,14 @@ type PredictionFormProps = {
 };
 
 export function PredictionForm({ setResults }: PredictionFormProps) {
-  const { control, register, handleSubmit, formState: { isValid , isSubmitting} } =
-    useForm<PredictFormValues>({
-      mode: 'onChange'
-    });
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { isValid, isSubmitting },
+  } = useForm<PredictFormValues>({
+    mode: 'onChange',
+  });
   const [error, setError] = useState<string | null>(null);
   const { setUser } = useUser();
 
@@ -103,7 +106,7 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
         drug1: data.drugCurrent,
         drug2: data.drugNew,
         Comorbidities: data.comorbidities,
-      }
+      };
 
       const response = await fetch(`${baseUrl}/predict`, {
         method: 'POST',
@@ -237,8 +240,8 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
                 onChange={(opts) => {
                   const values = Array.isArray(opts)
                     ? opts.map((o) => o.value)
-                    : []
-                  field.onChange(values)
+                    : [];
+                  field.onChange(values);
                 }}
               />
             )}
