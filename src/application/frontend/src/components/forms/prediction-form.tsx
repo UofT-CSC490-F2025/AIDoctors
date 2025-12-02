@@ -10,29 +10,13 @@ import { getApiBaseUrl } from '@/utils/api';
 import { Controller, useForm } from 'react-hook-form';
 import { useUser } from '@/hooks/useUser';
 import { AlertResult } from '@/types/predict-types';
-
-function makeDebouncedLoader(fn: (q: string) => Promise<any[]>, delay: number) {
-  let timer: NodeJS.Timeout | null = null;
-  let pending: (value: any[]) => void;
-
-  return (input: string) =>
-    new Promise<any[]>((resolve) => {
-      pending = resolve;
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(async () => {
-        const out = await fn(input);
-        pending(out);
-      }, delay);
-    });
-}
+import { makeDebouncedLoader } from '@/utils/general';
 
 const fetchDrugs = async (input: string) => {
   if (!input) return [];
 
-  const baseUrl = getApiBaseUrl();
-
   const response = await fetch(
-    `${baseUrl}/predict/matching_drugs?name=${encodeURIComponent(input)}`,
+    `${getApiBaseUrl()}/predict/matching_drugs?name=${encodeURIComponent(input)}`,
     {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -42,24 +26,22 @@ const fetchDrugs = async (input: string) => {
   const data = await response.json();
   return data.map((d: string) => ({ label: d, value: d }));
 };
-
-const loadOptions = makeDebouncedLoader(fetchDrugs, 300);
+const loadDrugOptions = makeDebouncedLoader(fetchDrugs, 300);
 
 const fetchComorbidities = async (input: string) => {
   if (!input) return [];
 
-  const baseUrl = getApiBaseUrl();
-
-  const r = await fetch(
-    `${baseUrl}/predict/matching_comorbidities?name=${encodeURIComponent(input)}`,
-    { credentials: 'include', headers: { 'Content-Type': 'application/json' } }
+  const response = await fetch(
+    `${getApiBaseUrl()}/predict/matching_comorbidities?name=${encodeURIComponent(input)}`,
+    {
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+    }
   );
-  if (!r.ok) return [];
-
-  const data = await r.json();
+  if (!response.ok) return [];
+  const data = await response.json();
   return data.map((d: string) => ({ label: d, value: d }));
 };
-
 const loadComorbidityOptions = makeDebouncedLoader(fetchComorbidities, 300);
 
 type PredictFormValues = {
@@ -174,16 +156,20 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <Label className="mb-2">Current medication*</Label>
+            <Label htmlFor="drugCurrent" className="mb-2">
+              Current medication
+              <span className="text-red-500">*</span>
+            </Label>
             <Controller
               name="drugCurrent"
               control={control}
               rules={{ required: true }}
               render={({ field }) => (
                 <AsyncSelect
+                  inputId="drugCurrent"
                   cacheOptions
                   defaultOptions={false}
-                  loadOptions={loadOptions}
+                  loadOptions={loadDrugOptions}
                   onChange={(opt) => field.onChange(opt?.value ?? '')}
                   value={
                     field.value
@@ -197,16 +183,20 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
           </div>
 
           <div>
-            <Label className="mb-2">New medication being considered*</Label>
+            <Label htmlFor="drugNew" className="mb-2">
+              New medication being considered
+              <span className="text-red-500">*</span>
+            </Label>
             <Controller
               name="drugNew"
               control={control}
               rules={{ required: true }}
               render={({ field }) => (
                 <AsyncSelect
+                  inputId="drugNew"
                   cacheOptions
                   defaultOptions={false}
-                  loadOptions={loadOptions}
+                  loadOptions={loadDrugOptions}
                   onChange={(opt) => field.onChange(opt?.value ?? '')}
                   value={
                     field.value
@@ -221,12 +211,15 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
         </div>
 
         <div>
-          <Label className="mb-2">Comorbidities</Label>
+          <Label htmlFor="comorbidities" className="mb-2">
+            Comorbidities
+          </Label>
           <Controller
             name="comorbidities"
             control={control}
             render={({ field }) => (
               <AsyncSelect
+                inputId="comorbidities"
                 isMulti
                 cacheOptions
                 defaultOptions={false}

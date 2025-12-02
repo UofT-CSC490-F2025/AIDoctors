@@ -25,7 +25,7 @@ describe('getApiBaseUrl', () => {
 
     const { getApiBaseUrl } = await import(modulePath);
 
-    expect(getApiBaseUrl()).toBe('http://localhost:8000');
+    expect(getApiBaseUrl()).toBe('http://localhost:8000/api');
   });
 
   it('uses the env base URL without altering it when no trailing slash exists', async () => {

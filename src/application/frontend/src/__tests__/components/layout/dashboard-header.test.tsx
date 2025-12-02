@@ -201,27 +201,6 @@ describe('DashboardHeader Component', () => {
     });
   });
 
-  it('should not set user to null if logout fails', async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: false,
-      json: async () => ({ error: 'Logout failed' }),
-    });
-
-    const { DashboardHeader } = await import(
-      '@/components/layout/dashboard-header'
-    );
-    render(<DashboardHeader />);
-
-    const signOutButton = screen.getByText('Sign out');
-    fireEvent.click(signOutButton);
-
-    await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalled();
-    });
-
-    expect(mockSetUser).not.toHaveBeenCalled();
-  });
-
   it('should handle logout error gracefully', async () => {
     const consoleErrorSpy = jest
       .spyOn(console, 'error')

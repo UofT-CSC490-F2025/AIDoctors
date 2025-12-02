@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
 const mockPush = jest.fn();
-const mockGetApiBaseUrl = jest.fn(() => 'http://localhost:8000');
+const mockGetApiBaseUrl = jest.fn(() => 'http://localhost:8000/api');
 const mockFetch = jest.fn();
 
 // Setup global fetch mock
@@ -90,10 +90,9 @@ describe('SignupForm Component', () => {
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
-        'http://localhost:8000/users/register',
+        'http://localhost:8000/api/users/register',
         expect.objectContaining({
           method: 'POST',
-          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },

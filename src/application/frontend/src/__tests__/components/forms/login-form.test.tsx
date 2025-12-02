@@ -6,7 +6,7 @@ import '@testing-library/jest-dom';
 
 const mockSetUser = jest.fn();
 const mockPush = jest.fn();
-const mockGetApiBaseUrl = jest.fn(() => 'http://localhost:8000');
+const mockGetApiBaseUrl = jest.fn(() => 'http://localhost:8000/api');
 const mockFetch = jest.fn();
 
 // Setup global fetch mock
