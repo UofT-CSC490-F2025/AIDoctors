@@ -106,7 +106,7 @@ def invoke_bedrock_model(system_prompt: str, user_prompt: str) -> str:
         request_body = {
             "prompt": combined_prompt,
             "max_tokens": 4096,
-            "temperature": 0.7        
+            "temperature": 0.2      
         }
     
     try:
