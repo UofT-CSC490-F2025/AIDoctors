@@ -16,18 +16,18 @@ AIDoctors is an AI-powered drug-drug interaction (DDI) prediction system designe
 
 ### Key Features
 
--   **DDI Risk Prediction**: Analyze potential interactions between current and newly prescribed medications
--   **Patient Context Analysis**: Consider patient demographics, comorbidities, and medication history
--   **Real-time Alerts**: Receive immediate feedback on high-risk drug combinations
--   **Clinical Decision Support**: Evidence-based recommendations to support safer prescribing practices
+- **DDI Risk Prediction**: Analyze potential interactions between current and newly prescribed medications
+- **Patient Context Analysis**: Predictions consider patient demographics, comorbidities, and medication history compared to historical cases
+- **Real-time Alerts**: Receive immediate feedback on high-risk drug combinations
+- **Clinical Decision Support**: Evidence-based recommendations to support safer prescribing practices
 
 ### Technology Stack
 
--   **Frontend**: Next.js, React, TypeScript, TailwindCSS
--   **Backend**: FastAPI, Python, PostgreSQL
--   **ML Pipeline**: Custom fine-tuned models on FAERS and Synthea datasets
--   **Infrastructure**: AWS (ECS Fargate, RDS, ALB, S3, EventBridge)
--   **CI/CD**: GitHub Actions, Terraform
+- **Frontend**: Next.js, React, TypeScript, TailwindCSS
+- **Backend**: FastAPI, Python, PostgreSQL
+- **ML Pipeline**: Custom fine-tuned models on FAERS and Synthea datasets
+- **Infrastructure**: AWS (ECS Fargate, RDS, ALB, S3, EventBridge)
+- **CI/CD**: GitHub Actions, Terraform
 
 ### Architecture
 
@@ -35,26 +35,27 @@ The application consists of three main components:
 
 1. **Web Application** (Frontend + Backend API)
 
-    - User authentication and session management
-    - Interactive prediction interface
-    - RESTful API for DDI predictions
+   - User authentication and session management
+   - Interactive prediction interface
+   - RESTful API for DDI predictions
 
 2. **Data Extraction Pipeline**
 
-    - Automated extraction from FAERS database
-    - Scheduled via EventBridge (weekly)
-    - Processes adverse event reports
+   - Automated extraction from FAERS database
+   - Scheduled via EventBridge (weekly)
+   - Processes adverse event reports
 
 3. **ML Training Pipeline**
-    - Model fine-tuning on combined datasets
-    - Scheduled via EventBridge (weekly, 30min after extraction)
-    - Continuous model improvement
+   - Model fine-tuning on combined datasets
+   - Scheduled via EventBridge (weekly, 30min after extraction)
+   - Continuous model improvement
 
 ## 🚀 Getting Started
 
 ### Quick Start
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/UofT-CSC490-F2025/AIDoctors.git
    cd AIDoctors
@@ -66,11 +67,11 @@ The application consists of three main components:
 
 ### Prerequisites
 
--   Node.js 18+ (for frontend)
--   Python 3.11+ (for backend)
--   PostgreSQL (for database)
--   Docker (optional, for containerized development)
--   AWS Credentials (for Bedrock API access)
+- Node.js 20.9.0+ (for frontend)
+- Python 3.11+ (for backend)
+- PostgreSQL (for database)
+- Docker (optional, for containerized development)
+- AWS Credentials (for Bedrock API access)
 
 ## 🏗️ Project Structure
 
@@ -91,7 +92,7 @@ AIDoctors/
 
 ## 🏛️ Architecture
 
-![Architecture Diagram for the cloud](image.png)
+![Architecture Diagram for the cloud](images/architecture_diagram.png)
 
 ### Data Flow
 
@@ -110,6 +111,7 @@ The project maintains comprehensive test coverage:
 - **Data Pipelines**: ![Data Pipelines Coverage](.github/badges/data-pipelines-coverage.svg)
 
 Run tests:
+
 ```bash
 # Frontend tests
 cd src/application/frontend
@@ -117,7 +119,7 @@ npm test
 
 # Backend tests
 cd src/application/backend
-poetry run pytest
+uv run pytest
 
 # Data pipeline tests
 cd src/data_pipelines
@@ -138,6 +140,7 @@ terraform apply
 ```
 
 Key AWS services used:
+
 - **ECS Fargate**: Container orchestration
 - **RDS PostgreSQL**: Database
 - **ALB**: Load balancing
@@ -148,6 +151,7 @@ Key AWS services used:
 ### CI/CD Pipeline
 
 GitHub Actions automatically:
+
 - Runs tests on pull requests
 - Updates coverage badges
 - Deploys to production on merge to main
@@ -177,6 +181,7 @@ Developed by the AIDoctors team at University of Toronto.
 ## 🙋 Support
 
 For issues, questions, or contributions:
+
 - Open an issue on GitHub
 - Contact the development team
 - Review component-specific READMEs for detailed documentation
