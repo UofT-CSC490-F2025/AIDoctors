@@ -25,6 +25,7 @@ app = FastAPI(
     description="FastAPI backend for CSC490 project",
     version="1.0.0",
     lifespan=lifespan,
+    redirect_slashes=False,  # Disable automatic redirects to prevent mixed content errors with CloudFront
 )
 
 allowed_origins = [

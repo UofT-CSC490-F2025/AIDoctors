@@ -55,7 +55,17 @@ def find_similar_interactions(
     
     all_cases = db.query(PatientDDI).filter(drug_condition).all()
     
-    # Step 2: Score and sort by patient similarity
+    # Filter for unique patients (keep only one case per patient_uuid)
+    # Group by patient_uuid and keep the first occurrence
+    seen_patients = set()
+    unique_cases = []
+    for case in all_cases:
+        if case.patient_uuid not in seen_patients:
+            seen_patients.add(case.patient_uuid)
+            unique_cases.append(case)
+    
+    # Step 2: Score and sort by patient similarity (using unique patients only)
+    all_cases = unique_cases
     def calculate_similarity_score(case: PatientDDI) -> tuple:
         """
         Calculate similarity score for sorting.
