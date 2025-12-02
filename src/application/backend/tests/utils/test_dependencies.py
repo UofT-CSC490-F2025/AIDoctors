@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, Mock
 from fastapi import HTTPException
 from jose import jwt
 from app.dependencies import (
@@ -272,3 +272,78 @@ class TestGetCurrentActiveUser:
 
         assert result == current_user
         assert "admin" in result.roles
+
+
+class TestSecurityConfig:
+    """Test security configuration module."""
+
+    @patch.dict("os.environ", {"ENVIRONMENT": "testing"}, clear=True)
+    @patch("app.config.security.boto3")
+    def test_skip_aws_in_testing_environment(self, mock_boto3):
+        """Test that AWS SSM is not called in testing environment."""
+        # Re-import to trigger the module-level code
+        import importlib
+        import app.config.security as security_module
+        importlib.reload(security_module)
+
+        # boto3.client should not be called in testing environment
+        mock_boto3.client.assert_not_called()
+
+    @patch.dict("os.environ", {"ENVIRONMENT": "development"}, clear=True)
+    @patch("app.config.security.boto3")
+    def test_skip_aws_in_development_environment(self, mock_boto3):
+        """Test that AWS SSM is not called in development environment."""
+        # Re-import to trigger the module-level code
+        import importlib
+        import app.config.security as security_module
+        importlib.reload(security_module)
+
+        # boto3.client should not be called in development environment
+        mock_boto3.client.assert_not_called()
+
+    @patch.dict("os.environ", {"ENVIRONMENT": "production", "ACCESS_TOKEN_SECRET_KEY": "fallback-key"}, clear=True)
+    @patch("app.config.security.boto3")
+    def test_fallback_to_environment_variable_on_aws_failure(self, mock_boto3):
+        """Test fallback to environment variable when AWS SSM fails."""
+        # Mock AWS SSM to raise an exception
+        mock_boto3.client.side_effect = Exception("AWS connection failed")
+
+        # Re-import to trigger the module-level code
+        import importlib
+        import app.config.security as security_module
+        importlib.reload(security_module)
+
+        assert security_module.ACCESS_TOKEN_SECRET_KEY == "fallback-key"
+
+    @patch.dict("os.environ", {"ENVIRONMENT": "testing", "ACCESS_TOKEN_SECRET_KEY": "test-secret"}, clear=True)
+    def test_use_environment_variable_in_testing(self):
+        """Test that environment variable is used directly in testing."""
+        # Re-import to trigger the module-level code
+        import importlib
+        import app.config.security as security_module
+        importlib.reload(security_module)
+
+        assert security_module.ACCESS_TOKEN_SECRET_KEY == "test-secret"
+
+    def test_security_constants_defined(self):
+        """Test that security constants are properly defined."""
+        from app.config.security import (
+            ACCESS_TOKEN_ALGORITHM,
+            ACCESS_TOKEN_EXPIRE_MINUTES,
+            oauth2_scheme,
+            password_hash_context
+        )
+
+        assert ACCESS_TOKEN_ALGORITHM == "HS256"
+        assert ACCESS_TOKEN_EXPIRE_MINUTES == 60
+        assert oauth2_scheme is not None
+        assert password_hash_context is not None
+
+    def test_password_hash_context_configuration(self):
+        """Test password hash context is configured with bcrypt."""
+        from app.config.security import password_hash_context
+
+        assert "bcrypt" in password_hash_context.schemes()
+
+
+
