@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Select } from '@/components/ui/select';
 import { getApiBaseUrl } from '@/utils/api';
@@ -12,10 +11,28 @@ import { Controller, useForm } from 'react-hook-form';
 import { useUser } from '@/hooks/useUser';
 import { AlertResult } from '@/types/predict-types';
 
-const loadOptions = (baseUrl: string) => async (input: string) => {
+function makeDebouncedLoader(fn: (q: string) => Promise<any[]>, delay: number) {
+  let timer: NodeJS.Timeout | null = null
+  let pending: (value: any[]) => void
+
+  return (input: string) =>
+    new Promise<any[]>((resolve) => {
+      pending = resolve
+      if (timer) clearTimeout(timer)
+      timer = setTimeout(async () => {
+        const out = await fn(input)
+        pending(out)
+      }, delay)
+    })
+}
+
+const fetchDrugs = async (input: string) => {
   if (!input) return [];
+
+  const baseUrl = getApiBaseUrl()
+
   const response = await fetch(
-    `${baseUrl}/predict/matching_drugs?drug_name=${encodeURIComponent(input)}`,
+    `${baseUrl}/predict/matching_drugs?name=${encodeURIComponent(input)}`,
     {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -26,12 +43,32 @@ const loadOptions = (baseUrl: string) => async (input: string) => {
   return data.map((d: string) => ({ label: d, value: d }));
 };
 
+const loadOptions = makeDebouncedLoader(fetchDrugs, 300)
+
+const fetchComorbidities = async (input: string) => {
+  if (!input) return []
+
+  const baseUrl = getApiBaseUrl()
+
+  const r = await fetch(
+    `${baseUrl}/predict/matching_comorbidities?name=${encodeURIComponent(input)}`,
+    { credentials: 'include', headers: { 'Content-Type': 'application/json' } }
+  )
+  if (!r.ok) return []
+
+  const data = await r.json()
+  return data.map((d: string) => ({ label: d, value: d }))
+}
+
+const loadComorbidityOptions = makeDebouncedLoader(fetchComorbidities, 300)
+
+
 type PredictFormValues = {
   age: number;
   sex: 'M' | 'F' | '';
   drugCurrent: string;
   drugNew: string;
-  comorbidities: string;
+  comorbidities: string[];
 };
 
 type PredictionFormProps = {
@@ -39,8 +76,10 @@ type PredictionFormProps = {
 };
 
 export function PredictionForm({ setResults }: PredictionFormProps) {
-  const { control, register, handleSubmit, formState } =
-    useForm<PredictFormValues>();
+  const { control, register, handleSubmit, formState: { isValid , isSubmitting} } =
+    useForm<PredictFormValues>({
+      mode: 'onChange'
+    });
   const [error, setError] = useState<string | null>(null);
   const { setUser } = useUser();
 
@@ -58,18 +97,13 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
     setResults(null);
 
     try {
-      const comorbiditiesArr = data.comorbidities
-        .split(',')
-        .map((c) => c.trim())
-        .filter(Boolean);
-
       const bodyData = {
         Age: Number(data.age),
         Sex: data.sex,
         drug1: data.drugCurrent,
         drug2: data.drugNew,
-        Comorbidities: comorbiditiesArr,
-      };
+        Comorbidities: data.comorbidities,
+      }
 
       const response = await fetch(`${baseUrl}/predict`, {
         method: 'POST',
@@ -113,6 +147,7 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
               id="age"
               type="number"
               placeholder="65"
+              min={0}
               {...register('age', { min: 0 })}
             />
           </div>
@@ -145,7 +180,7 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
                 <AsyncSelect
                   cacheOptions
                   defaultOptions={false}
-                  loadOptions={loadOptions(baseUrl)}
+                  loadOptions={loadOptions}
                   onChange={(opt) => field.onChange(opt?.value ?? '')}
                   value={
                     field.value
@@ -168,7 +203,7 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
                 <AsyncSelect
                   cacheOptions
                   defaultOptions={false}
-                  loadOptions={loadOptions(baseUrl)}
+                  loadOptions={loadOptions}
                   onChange={(opt) => field.onChange(opt?.value ?? '')}
                   value={
                     field.value
@@ -183,25 +218,39 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
         </div>
 
         <div>
-          <Label htmlFor="comorbidities" className="mb-2">
-            Comorbidities
-          </Label>
-          <Textarea
-            id="comorbidities"
-            placeholder="Hypertension, Diabetes"
-            {...register('comorbidities')}
+          <Label className="mb-2">Comorbidities</Label>
+          <Controller
+            name="comorbidities"
+            control={control}
+            render={({ field }) => (
+              <AsyncSelect
+                isMulti
+                cacheOptions
+                defaultOptions={false}
+                loadOptions={loadComorbidityOptions}
+                placeholder="Search comorbidities..."
+                value={
+                  Array.isArray(field.value)
+                    ? field.value.map((v: string) => ({ label: v, value: v }))
+                    : []
+                }
+                onChange={(opts) => {
+                  const values = Array.isArray(opts)
+                    ? opts.map((o) => o.value)
+                    : []
+                  field.onChange(values)
+                }}
+              />
+            )}
           />
-          <p className="text-xs text-gray-500 mt-1">
-            Separate multiple entries with commas.
-          </p>
         </div>
 
         <Button
           type="submit"
-          disabled={formState.isSubmitting}
+          disabled={!isValid || isSubmitting}
           className="rounded-full w-full sm:w-auto"
         >
-          {formState.isSubmitting ? (
+          {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Generating alerts...
