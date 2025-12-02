@@ -12,7 +12,7 @@ from app.schemas.bedrock.bedrock import build_system_prompt, build_user_prompt
 from app.services.prediction_service import (
     invoke_bedrock_model,
     parse_bedrock_response,
-    enrich_from_database,
+    enrich_from_database_async,
 )
 
 
@@ -35,7 +35,8 @@ async def predict(
     """
 
     # Build separate system and user prompts
-    enriched_context = enrich_from_database(db, request)
+    # Use async version to parallelize database queries
+    enriched_context = await enrich_from_database_async(db, request)
 
     system_prompt = build_system_prompt()
     user_prompt = build_user_prompt(request, enriched_context)
@@ -52,14 +53,14 @@ async def predict(
             partial(invoke_bedrock_model, system_prompt, user_prompt),
         )
 
-        # Parse the response to extract reasoning and content
+        # Parse the response to extract content
         parsed_response = parse_bedrock_response(completion)
         severity = parsed_response["content"].get("predicted_severity", "Unknown")
         return DDIPredictResponse(
             drug1=request.drug1,
             drug2=request.drug2,
             severity=severity,
-            reasoning=parsed_response["reasoning"],
+            reasoning="",
             completion=json.dumps(parsed_response["content"]),
             model_path=model_id,
             enriched_context=enriched_context,

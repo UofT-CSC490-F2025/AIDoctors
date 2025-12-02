@@ -42,9 +42,15 @@ def build_system_prompt() -> str:
         "  very clear that there is no support from the database. Explicitly state that your analysis\n"
         "  is based solely on general pharmacological principles without real-world case evidence\n"
         "  from the database.\n\n"
+        "CRITICAL OUTPUT FORMAT REQUIREMENTS:\n"
+        "- You MUST respond with ONLY valid JSON - no additional text before or after\n"
+        "- Do NOT wrap the JSON in markdown code blocks (no ```json or ```)\n"
+        "- Ensure all strings are properly escaped and quoted\n"
+        "- Do NOT include trailing commas\n"
+        "- The response must be parseable by standard JSON parsers\n\n"
         "Provide your analysis based on clinical evidence, pharmacological principles, "
         "and real-world case data. Be thorough but concise in your explanations."
-        f" ALWAYS output your response in the following format:\n\n{get_output_template()}"
+        f" Output ONLY this JSON structure with no additional text:\n\n{get_output_template()}"
     )
     return system_prompt
 
@@ -105,11 +111,7 @@ def get_output_template() -> str:
     Returns a template for the expected output format from the Bedrock model.
     This helps with parsing and validation of model responses.
     """
-    template = '''<reasoning>
-[YOUR STEP-BY-STEP REASONING PROCESS HERE]
-</reasoning>
-
-{
+    template = '''{
     "predicted_severity": "<Minor|Moderate|Major>",
     "comparison_to_known_ddi": {
         "explanation": "<Provide a detailed explanation of how your prediction aligns with or differs from the known DDI severity. (2-3 sentences)>"
