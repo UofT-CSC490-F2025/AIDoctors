@@ -97,16 +97,19 @@ resource "aws_cloudfront_distribution" "frontend" {
   }
 
   # Custom error response for SPA routing
+  # For Next.js static export, redirect 404s to root index.html for client-side routing
   custom_error_response {
-    error_code         = 404
-    response_code      = 200
-    response_page_path = "/index.html"
+    error_code            = 404
+    response_code         = 200
+    response_page_path    = "/index.html"
+    error_caching_min_ttl = 300
   }
 
   custom_error_response {
-    error_code         = 403
-    response_code      = 200
-    response_page_path = "/index.html"
+    error_code            = 403
+    response_code         = 200
+    response_page_path    = "/index.html"
+    error_caching_min_ttl = 300
   }
 
   restrictions {
