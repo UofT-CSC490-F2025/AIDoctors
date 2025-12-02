@@ -4,12 +4,12 @@ A Next.js 15 application interface for the AI Doctors platform. It connects to a
 
 ## Key Routes
 
-| Route                | Description                                                    |
-| :------------------- | :------------------------------------------------------------- |
-| `/`                  | Marketing and project overview.                                |
-| `/login`, `/signup`  | User authentication. Uses email/password and stores auth JWTs. |
-| `/dashboard`         | Protected view of the integration status.                      |
-| `/dashboard/predict` | Protected form to submit patient context and render alerts.    |
+| Route                | Description                                                                         |
+| :------------------- | :---------------------------------------------------------------------------------- |
+| `/`                  | Marketing and project overview.                                                     |
+| `/login`, `/signup`  | User authentication. Uses email/password and stores auth JWTs in HTTP-only cookies. |
+| `/dashboard`         | Protected view of the integration status.                                           |
+| `/dashboard/predict` | Protected form to submit patient context and render alerts.                         |
 
 ## Prerequisites
 
