@@ -45,7 +45,7 @@ const fetchComorbidities = async (input: string) => {
 const loadComorbidityOptions = makeDebouncedLoader(fetchComorbidities, 300);
 
 type PredictFormValues = {
-  age: number;
+  age: number | null;
   sex: 'M' | 'F' | '';
   drugCurrent: string;
   drugNew: string;
@@ -83,7 +83,7 @@ export function PredictionForm({ setResults }: PredictionFormProps) {
 
     try {
       const bodyData = {
-        Age: Number(data.age),
+        Age: data.age ? Number(data.age) : null,
         Sex: data.sex,
         drug1: data.drugCurrent,
         drug2: data.drugNew,
