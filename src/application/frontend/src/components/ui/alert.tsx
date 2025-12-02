@@ -232,11 +232,11 @@ export function Alert({
       </div>
 
       {/* 4. Representative Cases (New Section) */}
-      {repCases.length > 0 && (
         <div className="space-y-2 pt-4">
           <h2 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-1">
             Representative Historical Cases
           </h2>
+      {repCases.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {repCases.map((caseInfo: RepresentativeCase, idx: number) => (
               <div
@@ -263,8 +263,12 @@ export function Alert({
               </div>
             ))}
           </div>
-        </div>
+      ) : (
+        <p className="text-sm italic text-gray-600">
+          No representative cases available. This is purely a generative response from the LLM without any historical data backing.
+        </p>
       )}
+        </div>
     </div>
   );
 }
